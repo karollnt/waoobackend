@@ -15,11 +15,10 @@
 		public function __construct(){
 			parent::__construct();
 			$this->load->model('UsuariosModel');
-			$this->load->library('session');
 		}
 		
 		public function existeUsuario($usuario){
-			$existe = $this->UsuariosModel->existeUsuario('usuario',$usuario);
+			$existe = $this->UsuariosModel->existeUsuario('nickname',$usuario);
 			return $existe;
 		}
 		
@@ -35,7 +34,7 @@
 		
 		public function crearUsuario(){
 			$mensaje = "";
-			$usuario = trim($this->input->post('usuario'));
+			$usuario = trim($this->input->post('nickname'));
 			if(strcasecmp($usuario,"")!=0){
 				if($this->existeUsuario()){
 					$mensaje = $this->errores['usuex'];
@@ -44,11 +43,15 @@
 					$clave = trim($this->input->post('clave'));
 					if($this->validaClave($clave)){
 						$datos = array(
-							'usuario'=>$usuario, 'clave'=>md5($clave),
+							'usuario'=>$usuario, 'clave'=>md5($clave),'tipo'=>trim($this->input->post('tipo')),
 							'nombre'=>trim($this->input->post('nombre')), 'apellido'=>trim($this->input->post('apellido')),
-							'celular'=>trim($this->input->post('celular')), 'email'=>trim($this->input->post('email'))
+							'celular'=>trim($this->input->post('celular')), 'email'=>trim($this->input->post('email')),
+							'idbanco'=>trim($this->input->post('banco')),'numerocuenta'=>trim($this->input->post('numerocuenta'))
 						);
 						$mensaje = $this->UsuariosModel->crearUsuario($datos);
+						if($this->input->post('tipo') == 2){
+							
+						}
 					}
 				}
 			}
@@ -62,7 +65,7 @@
 		
 		public function borrarUsuario(){
 			$mensaje = "";
-			$usuario = trim($this->input->post('usuario'));
+			$usuario = trim($this->input->post('nickname'));
 			if($this->existeUsuario($usuario)){
 				$mensaje = $this->UsuariosModel->borrarUsuario($usuario);
 			}
@@ -87,6 +90,16 @@
 			echo json_encode($resp);
 		}
 		
+		public function datosUsuario(){
+			$mensaje = '{"usuarios":[';
+			$valor = trim($this->input->post('nickname'));
+			$msg = $this->UsuariosModel->buscarUsuarios("nickname",$valor);
+			if(strcasecmp($msg,"")==0) $msg = '{"error":"'.$this->errores['nousf'].'"}';
+			$mensaje .= $msg;
+			$mensaje .= ']}';
+			echo $mensaje;
+		}
+		
 		public function buscarUsuarios(){
 			$mensaje = '{"usuarios":[';
 			$columna = trim($this->input->post('col'));
@@ -96,6 +109,27 @@
 			$mensaje .= $msg;
 			$mensaje .= ']}';
 			echo $mensaje;
+		}
+		
+		public function panelUsuario(){
+			$nickname = $this->input->post('nickname');
+			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
+			$u = '['.$u.']';
+			$usr = json_decode($u);
+			$usuario = $usr[0];
+			$datos = '{"datos":[';
+			switch($usuario->tipo){
+				case 1:
+					$datos .= '{"menu":"Perfil;Solicitudes;Soporte;Estad&iacute;sticas"}';
+					break;
+				case 2:
+					$datos .= '{"menu":"Perfil;Solicitudes"}';
+					break;
+				case 3:
+					$datos .= '{"menu":"Perfil;Solicitar;Mis solicitudes;Cargar saldo;Soporte"}';
+					break;
+			}
+			$datos .= ']}';
 		}
 		
 	}

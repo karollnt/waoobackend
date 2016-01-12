@@ -94,11 +94,31 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'",'
+					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'",'
 					.'"nombre":"'.($row->nombres).'","apellido":"'.($row->apellidos).'",'
-					.'"celular":"'.($row->celular).'","email":"'.($row->email).'"'
+					.'"celular":"'.($row->celular).'","email":"'.($row->email).'"',
+					.'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"',
 					.'}';
 				}
+			}
+			return $mensaje;
+		}
+		
+		public function calificacionAsesor($nickname){
+			$mensaje = "0";
+			$awhere = array('u.nickname'=>$nickname);
+			$this->db
+			->select("r.puntaje",false)
+			->from("usuarios u")
+			->join("rating r","r.idasistente=u.id","inner")
+			->where($awhere);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				$acum = 0;
+				foreach($res->result() as $row){
+					$acum += $row->puntaje;
+				}
+				$mensaje = $acum/($res->num_rows());
 			}
 			return $mensaje;
 		}
