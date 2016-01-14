@@ -49,9 +49,6 @@
 							'idbanco'=>trim($this->input->post('banco')),'numerocuenta'=>trim($this->input->post('numerocuenta'))
 						);
 						$mensaje = $this->UsuariosModel->crearUsuario($datos);
-						if($this->input->post('tipo') == 2){
-							
-						}
 					}
 				}
 			}

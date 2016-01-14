@@ -123,4 +123,71 @@
 			return $mensaje;
 		}
 		
+		public function ingresarMateriasAsesor($nickname,$arraymaterias){
+			$mensaje = "";
+			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
+			$u = '['.$u.']';
+			$usr = json_decode($u);
+			$usuario = $usr[0];
+			$this->db->where('idasistente',$usuario->id);
+			$this->db->update('asistentemateria',array("estado"=>0));
+			$aexiste = array();
+			$this->db
+			->select("am.*",false)
+			->from("materia m")
+			->join("asistentemateria am","am.idmateria=m.id","inner")
+			->join("usuarios u","u.id=am.idasistente","inner")
+			->where(array("u.nickname"=>$nickname,"m.estado"=>1));
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				$mensaje = $this->actualizarMateriasAsesor($nickname,$arraymaterias);
+			}
+			else{
+				foreach($arraymaterias as $v){
+					$datos = array("idasistente"=>$usuario->id,"idmateria"=>$v);
+					$this->db->insert('asistentemateria',$datos);
+				}
+				if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+				else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			}
+			return $mensaje;
+		}
+		
+		public function actualizarMateriasAsesor($nickname,$arraymaterias){
+			$mensaje = "";
+			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
+			$u = '['.$u.']';
+			$usr = json_decode($u);
+			$usuario = $usr[0];
+			$idsins = array();
+			$this->db->where('idasistente',$usuario->id);
+			$this->db->update('asistentemateria',array("estado"=>0));
+			$aexiste = array();
+			$this->db
+			->select("am.*",false)
+			->from("materia m")
+			->join("asistentemateria am","am.idmateria=m.id","inner")
+			->join("usuarios u","u.id=am.idasistente","inner")
+			->where(array("u.nickname"=>$nickname,"m.estado"=>1));
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$aexiste[$row->id] = $row->estado;
+				}
+			}
+			foreach($arraymaterias as $v){
+				if(array_key_exists($v,$aexiste)){
+					$this->db->where('idasistente',$usuario->id);
+					$this->db->update('asistentemateria',array("estado"=>1));
+				}
+				else{
+					$datos = array("idasistente"=>$usuario->id,"idmateria"=>$v);
+					$this->db->insert('asistentemateria',$datos);
+				}
+			}
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			return $mensaje;
+		}
+		
 	}
