@@ -129,4 +129,24 @@
 			$datos .= ']}';
 		}
 		
+		public function ingresarMateriasAsesor(){
+			$nickname = $this->input->post('nickname');
+			$materias = $this->input->post('materias');
+			$arraymaterias = explode(";",$materias);
+			$mensaje = $this->UsuariosModel->ingresarMateriasAsesor($nickname,$arraymaterias);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
+		}
+		
+		public function actualizarMateriasAsesor(){
+			$nickname = $this->input->post('nickname');
+			$materias = $this->input->post('materias');
+			$arraymaterias = explode(";",$materias);
+			$mensaje = $this->UsuariosModel->actualizarMateriasAsesor($nickname,$arraymaterias);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
+		}
+		
 	}
