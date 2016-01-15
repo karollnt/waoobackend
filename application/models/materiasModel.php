@@ -43,4 +43,30 @@
 			return $mensaje;
 		}
 		
+		public function ingresarMateria($nombre){
+			$mensaje = '';
+			$this->db->insert('materia',array("nombre"=>$nombre));
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			return $mensaje;
+		}
+		
+		public function borrarMateria($id){
+			$mensaje = '';
+			$this->db->where('id',$id);
+			$this->db->update('materia',array("estado"=>0));
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			return $mensaje;
+		}
+		
+		public function cambiarNombre($id,$nombre){
+			$mensaje = '';
+			$this->db->where('id',$id);
+			$this->db->update('materia',array("nombre"=>$nombre));
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			return $mensaje;
+		}
+		
 	}
