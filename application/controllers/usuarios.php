@@ -149,4 +149,13 @@
 			echo json_encode($resp);
 		}
 		
+		public function calificarAsesor(){
+			$idasesor = $this->input->post('idasesor');
+			$puntaje = $this->input->post('puntaje');
+			$mensaje = $this->UsuariosModel->calificarAsesor($idasesor,$puntaje);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
+		}
+		
 	}

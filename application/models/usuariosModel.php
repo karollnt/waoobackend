@@ -191,4 +191,13 @@
 			return $mensaje;
 		}
 		
+		public function calificarAsesor($idasesor,$puntaje){
+			$mensaje = "";
+			$datos = array("idasistente"=>$idasesor,"puntaje"=>$puntaje);
+			$this->db->insert('rating',$datos);
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			return $mensaje;
+		}
+		
 	}
