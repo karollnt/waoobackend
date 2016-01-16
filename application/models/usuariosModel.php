@@ -126,10 +126,7 @@
 		
 		public function ingresarMateriasAsesor($nickname,$arraymaterias){
 			$mensaje = "";
-			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
-			$u = '['.$u.']';
-			$usr = json_decode($u);
-			$usuario = $usr[0];
+			$usuario = $this->usuarioObj($nickname);
 			$this->db->where('idasistente',$usuario->id);
 			$this->db->update('asistentemateria',array("estado"=>0));
 			$aexiste = array();
@@ -156,10 +153,7 @@
 		
 		public function actualizarMateriasAsesor($nickname,$arraymaterias){
 			$mensaje = "";
-			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
-			$u = '['.$u.']';
-			$usr = json_decode($u);
-			$usuario = $usr[0];
+			$usuario = $this->usuarioObj($nickname);
 			$idsins = array();
 			$this->db->where('idasistente',$usuario->id);
 			$this->db->update('asistentemateria',array("estado"=>0));
@@ -198,6 +192,15 @@
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			return $mensaje;
+		}
+		
+		public function usuarioObj($nickname){
+			$this->load->model('UsuariosModel');
+			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
+			$u = '['.$u.']';
+			$usr = json_decode($u);
+			$usuario = $usr[0];
+			return $usuario;
 		}
 		
 	}
