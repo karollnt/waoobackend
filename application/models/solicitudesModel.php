@@ -203,7 +203,7 @@
 		public function valorOfertaTrabajo($idoferta){
 			$valor = 0;
 			$this->db
-			->select("valor")
+			->select("valor",false)
 			->from("ofertatrabajo")
 			->where("id",$idoferta);
 			$res = $this->db->get();
@@ -218,7 +218,7 @@
 		public function idTrabajoDesdeOfertaTrabajo($idoferta){
 			$id = 0;
 			$this->db
-			->select("idtrabajo")
+			->select("idtrabajo",false)
 			->from("ofertatrabajo")
 			->where("id",$idoferta);
 			$res = $this->db->get();
@@ -228,6 +228,27 @@
 				}
 			}
 			return $id;
+		}
+		
+		public function detallesSolicitud($id){
+			$mensaje = '';
+			$this->db
+			->select("t.id,t.titulo,t.descripcion,t.fecharegistro,t.fecharesuelto,e.nombre AS nestado,m.nombre AS nmateria,u.nickname,COALESCE(u1.nickname,'Ninguno') AS nickasistente",false)
+			->from("trabajo t")
+			->join("usuarios u","u.id=t.idusuario","inner")
+			->join("usuarios u1","u1.id=t.idasistente","left")
+			->join("materia m","m.id=t.idmateria","inner")
+			->join("estado e","e.id=t.estado","inner")
+			->where("t.id",$id);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$mensaje = '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","descripcion":"'.($row->descripcion).'",'
+					.'"fecharegistro":"'.($row->fecharegistro).'","fecharesuelto":"'.($row->fecharesuelto).'","estado":"'.($row->nestado).'",'
+					.'"materia":"'.($row->nmateria).'","usuario":"'.($row->nickname).'","asistente":"'.($row->nickasistente).'"}';
+				}
+			}
+			return $mensaje;
 		}
 		
 	}

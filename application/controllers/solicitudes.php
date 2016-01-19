@@ -113,6 +113,15 @@
 			echo json_encode($resp);
 		}
 		
+		public function detallesSolicitud(){
+			$mensaje = '';
+			$id = $this->input->post('id');
+			$mensaje = $this->SolicitudesModel->detallesSolicitud($id);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
+		}
+		
 		private function configuracionPayU($usuario,$idtrabajo,$valor){
 			$order = array();
 			$order['notifyUrl'] = 'http://localhost'.dirname($_SERVER['REQUEST_URI']).'/OrderNotify.php';
