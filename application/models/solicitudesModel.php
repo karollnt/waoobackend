@@ -9,6 +9,8 @@
 			$this->db->insert('trabajo',$datos);
 			if($this->db->affected_rows()>0) $mensaje = "Se ha creado la solicitud";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
+			$idtrabajo = $this->db->insert_id();
+			$this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
 			return $mensaje;
 		}
 		
@@ -152,7 +154,7 @@
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$msg = "Ha recibido una oferta para realizar su trabajo {$idtrabajo} por $".number_format($valor,0,".",",");
-			$this->notificarUsuario($msg,"(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})");
+			$this->notificarUsuario($msg,"(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})",$idtrabajo);
 			return $mensaje;
 		}
 		
@@ -167,7 +169,7 @@
 				$mensaje = $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 				if(strcasecmp($mensaje,"Informaci&oacute;n actualizada")==0){
 					$mensaje = $this->asignarAsistenteTrabajo($idtrabajo,$idasistente,$numcomprobante);
-					$this->notificarUsuario("Su oferta para el trabajo {$idtrabajo} ha sido aceptada",$idasistente);
+					$this->notificarUsuario("Su oferta para el trabajo {$idtrabajo} ha sido aceptada",$idasistente,$idtrabajo);
 				}
 				else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			}
@@ -192,9 +194,9 @@
 			return $mensaje;
 		}
 		
-		public function notificarUsuario($mensaje,$idusuario){
+		public function notificarUsuario($mensaje,$idusuario,$idtrabajo){
 			$mensaje = '';
-			$this->db->insert('trabajolog',array("mensaje"=>$mensaje,"idusuario"=>$idusuario));
+			$this->db->insert('notificacionesusuario',array("mensaje"=>$mensaje,"idusuario"=>$idusuario,"idtrabajo"=>$idtrabajo));
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
@@ -248,6 +250,20 @@
 					.'"materia":"'.($row->nmateria).'","usuario":"'.($row->nickname).'","asistente":"'.($row->nickasistente).'"}';
 				}
 			}
+			return $mensaje;
+		}
+		
+		public function notificarAsistentesTrabajoCreado($idtrabajo,$mensaje){
+			$mensaje = '';
+			$this->db
+			->query("INSERT INTO notificacionesusuario (idusuario,idtrabajo,mensaje)
+			SELECT amt.idasistente,t.id,'{$mensaje}'
+			FROM trabajo t
+			INNER JOIN materia m ON t.idmateria = m.id
+			INNER JOIN asistentemateria amt ON amt.idmateria=m.id
+			WHERE t.id={$idtrabajo}");
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
+			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
 		
