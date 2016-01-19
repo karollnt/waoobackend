@@ -195,12 +195,31 @@
 		}
 		
 		public function usuarioObj($nickname){
-			$this->load->model('UsuariosModel');
-			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
+			$u = $this->buscarUsuarios("nickname",$nickname);
 			$u = '['.$u.']';
 			$usr = json_decode($u);
 			$usuario = $usr[0];
 			return $usuario;
+		}
+		
+		public function notificacionesTrabajoCreado($nickname){
+			$mensaje = '';
+			$this->db
+			->select("t.id,m.nombre",false)
+			->from("notificacionesusuario n")
+			->join("trabajo t","t.id=n.idtrabajo","inner")
+			->join("usuarios u","u.id=n.idusuario","inner")
+			->join("materia m","m.id=t.idmateria","inner")
+			->where("u.nickname",$nickname);
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje .= '{"idtrabajo":"'.($row->id).'","materia":"'.($row->nombre).'"}';
+				}
+			}
+			return $mensaje;
 		}
 		
 	}
