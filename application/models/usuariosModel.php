@@ -210,7 +210,7 @@
 			->join("trabajo t","t.id=n.idtrabajo","inner")
 			->join("usuarios u","u.id=n.idusuario","inner")
 			->join("materia m","m.id=t.idmateria","inner")
-			->where("u.nickname",$nickname);
+			->where(array("u.nickname"=>$nickname,"n.leido"=>0);
 			if($res->num_rows()>0){
 				$cont1 = 0;
 				foreach($res->result() as $row){
