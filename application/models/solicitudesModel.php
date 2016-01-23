@@ -51,6 +51,7 @@
 			->join("materias m","m.id=t.idmateria","inner")
 			->join("usuarios u2","u2.id=t.idusuario","inner")
 			->where("u.nickname",$nickname)
+			->order_by("m.nombre","asc")
 			->order_by("t.estado","desc")
 			->order_by("t.fecharegistro","desc");
 			$res = $this->db->get();

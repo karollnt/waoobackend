@@ -158,4 +158,12 @@
 			echo json_encode($resp);
 		}
 		
+		public function calificacionAsesor(){
+			$nickname = $this->input->post('nickname');
+			$mensaje = $this->UsuariosModel->calificacionAsesor($nickname);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
+		}
+		
 	}
