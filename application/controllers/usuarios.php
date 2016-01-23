@@ -166,4 +166,26 @@
 			echo json_encode($resp);
 		}
 		
+		public function notificacionesNoLeidasCant(){
+			$nickname = $this->input->post('nickname');
+			$mensaje = $this->UsuariosModel->notificacionesNoLeidasCant($nickname);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
+		}
+		
+		public function notificacionesNoLeidas(){
+			$mensaje = '{"notificaciones":[';
+			$nickname = $this->input->post('nickname');
+			$mensaje = $this->UsuariosModel->notificacionesNoLeidas($nickname);
+			if(strcasecmp($msg,"")==0) $msg = '{"error":"'.$this->errores['nousf'].'"}';
+			$mensaje .= $msg;
+			$mensaje .= ']}';
+			echo $mensaje;
+		}
+		
+		public function marcarLeida(){
+			$id = $this->input->post('id');
+			$this->UsuariosModel->marcarLeida($id);
+		}
 	}

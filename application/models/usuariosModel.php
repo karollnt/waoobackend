@@ -211,6 +211,7 @@
 			->join("usuarios u","u.id=n.idusuario","inner")
 			->join("materia m","m.id=t.idmateria","inner")
 			->where(array("u.nickname"=>$nickname,"n.leido"=>0));
+			$res = $this->db->get();
 			if($res->num_rows()>0){
 				$cont1 = 0;
 				foreach($res->result() as $row){
@@ -222,4 +223,39 @@
 			return $mensaje;
 		}
 		
+		public function notificacionesNoLeidasCant($nickname){
+			$mensaje = '';
+			$this->db
+			->select("n.id",false)
+			->from("notificacionesusuario n")
+			->join("usuarios u","u.id=n.idusuario","inner")
+			->where(array("u.nickname"=>$nickname,"n.leido"=>0));
+			$res = $this->db->get();
+			$mensaje = $res->num_rows();
+			return $mensaje;
+		}
+		
+		public function notificacionesNoLeidasCant($nickname){
+			$mensaje = '';
+			$this->db
+			->select("t.id,n.mensaje",false)
+			->from("notificacionesusuario n")
+			->join("usuarios u","u.id=n.idusuario","inner")
+			->where(array("u.nickname"=>$nickname,"n.leido"=>0));
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje .= '{"id":"'.($row->id).'","mensaje":"'.($row->mensaje).'"}';
+				}
+			}
+			return $mensaje;
+		}
+		
+		public function marcarLeida($id){
+			$this->db->where('id',$id);
+			$this->db->update('notificaciones',array("leido"=>1));
+		}
 	}

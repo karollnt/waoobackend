@@ -122,6 +122,16 @@
 			echo json_encode($resp);
 		}
 		
+		public function ofertasParaTrabajo(){
+			$mensaje = '{"ofertas":[';
+			$idtrabajo = $this->input->post('idtrabajo');
+			$mensaje = $this->UsuariosModel->ofertasParaTrabajo($idtrabajo);
+			if(strcasecmp($msg,"")==0) $msg = '{"error":"'.$this->errores['nousf'].'"}';
+			$mensaje .= $msg;
+			$mensaje .= ']}';
+			echo $mensaje;
+		}
+		
 		private function configuracionPayU($usuario,$idtrabajo,$valor){
 			$order = array();
 			$order['notifyUrl'] = 'http://localhost'.dirname($_SERVER['REQUEST_URI']).'/OrderNotify.php';

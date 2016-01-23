@@ -268,4 +268,23 @@
 			return $mensaje;
 		}
 		
+		public function ofertasParaTrabajo($idtrabajo){
+			$mensaje = '';
+			$this->db
+			->select("otr.idtrabajo,otr.valor,u.nickname",false)
+			->from("ofertatrabajo otr")
+			->join("usuarios u","u.id=otr.idasistente","inner")
+			->where("idtrabajo",$idtrabajo);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje = '{"id":"'.($row->idtrabajo).'","valor":"'.($row->valor).'","asistente":"'.($row->nickname).'"}';
+				}
+			}
+			return $mensaje;
+		}
+		
 	}
