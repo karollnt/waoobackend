@@ -43,7 +43,7 @@
 			return $mensaje;
 		}
 		
-		protected function existeUsuario($columna,$valor){
+		public function existeUsuario($columna,$valor){
 			$existe = false;
 			$awhere = array($columna=>$valor);
 			$this->db
@@ -235,7 +235,7 @@
 			return $mensaje;
 		}
 		
-		public function notificacionesNoLeidasCant($nickname){
+		public function notificacionesNoLeidas($nickname){
 			$mensaje = '';
 			$this->db
 			->select("t.id,n.mensaje",false)

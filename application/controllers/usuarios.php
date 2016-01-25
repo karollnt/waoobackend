@@ -17,13 +17,15 @@
 			$this->load->model('UsuariosModel');
 		}
 		
-		public function existeUsuario($usuario){
+		public function existeUsuario(){
+			$usuario = trim($this->input->post('nickname'));
 			$existe = $this->UsuariosModel->existeUsuario('nickname',$usuario);
 			return $existe;
 		}
 		
-		private function validaClave($clave){
+		private function validaClave(){
 			$valida = false;
+			$clave = trim($this->input->post('clave'));
 			if(strcasecmp($clave,"")==0) echo $this->errores['clavev'];
 			else{
 				if(strlen($clave)<=4) echo $this->errores['clavec'];
@@ -42,11 +44,15 @@
 				else{
 					$clave = trim($this->input->post('clave'));
 					if($this->validaClave($clave)){
+						$tipo = 1;
+						$banco = 1;
+						if($this->input->post('tipo')!=null) $tipo = $this->input->post('tipo');
+						if($this->input->post('banco')!=null) $banco = $this->input->post('banco');
 						$datos = array(
-							'usuario'=>$usuario, 'clave'=>md5($clave),'tipo'=>trim($this->input->post('tipo')),
-							'nombre'=>trim($this->input->post('nombre')), 'apellido'=>trim($this->input->post('apellido')),
+							'nickname'=>$usuario, 'clave'=>md5($clave),'tipo'=>trim($tipo),
+							'nombres'=>trim($this->input->post('nombre')), 'apellidos'=>trim($this->input->post('apellido')),
 							'celular'=>trim($this->input->post('celular')), 'email'=>trim($this->input->post('email')),
-							'idbanco'=>trim($this->input->post('banco')),'numerocuenta'=>trim($this->input->post('numerocuenta'))
+							'idbanco'=>trim($banco),'numerocuenta'=>trim($this->input->post('numerocuenta'))
 						);
 						$mensaje = $this->UsuariosModel->crearUsuario($datos);
 					}
