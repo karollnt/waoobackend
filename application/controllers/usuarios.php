@@ -94,23 +94,21 @@
 		}
 		
 		public function datosUsuario(){
-			$mensaje = '{"usuarios":[';
+			$mensaje = '';
 			$valor = trim($this->input->post('nickname'));
 			$msg = $this->UsuariosModel->buscarUsuarios("nickname",$valor);
-			if(strcasecmp($msg,"")==0) $msg = '{"error":"'.$this->errores['nousf'].'"}';
-			$mensaje .= $msg;
-			$mensaje .= ']}';
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
+			else $mensaje = '{"usuarios":['.$msg.']}';
 			echo $mensaje;
 		}
 		
 		public function buscarUsuarios(){
-			$mensaje = '{"usuarios":[';
+			$mensaje = '';
 			$columna = trim($this->input->post('col'));
 			$valor = trim($this->input->post('val'));
 			$msg = $this->UsuariosModel->buscarUsuarios($columna,$valor);
-			if(strcasecmp($msg,"")==0) $msg = '{"error":"'.$this->errores['nousf'].'"}';
-			$mensaje .= $msg;
-			$mensaje .= ']}';
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
+			else $mensaje = '{"usuarios":['.$msg.']}';
 			echo $mensaje;
 		}
 		
@@ -181,12 +179,11 @@
 		}
 		
 		public function notificacionesNoLeidas(){
-			$mensaje = '{"notificaciones":[';
+			$mensaje = '';
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->UsuariosModel->notificacionesNoLeidas($nickname);
-			if(strcasecmp($msg,"")==0) $msg = '{"error":"'.$this->errores['nousf'].'"}';
-			$mensaje .= $msg;
-			$mensaje .= ']}';
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
+			else $mensaje = '{"notificaciones":['.$msg;.']}';
 			echo $mensaje;
 		}
 		
