@@ -31,23 +31,24 @@
 				$foundFiles = array();
 				$f=0;
 				foreach ($existingFiles as $fileName => $info) {
-				  if($fileName!='thumbs'){//Skip over thumbs directory
-					//set the data for the json array   
-					$foundFiles[$f]['name'] = $fileName;
-					$foundFiles[$f]['size'] = $info['size'];
-					$foundFiles[$f]['url'] = $upload_path_url . $fileName;
-					$foundFiles[$f]['thumbnailUrl'] = $upload_path_url . 'thumbs/' . $fileName;
-					$foundFiles[$f]['deleteUrl'] = base_url() . 'upload/deleteImage/' . $fileName;
-					$foundFiles[$f]['deleteType'] = 'DELETE';
-					$foundFiles[$f]['error'] = null;
+					if($fileName!='thumbs'){//Skip over thumbs directory
+						//set the data for the json array   
+						$foundFiles[$f]['name'] = $fileName;
+						$foundFiles[$f]['size'] = $info['size'];
+						$foundFiles[$f]['url'] = $upload_path_url . $fileName;
+						$foundFiles[$f]['thumbnailUrl'] = $upload_path_url . 'thumbs/' . $fileName;
+						$foundFiles[$f]['deleteUrl'] = base_url() . 'upload/deleteImage/' . $fileName;
+						$foundFiles[$f]['deleteType'] = 'DELETE';
+						$foundFiles[$f]['error'] = null;
 
-					$f++;
-				  }
+						$f++;
+					}
 				}
 				$this->output
 				->set_content_type('application/json')
 				->set_output(json_encode(array('files' => $foundFiles)));
-			} else {
+			}
+			else {
 				$data = $this->upload->data();
 				/*
 				 * Array
@@ -102,7 +103,8 @@
 					//if you don't give this a json array it will give you a Empty file upload result error
 					//it you set this without the if(IS_AJAX)...else... you get ERROR:TRUE (my experience anyway)
 					// so that this will still work if javascript is not enabled
-				} else {
+				}
+				else {
 					$file_data['upload_data'] = $this->upload->data();
 					$this->load->view('upload/upload_success', $file_data);
 				}
@@ -113,7 +115,7 @@
 			$success = unlink(FCPATH . 'uploads/' . $file);
 			$success = unlink(FCPATH . 'uploads/thumbs/' . $file);
 			//info to see if it is doing what it is supposed to
-		$info = new StdClass;
+			$info = new StdClass;
 			$info->sucess = $success;
 			$info->path = base_url() . 'uploads/' . $file;
 			$info->file = is_file(FCPATH . 'uploads/' . $file);
@@ -121,7 +123,8 @@
 			if (IS_AJAX) {
 				//I don't think it matters if this is set but good for error checking in the console/firebug
 				echo json_encode(array($info));
-			} else {
+			}
+			else {
 				//here you will need to decide what you want to show for a successful delete        
 				$file_data['delete_data'] = $file;
 				$this->load->view('admin/delete_success', $file_data);

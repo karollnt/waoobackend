@@ -183,7 +183,7 @@
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->UsuariosModel->notificacionesNoLeidas($nickname);
 			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
-			else $mensaje = '{"notificaciones":['.$msg;.']}';
+			else $mensaje = '{"notificaciones":['.$msg.']}';
 			echo $mensaje;
 		}
 		
