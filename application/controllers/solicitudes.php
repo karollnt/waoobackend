@@ -13,8 +13,21 @@
 			$titulo = $this->input->post('titulo');
 			$descripcion = $this->input->post('descripcion');
 			$idmateria = $this->input->post('idmateria');
-			$rutaarchivo = $this->input->post('rutaarchivo');
-			if(is_file($rutaarchivo)){
+			$path = './uploads/';
+            $this->load->library('upload');
+            // Define file rules
+            $this->upload->initialize(array(
+                "upload_path"       =>  $path,
+                "allowed_types"     =>  "gif|jpg|png",
+                "max_size"          =>  '10240',
+                "max_width"         =>  '1024',
+                "max_height"        =>  '768'
+            ));
+           
+            if($this->upload->do_upload("uploadfile")){
+                $datosarchivo = $this->upload->data();
+				$rutaarchivo = $datosarchivo['full_path'];
+				$extension = $datosarchivo['file_ext'];
 				$fp = fopen($rutaarchivo, 'r');
 				$content = fread($fp, filesize($rutaarchivo));
 				$finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -22,18 +35,23 @@
 				$archivo = addslashes($content);
 				fclose($fp);
 				$usuario = $this->UsuariosModel->usuarioObj($nickname);
-				$datos = array("idusuario"=>$usuario->id,"idmateria"=>$idmateria,
-				"titulo"=>$titulo,"descripcion"=>$descripcion,
-				"archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$tipoarchivo);
-				unlink($datosarchivo['full_path']);
-				$mensaje = $this->SolicitudesModel->crearSolicitud($datos);
-			}
+				$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,
+				"titulo"=>$titulo,"descripcion"=>$descripcion);
+				$datos2 = array("archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
+				unlink($rutaarchivo);
+				$mensaje = $this->SolicitudesModel->crearSolicitud($datos,$datos2);
+				$resp = array("msg"=>html_entity_decode($mensaje));
+				echo json_encode($resp);
+            }
 			else{
-				$mensaje = "No se encuentra el archivo";
-			}
-			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
-			echo json_encode($resp);
+                // Output the errors
+                $errors = array('error' => $this->upload->display_errors());
+                foreach($errors as $k => $error){
+                    echo $error;
+                }
+            }
+			// Exit to avoid further execution
+			exit();
 		}
 		
 		function solicitudesPorMateriaAsistente(){

@@ -5,12 +5,24 @@
 			$this->load->database();
 		}
 		
-		public function crearSolicitud($datos){
+		public function crearSolicitud($datos,$datos2){
+			$mensaje = '';
 			$this->db->insert('trabajo',$datos);
 			if($this->db->affected_rows()>0) $mensaje = "Se ha creado la solicitud";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();
+			$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$datos['idusuario'],
+			'archivo'=>$datos2['archivo'],'tipoarchivo'=>$datos2['tipoarchivo'],'extension'=>$datos2['extension']);
+			$this->ingresarArchivos($idtrabajo,$dats);
 			$this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
+			return $mensaje;
+		}
+		
+		public function ingresarArchivos($idtrabajo,$datos){
+			$mensaje = '';
+			$this->db->insert('trabajoarchivos',$datos);
+			if($this->db->affected_rows()>0) $mensaje = "Se ha guardadoel archivo";
+			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
 		
@@ -262,7 +274,7 @@
 			FROM trabajo t
 			INNER JOIN materia m ON t.idmateria = m.id
 			INNER JOIN asistentemateria amt ON amt.idmateria=m.id
-			WHERE t.id={$idtrabajo}");
+			WHERE t.id={$idtrabajo}",false);
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
