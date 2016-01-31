@@ -83,12 +83,10 @@
 		
 		public function buscarUsuarios($columna,$valor){
 			$mensaje = "";
-			$awhere = array($columna=>$valor);
 			$this->db
 			->select("*",false)
-			->from("usuarios")
-			->where($awhere);
-			$res = $this->db->get();
+			->where($columna,$valor);
+			$res = $this->db->get("usuarios");
 			if($res->num_rows()>0){
 				$cont1 = 0;
 				foreach($res->result() as $row){
@@ -97,10 +95,13 @@
 					$cal = $this->calificacionAsesor($row->nickname);
 					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'",'
 					.'"nombre":"'.($row->nombres).'","apellido":"'.($row->apellidos).'",'
-					.'"celular":"'.($row->celular).'","email":"'.($row->email).'","calificacion":"'.($cal).'"'
+					.'"celular":"'.($row->celular).'","email":"'.($row->email).'","calificacion":"'.($cal).'",'
 					.'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'
 					.'}';
 				}
+			}
+			else{
+				$mensaje = '{"'.$columna.'":"'.$valor.'"}';
 			}
 			return $mensaje;
 		}
