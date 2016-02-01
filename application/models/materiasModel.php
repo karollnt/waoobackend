@@ -26,7 +26,7 @@
 		public function listarMateriasAsesor($nickname){
 			$mensaje = '';
 			$this->db
-			->select("am.*",false)
+			->select("am.*,m.nombre",false)
 			->from("materia m")
 			->join("asistentemateria am","am.idmateria=m.id","inner")
 			->join("usuarios u","u.id=am.idasistente","inner")

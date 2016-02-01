@@ -54,7 +54,17 @@
 							'celular'=>trim($this->input->post('celular')), 'email'=>trim($this->input->post('email')),
 							'idbanco'=>trim($banco),'numerocuenta'=>trim($this->input->post('numerocuenta'))
 						);
-						$mensaje = $this->UsuariosModel->crearUsuario($datos);
+						if($tipo==1) $mensaje = $this->UsuariosModel->crearUsuario($datos);
+						if($tipo==2){
+							$datosmat = array();
+							$cantmatsreg = $this->input->post('cantmatsreg');
+							for($ind=0;$ind<$cantmatsreg;$ind++){
+								if($this->input->post('mat_'.$ind)!=null){
+									array_push($datosmat,$this->input->post('mat_'.$ind));
+								}
+							}
+							$mensaje = $this->UsuariosModel->crearAsistente($datos,$datosmat);
+						}
 					}
 				}
 			}
@@ -131,6 +141,15 @@
 					break;
 			}
 			$datos .= ']}';
+		}
+		
+		public function tipoUsuario(){
+			$nickname = $this->input->post('nickname');
+			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
+			$u = '['.$u.']';
+			$usr = json_decode($u);
+			$usuario = $usr[0];
+			echo '{"tipo":"'.$usuario->tipo.'"}';
 		}
 		
 		public function ingresarMateriasAsesor(){

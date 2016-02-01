@@ -32,8 +32,8 @@
 			->select("t.id,t.titulo,t.descripcion,t.fecharegistro,t.fecharesuelto,e.nombre AS nomestado,COALESCE(u2.nickname,'Sin asignar') AS asistente,m.nombre AS materia",false)
 			->from("trabajo t")
 			->join("usuarios u","u.id=t.idusuario","inner")
-			->join("estados e","e.id=t.estado","inner")
-			->join("materias m","m.id=t.idmateria","inner")
+			->join("estado e","e.id=t.estado","inner")
+			->join("materia m","m.id=t.idmateria","inner")
 			->join("usuarios u2","u2.id=t.idasistente","left")
 			->where("u.nickname",$nickname)
 			->order_by("t.estado","desc")
@@ -59,8 +59,8 @@
 			->select("t.id,t.titulo,t.descripcion,t.fecharegistro,t.fecharesuelto,e.nombre AS nomestado,COALESCE(u2.nickname,'Sin asignar') AS asistente,m.nombre AS materia",false)
 			->from("trabajo t")
 			->join("usuarios u","u.id=t.idasistente","inner")
-			->join("estados e","e.id=t.estado","inner")
-			->join("materias m","m.id=t.idmateria","inner")
+			->join("estado e","e.id=t.estado","inner")
+			->join("materia m","m.id=t.idmateria","inner")
 			->join("usuarios u2","u2.id=t.idusuario","inner")
 			->where("u.nickname",$nickname)
 			->order_by("m.nombre","asc")
@@ -86,7 +86,7 @@
 			$this->db->select("t.id,t.titulo,t.descripcion,t.fecharegistro,t.fecharesuelto,e.nombre AS nomestado,u.nickname AS solicitante",false)
 			->from("trabajo t")
 			->join("usuarios u","u.id=t.idasistente","inner")
-			->join("estados e","e.id=t.estado","inner")
+			->join("estado e","e.id=t.estado","inner")
 			->join("usuarios u2","u2.id=t.idusuario","inner")
 			->where(array("u.nickname"=>$nickname,"t.idmateria"=>$idmateria))
 			->order_by("t.estado","desc")
@@ -114,7 +114,7 @@
 			$this->db
 			->select("t.id,t.titulo,t.descripcion,t.fecharegistro,m.nombre AS materia,u.nickname",false)
 			->from("trabajo t")
-			->join("materias m","m.id=t.idmateria","inner")
+			->join("materia m","m.id=t.idmateria","inner")
 			->join("usuarios u","u.id=t.idusuario","inner")
 			->where("t.idasistente",0);
 			$res = $this->db->get();
@@ -140,7 +140,7 @@
 			$this->db
 			->select("t.id,t.titulo,t.descripcion,t.fecharegistro,m.nombre AS materia,u.nickname",false)
 			->from("trabajo t")
-			->join("materias m","m.id=t.idmateria","inner")
+			->join("materia m","m.id=t.idmateria","inner")
 			->join("usuarios u","u.id=t.idusuario","inner")
 			->where(array("t.idasistente"=>0,"t.idmateria"=>$idmateria));
 			$res = $this->db->get();

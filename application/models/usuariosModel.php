@@ -63,6 +63,12 @@
 			return $mensaje;
 		}
 		
+		public function crearAsistente($datos,$datosmat){
+			$mensaje = $this->crearUsuario($datos);
+			$this->ingresarMateriasAsesor($datos['nickname'],$datosmat);
+			return $mensaje;
+		}
+		
 		public function borrarUsuario($usuario){
 			$mensaje = "";
 			$this->db->where('usuario',$usuario);

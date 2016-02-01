@@ -64,7 +64,7 @@
 			foreach($lista as $obj){
 				if($cont1==0) $cont1 = 1;
 				else $mensaje .= '|';
-				$mensaje .= $obj->nombre.';'.($this->SolicitudesModel->solicitudesAsistenteMateria($nickname,$obj->id));
+				$mensaje .= $obj->nombre.';['.($this->SolicitudesModel->solicitudesAsistenteMateria($nickname,$obj->id)).']';
 			}
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			//echo $_GET['callback'].'('.json_encode($resp).')';
