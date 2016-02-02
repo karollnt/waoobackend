@@ -3,6 +3,7 @@
 		
 		public function __construct(){
 			$this->load->database();
+			//$this->db->get_compiled_select();
 		}
 		
 		public function crearSolicitud($datos,$datos2){
@@ -124,7 +125,7 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","materia":"'.($row->materia).'"'
+					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","materia":"'.($row->materia).'",'
 					.'"descripcion":"'.($row->descripcion).'","fecharegistro":"'.($row->fecharegistro).'","solicitante":"'.($row->nickname).'"}';
 					$mensaje .= ']';
 				}
@@ -146,14 +147,14 @@
 			$res = $this->db->get();
 			if($res->num_rows()>0){
 				$cont1 = 0;
-				$mensaje = '[';
+				//$mensaje = '[';
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","materia":"'.($row->materia).'"'
+					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","materia":"'.($row->materia).'",'
 					.'"descripcion":"'.($row->descripcion).'","fecharegistro":"'.($row->fecharegistro).'","solicitante":"'.($row->nickname).'"}';
 				}
-				$mensaje .= ']';
+				//$mensaje .= ']';
 			}
 			else{
 				$mensaje = 'No hay solicitudes';

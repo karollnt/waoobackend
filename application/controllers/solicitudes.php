@@ -79,6 +79,23 @@
 			echo json_encode($resp);
 		}
 		
+		function solicitudesSinAsignarAsistente(){
+			$mensaje = '';
+			$nickname = $this->input->post('nickname');
+			$lm = $this->MateriasModel->listarMateriasAsesor($nickname);
+			$lm = '['.$lm.']';
+			$lista = json_decode($lm);
+			$cont1 = 0;
+			foreach($lista as $obj){
+				if($cont1==0) $cont1 = 1;
+				else $mensaje .= '|';
+				$mensaje .= $obj->nombre.';['.($this->SolicitudesModel->solicitudesSinAsignarPorMateria($obj->id)).']';
+			}
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
+		}
+		
 		function solicitudesSinAsignarPorMateria(){
 			$mensaje = '';
 			$idmateria = $this->input->post('idmateria');
