@@ -152,10 +152,24 @@
 			$mensaje = '{"ofertas":[';
 			$idtrabajo = $this->input->post('idtrabajo');
 			$mensaje = $this->UsuariosModel->ofertasParaTrabajo($idtrabajo);
-			if(strcasecmp($msg,"")==0) $msg = '{"error":"'.$this->errores['nousf'].'"}';
+			if(strcasecmp($msg,"")==0) $msg = '{"error":"No hay resultados"}';
 			$mensaje .= $msg;
 			$mensaje .= ']}';
 			echo $mensaje;
+		}
+		
+		public function listaArchivosTrabajo(){
+			$mensaje = '';
+			$idtrabajo = $this->input->post('idtrabajo');
+			$mensaje = $this->SolicitudesModel->listaArchivosTrabajo($idtrabajo);
+			if(strcasecmp($mensaje,"")==0) $mensaje = 'No hay resultados';
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
+		}
+		
+		public function verArchivoSolicitud($idreg){
+			//$idreg = $this->input->get("id");
+			echo "aaaa ".$idreg;
 		}
 		
 		private function configuracionPayU($usuario,$idtrabajo,$valor){

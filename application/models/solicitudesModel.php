@@ -300,4 +300,23 @@
 			return $mensaje;
 		}
 		
+		public function listaArchivosTrabajo($idtrabajo){
+			$mensaje = '';
+			$this->db
+			->select("tra.id,tra.tipoarchivo,u.nickname",false)
+			->from("trabajoarchivos tra")
+			->join("usuarios u","u.id=tra.idusuario","inner")
+			->where("tra.idtrabajo",$idtrabajo);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje = '{"id":"'.($row->id).'","tipoarchivo":"'.($row->tipoarchivo).'","usuario":"'.($row->nickname).'"}';
+				}
+			}
+			return $mensaje;
+		}
+		
 	}
