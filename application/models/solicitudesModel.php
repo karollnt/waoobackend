@@ -162,13 +162,33 @@
 			return $mensaje;
 		}
 		
+		public function verificaSiAsistenteOferto($idtrabajo,$idasistente){
+			$resp = array('hizo'=>false,'valor'=>0);
+			$this->db
+			->select("id,valor")
+			->from("ofertatrabajo")
+			->where(array('idtrabajo'=>$idtrabajo,'idasistente'=>$idasistente,'estado'=>1));
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$resp['hizo']=true;
+					$resp['valor']=$row->valor;
+				}
+			}
+			return $resp;
+		}
+		
 		public function enviarPrecioTrabajo($idtrabajo,$idasistente,$valor){
 			$mensaje = '';
-			$this->db->insert('ofertatrabajo',array("idtrabajo"=>$idtrabajo,"idasistente"=>$idasistente));
-			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
-			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
-			$msg = "Ha recibido una oferta para realizar su trabajo {$idtrabajo} por $".number_format($valor,0,".",",");
-			$this->notificarUsuario($msg,"(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})",$idtrabajo);
+			$verif = $this->verificaSiAsistenteOferto($idtrabajo,$idasistente);
+			if($verif['hizo']) $mensaje = "Ya has hecho una oferta por ".number_format($verif['valor'],0,".",",")." para esta solicitud";
+			else{
+				$this->db->insert('ofertatrabajo',array("idtrabajo"=>$idtrabajo,"idasistente"=>$idasistente,"valor"=>$valor,'estado'=>1));
+				if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
+				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
+				$msg = "Ha recibido una oferta para realizar su trabajo por ".number_format($valor,0,".",",").". Verifique en Mis solicitudes las ofertas recibidas.";
+				$this->notificarUsuario($msg,"(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})",$idtrabajo);
+			}
 			return $mensaje;
 		}
 		
@@ -208,9 +228,9 @@
 			return $mensaje;
 		}
 		
-		public function notificarUsuario($mensaje,$idusuario,$idtrabajo){
+		public function notificarUsuario($msg,$idusuario,$idtrabajo){
 			$mensaje = '';
-			$this->db->insert('notificacionesusuario',array("mensaje"=>$mensaje,"idusuario"=>$idusuario,"idtrabajo"=>$idtrabajo));
+			$res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
@@ -314,6 +334,23 @@
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$mensaje = '{"id":"'.($row->id).'","tipoarchivo":"'.($row->tipoarchivo).'","usuario":"'.($row->nickname).'"}';
+				}
+			}
+			return $mensaje;
+		}
+		
+		public function getBlobArchivoSolicitud($idarchivo){
+			$mensaje = array('archivo'=>'No hay archivo','tipo'=>'text/plain','extension'=>'.txt');
+			$this->db
+			->select("archivo,tipoarchivo,extension",false)
+			->from("trabajoarchivos")
+			->where("id",$idarchivo);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$mensaje['archivo'] = $row->archivo;
+					$mensaje['tipo'] = $row->tipoarchivo;
+					$mensaje['extension'] = $row->extension;
 				}
 			}
 			return $mensaje;

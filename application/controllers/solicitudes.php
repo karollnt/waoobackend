@@ -169,7 +169,12 @@
 		
 		public function verArchivoSolicitud($idreg){
 			//$idreg = $this->input->get("id");
-			echo "aaaa ".$idreg;
+			$msg = $this->SolicitudesModel->getBlobArchivoSolicitud($idreg);
+			header("Content-type: ".($msg['tipo']));
+			header("Content-Disposition: attachment; filename=attachmentno{$idreg}".($msg['extension']));
+			ob_clean();
+			flush();
+			echo ($msg['archivo']);
 		}
 		
 		private function configuracionPayU($usuario,$idtrabajo,$valor){
