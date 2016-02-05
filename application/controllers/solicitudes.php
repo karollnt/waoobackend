@@ -71,6 +71,16 @@
 			echo json_encode($resp);
 		}
 		
+		function solicitudesCreadasUsuario(){
+			$mensaje = '';
+			$nickname = $this->input->post('nickname');
+			$mensaje = $this->SolicitudesModel->solicitudesUsuario($nickname);
+			if(strcasecmp($mensaje,"")==0) $mensaje = 'No hay resultados';
+			$resp = array("msg"=>html_entity_decode('['.$mensaje.']'));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
+		}
+		
 		function solicitudesSinAsignar(){
 			$mensaje = '';
 			$mensaje = $this->SolicitudesModel->solicitudesSinAsignar();
@@ -149,13 +159,12 @@
 		}
 		
 		public function ofertasParaTrabajo(){
-			$mensaje = '{"ofertas":[';
+			$mensaje = '';
 			$idtrabajo = $this->input->post('idtrabajo');
-			$mensaje = $this->UsuariosModel->ofertasParaTrabajo($idtrabajo);
-			if(strcasecmp($msg,"")==0) $msg = '{"error":"No hay resultados"}';
-			$mensaje .= $msg;
-			$mensaje .= ']}';
-			echo $mensaje;
+			$mensaje = $this->SolicitudesModel->ofertasParaTrabajo($idtrabajo);
+			if(strcasecmp($mensaje,"")==0) $mensaje = 'No hay ofertas';
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
 		}
 		
 		public function listaArchivosTrabajo(){

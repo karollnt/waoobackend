@@ -45,7 +45,7 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'",'
+					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","materia":"'.($row->materia).'",'
 					.'"descripcion":"'.($row->descripcion).'","fecharegistro":"'.($row->fecharegistro).'",'
 					.'"fecharesuelto":"'.($row->fecharesuelto).'","asistente":"'.($row->asistente).'",'
 					.'"estado":"'.($row->nomestado).'"}';
