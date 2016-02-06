@@ -231,7 +231,7 @@
 		}
 		
 		public function notificacionesNoLeidasCant($nickname){
-			$mensaje = '';
+			$mensaje = 0;
 			$this->db
 			->select("n.id",false)
 			->from("notificacionesusuario n")
@@ -245,7 +245,7 @@
 		public function notificacionesNoLeidas($nickname){
 			$mensaje = '';
 			$this->db
-			->select("t.id,n.mensaje",false)
+			->select("n.id,n.mensaje,n.fecha,n.idtrabajo",false)
 			->from("notificacionesusuario n")
 			->join("usuarios u","u.id=n.idusuario","inner")
 			->where(array("u.nickname"=>$nickname,"n.leido"=>0));
@@ -255,7 +255,7 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","mensaje":"'.($row->mensaje).'"}';
+					$mensaje .= '{"id":"'.($row->id).'","mensaje":"'.($row->mensaje).'","fecha":"'.($row->fecha).'","idtrabajo":"'.($row->idtrabajo).'"}';
 				}
 			}
 			return $mensaje;
@@ -263,6 +263,6 @@
 		
 		public function marcarLeida($id){
 			$this->db->where('id',$id);
-			$this->db->update('notificaciones',array("leido"=>1));
+			$this->db->update('notificacionesusuario',array("leido"=>1));
 		}
 	}

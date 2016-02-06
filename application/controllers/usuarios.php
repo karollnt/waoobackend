@@ -201,13 +201,15 @@
 			$mensaje = '';
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->UsuariosModel->notificacionesNoLeidas($nickname);
-			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
-			else $mensaje = '{"notificaciones":['.$msg.']}';
-			echo $mensaje;
+			if(strcasecmp($mensaje,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
 		}
 		
 		public function marcarLeida(){
 			$id = $this->input->post('id');
 			$this->UsuariosModel->marcarLeida($id);
+			echo '{"msg":"ok"}';
 		}
 	}
