@@ -303,6 +303,7 @@
 		
 		public function ofertasParaTrabajo($idtrabajo){
 			$mensaje = '';
+			$this->load->model('UsuariosModel');
 			$this->db
 			->select("otr.idtrabajo,otr.valor,u.nickname",false)
 			->from("ofertatrabajo otr")
@@ -312,9 +313,10 @@
 			if($res->num_rows()>0){
 				$cont1 = 0;
 				foreach($res->result() as $row){
+					$calif = $this->UsuariosModel->calificacionAsesor($row->nickname);
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje = '{"id":"'.($row->idtrabajo).'","valor":"'.($row->valor).'","asistente":"'.($row->nickname).'"}';
+					$mensaje = '{"id":"'.($row->idtrabajo).'","valor":"'.($row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'"}';
 				}
 			}
 			return $mensaje;

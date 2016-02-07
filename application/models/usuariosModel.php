@@ -245,9 +245,10 @@
 		public function notificacionesNoLeidas($nickname){
 			$mensaje = '';
 			$this->db
-			->select("n.id,n.mensaje,n.fecha,n.idtrabajo",false)
+			->select("n.id,n.mensaje,n.fecha,n.idtrabajo,t.titulo",false)
 			->from("notificacionesusuario n")
 			->join("usuarios u","u.id=n.idusuario","inner")
+			->join("trabajo t","t.id=n.idtrabajo","inner")
 			->where(array("u.nickname"=>$nickname,"n.leido"=>0));
 			$res = $this->db->get();
 			if($res->num_rows()>0){
@@ -255,7 +256,7 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","mensaje":"'.($row->mensaje).'","fecha":"'.($row->fecha).'","idtrabajo":"'.($row->idtrabajo).'"}';
+					$mensaje .= '{"id":"'.($row->id).'","mensaje":"'.($row->mensaje).'","fecha":"'.($row->fecha).'","idtrabajo":"'.($row->idtrabajo).'","titulo":"'.($row->titulo).'"}';
 				}
 			}
 			return $mensaje;
