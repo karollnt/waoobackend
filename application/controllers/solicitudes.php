@@ -186,6 +186,47 @@
 			echo ($msg['archivo']);
 		}
 		
+		public function enviarSolucion(){
+			$nickname = $this->input->post('nickasistente');
+			$path = './uploads/';
+            $this->load->library('upload');
+            // Define file rules
+            $this->upload->initialize(array(
+                "upload_path"       =>  $path,
+                "allowed_types"     =>  "gif|jpg|png",
+                "max_size"          =>  '10240',
+                "max_width"         =>  '1024',
+                "max_height"        =>  '768'
+            ));
+           
+            if($this->upload->do_upload("uploadfile")){
+                $datosarchivo = $this->upload->data();
+				$rutaarchivo = $datosarchivo['full_path'];
+				$extension = $datosarchivo['file_ext'];
+				$fp = fopen($rutaarchivo, 'r');
+				$content = fread($fp, filesize($rutaarchivo));
+				$finfo = finfo_open(FILEINFO_MIME_TYPE);
+				$tipoarchivo=finfo_file($finfo, $rutaarchivo);
+				$archivo = addslashes($content);
+				fclose($fp);
+				$usuario = $this->UsuariosModel->usuarioObj($nickname);
+				$datos = array("idusuario"=>($usuario->id),"idtrabajo"=>$idtrabajo,"archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
+				unlink($rutaarchivo);
+				$mensaje = $this->SolicitudesModel->enviarSolucion($datos);
+				$resp = array("msg"=>html_entity_decode($mensaje));
+				echo json_encode($resp);
+            }
+			else{
+                // Output the errors
+                $errors = array('error' => $this->upload->display_errors());
+                foreach($errors as $k => $error){
+                    echo $error;
+                }
+            }
+			// Exit to avoid further execution
+			exit();
+		}
+		
 		private function configuracionPayU($usuario,$idtrabajo,$valor){
 			$order = array();
 			$order['notifyUrl'] = 'http://localhost'.dirname($_SERVER['REQUEST_URI']).'/OrderNotify.php';
