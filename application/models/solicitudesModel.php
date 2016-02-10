@@ -363,9 +363,19 @@
 			$this->db->insert('trabajoarchivos',$datos);
 			if($this->db->affected_rows()>0) $mensaje = "Se ha actualizado la solicitud";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
-			logTrabajo($datos['idusuario'],$datos['idtrabajo'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
+			$this->logTrabajo($datos['idusuario'],$datos['idtrabajo'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
 			$this->db->where('id',$datos['idtrabajo']);
 			$this->db->update("trabajo",array("estado"=>3));
+			return $mensaje;
+		}
+		
+		public function aceptarSolucion($idtrabajo,$idusuario){
+			$mensaje = '';
+			$this->db->where('id',$datos['idtrabajo']);
+			$this->db->update("trabajo",array("estado"=>4));
+			if($this->db->affected_rows()>0) $mensaje = "Se ha marcado la solicitud como resuelta, gracias por usar nuestros servicios";
+			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			$this->logTrabajo($idusuario,$idtrabajo,5,"El usuario ha marcado el trabajo como solucionado");
 			return $mensaje;
 		}
 		

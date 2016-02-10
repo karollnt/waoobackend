@@ -227,6 +227,24 @@
 			exit();
 		}
 		
+		function aceptarSolucion(){
+			$mensaje = '';
+			$idtrabajo = $this->input->post('idtrabajo');
+			$calificacion = $this->input->post('calificacion');
+			$solicitud = $this->SolicitudesModel->detallesSolicitud($idtrabajo);
+			$solicitud = '['.$solicitud.']';
+			$solicitud = json_decode($solicitud);
+			$sol = $solicitud[0];
+			$u1 = $this->UsuariosModel->usuarioObj($sol->nickname);
+			$mensaje = $this->SolicitudesModel->aceptarSolucion($idtrabajo,$u1->id);
+			if($calificacion>0){
+				$u2 = $this->UsuariosModel->usuarioObj($sol->nickasistente);
+				$this->UsuariosModel->calificarAsesor($u2->id,$calificacion);
+			}
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
+		}
+		
 		private function configuracionPayU($usuario,$idtrabajo,$valor){
 			$order = array();
 			$order['notifyUrl'] = 'http://localhost'.dirname($_SERVER['REQUEST_URI']).'/OrderNotify.php';
