@@ -235,10 +235,10 @@
 			$solicitud = '['.$solicitud.']';
 			$solicitud = json_decode($solicitud);
 			$sol = $solicitud[0];
-			$u1 = $this->UsuariosModel->usuarioObj($sol->nickname);
+			$u1 = $this->UsuariosModel->usuarioObj($sol->usuario);
 			$mensaje = $this->SolicitudesModel->aceptarSolucion($idtrabajo,$u1->id);
 			if($calificacion>0){
-				$u2 = $this->UsuariosModel->usuarioObj($sol->nickasistente);
+				$u2 = $this->UsuariosModel->usuarioObj($sol->asistente);
 				$this->UsuariosModel->calificarAsesor($u2->id,$calificacion);
 			}
 			$resp = array("msg"=>html_entity_decode($mensaje));

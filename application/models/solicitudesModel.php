@@ -364,6 +364,7 @@
 			if($this->db->affected_rows()>0) $mensaje = "Se ha actualizado la solicitud";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$this->logTrabajo($datos['idusuario'],$datos['idtrabajo'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
+			$this->notificarUsuario("Archivo de solucion para solicitud recibido, click <a href='#' onclick='verSolucion(".$datos['idtrabajo'].");'>ac&aacute;</a> para verlo ".$datos['idtrabajo']." enviado",$datos['idusuario'],$datos['idtrabajo']);
 			$this->db->where('id',$datos['idtrabajo']);
 			$this->db->update("trabajo",array("estado"=>3));
 			return $mensaje;
@@ -371,7 +372,7 @@
 		
 		public function aceptarSolucion($idtrabajo,$idusuario){
 			$mensaje = '';
-			$this->db->where('id',$datos['idtrabajo']);
+			$this->db->where('id',$idtrabajo);
 			$this->db->update("trabajo",array("estado"=>4));
 			if($this->db->affected_rows()>0) $mensaje = "Se ha marcado la solicitud como resuelta, gracias por usar nuestros servicios";
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
