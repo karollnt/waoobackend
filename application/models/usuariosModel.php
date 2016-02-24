@@ -1,10 +1,10 @@
 <?php
 	class UsuariosModel extends CI_Model{
-		
+
 		public function __construct(){
 			$this->load->database();
 		}
-		
+
 		public function verificaLogin($u,$p){
 			$mensaje = "";
 			$arraywhere = array("nickname"=>$u,"clave"=>md5($p),"estado"=>1);
@@ -21,7 +21,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function cambiarClave($u,$p,$p2){
 			$mensaje = "";
 			$arraywhere = array("nickname"=>$u,"clave"=>md5($p),"estado"=>1);
@@ -42,7 +42,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function existeUsuario($columna,$valor){
 			$existe = false;
 			$awhere = array($columna=>$valor);
@@ -54,7 +54,7 @@
 			if($res->num_rows()>0) $existe = true;
 			return $existe;
 		}
-		
+
 		public function crearUsuario($datos){
 			$mensaje = "";
 			$this->db->insert('usuarios',$datos);
@@ -62,13 +62,13 @@
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function crearAsistente($datos,$datosmat){
 			$mensaje = $this->crearUsuario($datos);
 			$this->ingresarMateriasAsesor($datos['nickname'],$datosmat);
 			return $mensaje;
 		}
-		
+
 		public function borrarUsuario($usuario){
 			$mensaje = "";
 			$this->db->where('usuario',$usuario);
@@ -77,7 +77,7 @@
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function modificarUsuario($idusuario,$datos){
 			$mensaje = "";
 			$this->db->where('id',$idusuario);
@@ -86,7 +86,7 @@
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function buscarUsuarios($columna,$valor){
 			$mensaje = "";
 			$this->db
@@ -111,7 +111,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function calificacionAsesor($nickname){
 			$mensaje = "0";
 			$awhere = array('u.nickname'=>$nickname);
@@ -130,7 +130,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function ingresarMateriasAsesor($nickname,$arraymaterias){
 			$mensaje = "";
 			$usuario = $this->usuarioObj($nickname);
@@ -157,7 +157,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function actualizarMateriasAsesor($nickname,$arraymaterias){
 			$mensaje = "";
 			$usuario = $this->usuarioObj($nickname);
@@ -191,7 +191,7 @@
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function calificarAsesor($idasesor,$puntaje){
 			$mensaje = "";
 			$datos = array("idasistente"=>$idasesor,"puntaje"=>$puntaje);
@@ -200,7 +200,7 @@
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function usuarioObj($nickname){
 			$u = $this->buscarUsuarios("nickname",$nickname);
 			$u = '['.$u.']';
@@ -208,7 +208,7 @@
 			$usuario = $usr[0];
 			return $usuario;
 		}
-		
+
 		public function notificacionesTrabajoCreado($nickname){
 			$mensaje = '';
 			$this->db
@@ -229,7 +229,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function notificacionesNoLeidasCant($nickname){
 			$mensaje = 0;
 			$this->db
@@ -241,7 +241,7 @@
 			$mensaje = $res->num_rows();
 			return $mensaje;
 		}
-		
+
 		public function notificacionesNoLeidas($nickname){
 			$mensaje = '';
 			$this->db
@@ -261,9 +261,23 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function marcarLeida($id){
 			$this->db->where('id',$id);
 			$this->db->update('notificacionesusuario',array("leido"=>1));
+		}
+
+		public function actualizaIdQuick($id,$nickname){
+			$this->db->where('nickname',$nickname);
+			$this->db->update('usuarios',array("idquickblox"=>$id));
+		}
+
+		public function actualizaClave($nickname,$clave){
+			$mensaje = "";
+			$this->db->where('nickname',$nickname);
+			$this->db->update('usuarios',array("clave"=>$clave));
+			if($this->db->affected_rows()>0) $mensaje = "Clave actualizada";
+			else $mensaje = "No se pudo actualizar la clave";
+			return $mensaje;
 		}
 	}

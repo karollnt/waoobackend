@@ -1,6 +1,6 @@
 <?php
 	class Usuarios extends CI_Controller{
-		
+
 		private $errores = array(
 			'usuex'=>"E01001: Nombre de usuario ya registrado",
 			'usuv'=>"Debe escribir un nombre de usuario",
@@ -11,18 +11,18 @@
 			'nousf'=>'E01007: No se encontraron resultados',
 			'nopf'=>'E01008: No se encontraron perfiles'
 		);
-		
+
 		public function __construct(){
 			parent::__construct();
 			$this->load->model('UsuariosModel');
 		}
-		
+
 		public function existeUsuario(){
 			$usuario = trim($this->input->post('nickname'));
 			$existe = $this->UsuariosModel->existeUsuario('nickname',$usuario);
 			return $existe;
 		}
-		
+
 		private function validaClave(){
 			$valida = false;
 			$clave = trim($this->input->post('clave'));
@@ -33,7 +33,7 @@
 			}
 			return $valida;
 		}
-		
+
 		public function crearUsuario(){
 			$mensaje = "";
 			$usuario = trim($this->input->post('nickname'));
@@ -75,7 +75,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function borrarUsuario(){
 			$mensaje = "";
 			$usuario = trim($this->input->post('nickname'));
@@ -89,12 +89,12 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function modificarUsuario(){
 			$mensaje = "";
 			$idusuario = $this->input->post('idusuario');
 			$datos = array(
-				'nombres'=>trim($this->input->post('nombre')), 'apellidos'=>trim($this->input->post('apellido')), 
+				'nombres'=>trim($this->input->post('nombre')), 'apellidos'=>trim($this->input->post('apellido')),
 				'celular'=>trim($this->input->post('celular')), 'email'=>trim($this->input->post('email'))
 			);
 			$mensaje = $this->UsuariosModel->modificarUsuario($idusuario,$datos);
@@ -102,7 +102,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function datosUsuario(){
 			$mensaje = '';
 			$valor = trim($this->input->post('nickname'));
@@ -111,7 +111,7 @@
 			else $mensaje = '{"usuarios":['.$msg.']}';
 			echo $mensaje;
 		}
-		
+
 		public function buscarUsuarios(){
 			$mensaje = '';
 			$columna = trim($this->input->post('col'));
@@ -121,7 +121,7 @@
 			else $mensaje = '{"usuarios":['.$msg.']}';
 			echo $mensaje;
 		}
-		
+
 		public function panelUsuario(){
 			$nickname = $this->input->post('nickname');
 			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
@@ -142,7 +142,7 @@
 			}
 			$datos .= ']}';
 		}
-		
+
 		public function tipoUsuario(){
 			$nickname = $this->input->post('nickname');
 			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
@@ -151,7 +151,7 @@
 			$usuario = $usr[0];
 			echo '{"tipo":"'.$usuario->tipo.'"}';
 		}
-		
+
 		public function ingresarMateriasAsesor(){
 			$nickname = $this->input->post('nickname');
 			$materias = $this->input->post('materias');
@@ -161,7 +161,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function actualizarMateriasAsesor(){
 			$nickname = $this->input->post('nickname');
 			$materias = $this->input->post('materias');
@@ -171,7 +171,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function calificarAsesor(){
 			$idasesor = $this->input->post('idasesor');
 			$puntaje = $this->input->post('puntaje');
@@ -180,7 +180,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function calificacionAsesor(){
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->UsuariosModel->calificacionAsesor($nickname);
@@ -188,7 +188,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function notificacionesNoLeidasCant(){
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->UsuariosModel->notificacionesNoLeidasCant($nickname);
@@ -196,7 +196,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function notificacionesNoLeidas(){
 			$mensaje = '';
 			$nickname = $this->input->post('nickname');
@@ -206,10 +206,25 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function marcarLeida(){
 			$id = $this->input->post('id');
 			$this->UsuariosModel->marcarLeida($id);
 			echo '{"msg":"ok"}';
+		}
+
+		public function actualizaIdQuick(){
+			$id = $this->input->post('id');
+			$nickname = $this->input->post('nickname');
+			$this->UsuariosModel->actualizaIdQuick($id,$nickname);
+			echo '{"msg":"ok"}';
+		}
+
+		public function actualizaClave(){
+			$msg = '';
+			$clave = $this->input->post('clave');
+			$nickname = $this->input->post('nickname');
+			$msg = $this->UsuariosModel->actualizaClave($nickname,$clave);
+			echo '{"msg":"'.$msg.'"}';
 		}
 	}
