@@ -72,7 +72,6 @@
 				$mensaje = $this->errores['usuv'];
 			}
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -86,21 +85,47 @@
 				$mensaje = $this->errores['usuiv'];
 			}
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
 		public function modificarUsuario(){
 			$mensaje = "";
-			$idusuario = $this->input->post('idusuario');
+			$nck = $this->input->post('nck');
+			$u = $this->UsuariosModel->usuarioObj($nck);
+			$idusuario = $u->id;
 			$datos = array(
-				'nombres'=>trim($this->input->post('nombre')), 'apellidos'=>trim($this->input->post('apellido')),
-				'celular'=>trim($this->input->post('celular')), 'email'=>trim($this->input->post('email'))
+				'nombres'=>trim($this->input->post('nombre')), 'apellidos'=>trim($this->input->post('apellido'))
 			);
+			//upload avatar img
+			$path = './uploads/';
+            $this->load->library('upload');
+            // Define file rules
+            $this->upload->initialize(array(
+                "upload_path"       =>  $path,
+                "allowed_types"     =>  "gif|jpg|png|jpeg|bmp",
+                "max_size"          =>  '12400',
+                "max_width"         =>  '1024',
+                "max_height"        =>  '768'
+            ));
+			$rutaarchivo = "";
+			if($this->upload->do_upload("img-profile")){
+				$datosarchivo = $this->upload->data();
+				$rutaarchivo = $datosarchivo['full_path'];
+				$extension = $datosarchivo['file_ext'];
+				$fp = fopen($rutaarchivo, 'r');
+				$content = fread($fp, filesize($rutaarchivo));
+				$finfo = finfo_open(FILEINFO_MIME_TYPE);
+				$tipoarchivo=finfo_file($finfo, $rutaarchivo);
+				$archivo = addslashes($content);
+				fclose($fp);
+				$datos1 = array('archivo'=>$archivo,'tipo'=>$tipoarchivo,'extension'=>$extension);
+				$this->UsuariosModel->actualizaImagen($idusuario,$datos1);
+			}
 			$mensaje = $this->UsuariosModel->modificarUsuario($idusuario,$datos);
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
+			unlink($rutaarchivo);
+			exit();
 		}
 
 		public function datosUsuario(){
@@ -158,7 +183,6 @@
 			$arraymaterias = explode(";",$materias);
 			$mensaje = $this->UsuariosModel->ingresarMateriasAsesor($nickname,$arraymaterias);
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -168,7 +192,6 @@
 			$arraymaterias = explode(";",$materias);
 			$mensaje = $this->UsuariosModel->actualizarMateriasAsesor($nickname,$arraymaterias);
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -177,7 +200,6 @@
 			$puntaje = $this->input->post('puntaje');
 			$mensaje = $this->UsuariosModel->calificarAsesor($idasesor,$puntaje);
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -185,7 +207,6 @@
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->UsuariosModel->calificacionAsesor($nickname);
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -193,7 +214,6 @@
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->UsuariosModel->notificacionesNoLeidasCant($nickname);
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -203,7 +223,6 @@
 			$mensaje = $this->UsuariosModel->notificacionesNoLeidas($nickname);
 			if(strcasecmp($mensaje,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -224,7 +243,27 @@
 			$msg = '';
 			$clave = $this->input->post('clave');
 			$nickname = $this->input->post('nickname');
+			$clave = md5($clave);
 			$msg = $this->UsuariosModel->actualizaClave($nickname,$clave);
 			echo '{"msg":"'.$msg.'"}';
+		}
+
+		public function verificaAvatar(){
+			$msg = '';
+			$nickname = $this->input->post('nickname');
+			$msg = $this->UsuariosModel->verificaAvatar($nickname);
+			echo '{"msg":"'.$msg.'"}';
+		}
+
+		public function verAvatar($id){
+			$msg = $this->UsuariosModel->getBlobAvatar($id);
+			if(strcasecmp($msg['archivo'],"No hay archivo")==0) echo "0";
+			else {
+				header("Content-type: ".($msg['tipo']));
+				header("Content-Disposition: attachment; filename=profileimg{$id}".($msg['extension']));
+				ob_clean();
+				flush();
+				echo ($msg['archivo']);
+			}
 		}
 	}

@@ -1,13 +1,13 @@
 <?php
 	class Solicitudes extends CI_Controller{
-		
+
 		public function __construct(){
 			parent::__construct();
 			$this->load->model('SolicitudesModel');
 			$this->load->model('UsuariosModel');
 			$this->load->model('MateriasModel');
 		}
-		
+
 		public function crearSolicitud(){
 			$nickname = $this->input->post('nickname');
 			$titulo = $this->input->post('titulo');
@@ -18,12 +18,12 @@
             // Define file rules
             $this->upload->initialize(array(
                 "upload_path"       =>  $path,
-                "allowed_types"     =>  "gif|jpg|png",
+                "allowed_types"     =>  "gif|jpg|png|jpeg|bmp|pdf|doc|docx|xls|xlsx|txt|zip|rar",
                 "max_size"          =>  '10240',
                 "max_width"         =>  '1024',
                 "max_height"        =>  '768'
             ));
-           
+
             if($this->upload->do_upload("uploadfile")){
                 $datosarchivo = $this->upload->data();
 				$rutaarchivo = $datosarchivo['full_path'];
@@ -53,7 +53,7 @@
 			// Exit to avoid further execution
 			exit();
 		}
-		
+
 		function solicitudesPorMateriaAsistente(){
 			$mensaje = '';
 			$nickname = $this->input->post('nickname');
@@ -70,7 +70,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		function solicitudesCreadasUsuario(){
 			$mensaje = '';
 			$nickname = $this->input->post('nickname');
@@ -80,7 +80,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		function solicitudesSinAsignar(){
 			$mensaje = '';
 			$mensaje = $this->SolicitudesModel->solicitudesSinAsignar();
@@ -88,7 +88,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		function solicitudesSinAsignarAsistente(){
 			$mensaje = '';
 			$nickname = $this->input->post('nickname');
@@ -105,7 +105,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		function solicitudesSinAsignarPorMateria(){
 			$mensaje = '';
 			$idmateria = $this->input->post('idmateria');
@@ -114,7 +114,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function enviarPrecioTrabajo(){
 			$mensaje = '';
 			$nickname = $this->input->post('nickname');
@@ -126,7 +126,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function aceptarPrecio(){
 			$mensaje = '';
 			$idpreciotrabajo = $this->input->post("idpreciotrabajo");
@@ -136,7 +136,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function asignarAsistenteTrabajo(){
 			$mensaje = '';
 			$nickname = $this->input->post('nickname');
@@ -148,7 +148,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function detallesSolicitud(){
 			$mensaje = '';
 			$id = $this->input->post('id');
@@ -157,7 +157,7 @@
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
-		
+
 		public function ofertasParaTrabajo(){
 			$mensaje = '';
 			$idtrabajo = $this->input->post('idtrabajo');
@@ -166,7 +166,7 @@
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
-		
+
 		public function listaArchivosTrabajo(){
 			$mensaje = '';
 			$idtrabajo = $this->input->post('idtrabajo');
@@ -175,7 +175,7 @@
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
-		
+
 		public function verArchivoSolicitud($idreg){
 			//$idreg = $this->input->get("id");
 			$msg = $this->SolicitudesModel->getBlobArchivoSolicitud($idreg);
@@ -185,7 +185,7 @@
 			flush();
 			echo ($msg['archivo']);
 		}
-		
+
 		public function enviarSolucion(){
 			$nickname = $this->input->post('nickasistente');
 			$path = './uploads/';
@@ -198,7 +198,7 @@
                 "max_width"         =>  '1024',
                 "max_height"        =>  '768'
             ));
-           
+
             if($this->upload->do_upload("uploadfile")){
                 $datosarchivo = $this->upload->data();
 				$rutaarchivo = $datosarchivo['full_path'];
@@ -226,7 +226,7 @@
 			// Exit to avoid further execution
 			exit();
 		}
-		
+
 		function aceptarSolucion(){
 			$mensaje = '';
 			$idtrabajo = $this->input->post('idtrabajo');
@@ -244,7 +244,7 @@
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
-		
+
 		private function configuracionPayU($usuario,$idtrabajo,$valor){
 			$order = array();
 			$order['notifyUrl'] = 'http://localhost'.dirname($_SERVER['REQUEST_URI']).'/OrderNotify.php';
@@ -264,7 +264,7 @@
 			$order['buyer']['lastName'] = $usuario->apellidos;
 			return $order;
 		}
-		
+
 		//Para payu: https://github.com/PayU/openpayu_php
 		public function pagarConPayU(){
 			$idpreciotrabajo = $this->input->post("idpreciotrabajo");
@@ -276,5 +276,5 @@
 			$orderFormData = OpenPayU_Order::hostedOrderForm($orden);
 			echo $orderFormData;
 		}
-		
+
 	}

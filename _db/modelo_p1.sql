@@ -61,13 +61,13 @@ CREATE TABLE IF NOT EXISTS `waoo`.`usuarios` (
   CONSTRAINT `tipouser`
     FOREIGN KEY (`tipo`)
     REFERENCES `waoo`.`tipousuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `banco`
     FOREIGN KEY (`idbanco`)
     REFERENCES `waoo`.`bancos` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -99,13 +99,13 @@ CREATE TABLE IF NOT EXISTS `waoo`.`rating` (
   CONSTRAINT `usuariocalif`
     FOREIGN KEY (`idusuario`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `asistente`
     FOREIGN KEY (`idasistente`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -132,11 +132,11 @@ CREATE TABLE IF NOT EXISTS `waoo`.`asistentemateria` (
   CONSTRAINT `asistentemat`
     FOREIGN KEY (`idasistente`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `materiaasist`
     FOREIGN KEY (`idmateria`)
     REFERENCES `waoo`.`materia` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;

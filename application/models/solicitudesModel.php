@@ -1,11 +1,11 @@
 <?php
 	class SolicitudesModel extends CI_Model{
-		
+
 		public function __construct(){
 			$this->load->database();
 			//$this->db->get_compiled_select();
 		}
-		
+
 		public function crearSolicitud($datos,$datos2){
 			$mensaje = '';
 			$this->db->insert('trabajo',$datos);
@@ -18,15 +18,15 @@
 			$this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
 			return $mensaje;
 		}
-		
+
 		public function ingresarArchivos($idtrabajo,$datos){
 			$mensaje = '';
 			$this->db->insert('trabajoarchivos',$datos);
-			if($this->db->affected_rows()>0) $mensaje = "Se ha guardadoel archivo";
+			if($this->db->affected_rows()>0) $mensaje = "Se ha guardado el archivo";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function solicitudesUsuario($nickname){
 			$mensaje = '';
 			$this->db
@@ -53,7 +53,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function solicitudesAsistente($nickname){
 			$mensaje = '';
 			$this->db
@@ -81,7 +81,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function solicitudesAsistenteMateria($nickname,$idmateria){
 			$mensaje = '';
 			$this->db->select("t.id,t.titulo,t.descripcion,t.fecharegistro,t.fecharesuelto,e.nombre AS nomestado,u.nickname AS solicitante",false)
@@ -109,7 +109,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function solicitudesSinAsignar(){
 			$mensaje = '';
 			$this->db
@@ -135,7 +135,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function solicitudesSinAsignarPorMateria($idmateria){
 			$mensaje = '';
 			$this->db
@@ -161,7 +161,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function verificaSiAsistenteOferto($idtrabajo,$idasistente){
 			$resp = array('hizo'=>false,'valor'=>0);
 			$this->db
@@ -177,7 +177,7 @@
 			}
 			return $resp;
 		}
-		
+
 		public function enviarPrecioTrabajo($idtrabajo,$idasistente,$valor){
 			$mensaje = '';
 			$verif = $this->verificaSiAsistenteOferto($idtrabajo,$idasistente);
@@ -191,7 +191,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function aceptarPrecio($idpreciotrabajo,$numcomprobante){
 			$mensaje = "";
 			$idtrabajo = "(SELECT idtrabajo FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
@@ -210,7 +210,7 @@
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante){
 			$mensaje = '';
 			$this->db->where('id',$idtrabajo);
@@ -219,7 +219,7 @@
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function logTrabajo($idtrabajo,$idusuario,$tipo,$desc){
 			$mensaje = '';
 			$this->db->insert('trabajolog',array("idtrabajo"=>$idtrabajo,"idusuario"=>$idusuario,"tipolog"=>$tipo,"descripcion"=>$desc));
@@ -227,7 +227,7 @@
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function notificarUsuario($msg,$idusuario,$idtrabajo){
 			$mensaje = '';
 			$res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
@@ -235,7 +235,7 @@
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function valorOfertaTrabajo($idoferta){
 			$valor = 0;
 			$this->db
@@ -250,7 +250,7 @@
 			}
 			return $valor;
 		}
-		
+
 		public function idTrabajoDesdeOfertaTrabajo($idoferta){
 			$id = 0;
 			$this->db
@@ -265,7 +265,7 @@
 			}
 			return $id;
 		}
-		
+
 		public function detallesSolicitud($id){
 			$mensaje = '';
 			$this->db
@@ -286,7 +286,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function notificarAsistentesTrabajoCreado($idtrabajo,$mensaje){
 			$mensaje = '';
 			$this->db
@@ -300,7 +300,7 @@
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function ofertasParaTrabajo($idtrabajo){
 			$mensaje = '';
 			$this->load->model('UsuariosModel');
@@ -321,7 +321,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function listaArchivosTrabajo($idtrabajo){
 			$mensaje = '';
 			$this->db
@@ -340,7 +340,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function getBlobArchivoSolicitud($idarchivo){
 			$mensaje = array('archivo'=>'No hay archivo','tipo'=>'text/plain','extension'=>'.txt');
 			$this->db
@@ -357,7 +357,7 @@
 			}
 			return $mensaje;
 		}
-		
+
 		public function enviarSolucion($datos){
 			$mensaje = '';
 			$this->db->insert('trabajoarchivos',$datos);
@@ -369,7 +369,7 @@
 			$this->db->update("trabajo",array("estado"=>3));
 			return $mensaje;
 		}
-		
+
 		public function aceptarSolucion($idtrabajo,$idusuario){
 			$mensaje = '';
 			$this->db->where('id',$idtrabajo);
@@ -379,5 +379,5 @@
 			$this->logTrabajo($idusuario,$idtrabajo,5,"El usuario ha marcado el trabajo como solucionado");
 			return $mensaje;
 		}
-		
+
 	}

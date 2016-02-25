@@ -15,13 +15,13 @@ CREATE TABLE IF NOT EXISTS `waoo`.`trabajoarchivos` (
   CONSTRAINT `trabajo`
     FOREIGN KEY (`idtrabajo`)
     REFERENCES `waoo`.`trabajo` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `usuario`
     FOREIGN KEY (`idusuario`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -44,23 +44,23 @@ CREATE TABLE IF NOT EXISTS `waoo`.`reasignacion` (
   CONSTRAINT `idtrabajore`
     FOREIGN KEY (`idtrabajo`)
     REFERENCES `waoo`.`trabajo` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `idasistant`
     FOREIGN KEY (`idasistenteprevio`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `idasistnue`
     FOREIGN KEY (`idasistentenuevo`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `idreasigna`
     FOREIGN KEY (`idreasigna`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -91,18 +91,18 @@ CREATE TABLE IF NOT EXISTS `waoo`.`trabajolog` (
   CONSTRAINT `idtrabl`
     FOREIGN KEY (`idtrabajo`)
     REFERENCES `waoo`.`trabajo` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `idusuarioltr`
     FOREIGN KEY (`idusuario`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `idtipologtr`
     FOREIGN KEY (`tipolog`)
     REFERENCES `waoo`.`tipolog` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -122,13 +122,13 @@ CREATE TABLE IF NOT EXISTS `waoo`.`ofertatrabajo` (
   CONSTRAINT `idasistoftr`
     FOREIGN KEY (`idasistente`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `idtraboftr`
     FOREIGN KEY (`idtrabajo`)
     REFERENCES `waoo`.`trabajo` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -148,13 +148,28 @@ CREATE TABLE IF NOT EXISTS `waoo`.`notificacionesusuario` (
   CONSTRAINT `idusuarionotif`
     FOREIGN KEY (`idusuario`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `idtrabnotif`
     FOREIGN KEY (`idtrabajo`)
     REFERENCES `waoo`.`trabajo` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `waoo`.`usuarioavatar` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `idusuario` INT NOT NULL,
+  `archivo` MEDIUMBLOB NOT NULL,
+  `tipo` VARCHAR(45) NOT NULL,
+  `extension` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `idusuarioav_fk_idx` (`idusuario` ASC),
+  CONSTRAINT `idusuarioav_fk`
+    FOREIGN KEY (`idusuario`)
+    REFERENCES `waoo`.`usuarios` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 

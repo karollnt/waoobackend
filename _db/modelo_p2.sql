@@ -19,16 +19,16 @@ CREATE TABLE IF NOT EXISTS `waoo`.`trabajo` (
   CONSTRAINT `usuariot`
     FOREIGN KEY (`idusuario`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `materiat`
     FOREIGN KEY (`idmateria`)
     REFERENCES `waoo`.`materia` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `asistentet`
     FOREIGN KEY (`idasistente`)
     REFERENCES `waoo`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;

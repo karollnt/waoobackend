@@ -87,6 +87,29 @@
 			return $mensaje;
 		}
 
+		public function actualizaImagen($idusuario,$datos){
+			$mensaje = "";
+			$this->db
+			->select("id",false)
+			->from("usuarioavatar")
+			->where("idusuario",$idusuario);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				$this->db->where('idusuario',$idusuario);
+				$this->db->update('usuarioavatar',$datos);
+				if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+				else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			}
+			else{
+				$datos1 = $datos;
+				$datos1['idusuario'] = $idusuario;
+				$this->db->insert('usuarioavatar',$datos1);
+				if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
+				else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			}
+			return $mensaje;
+		}
+
 		public function buscarUsuarios($columna,$valor){
 			$mensaje = "";
 			$this->db
@@ -278,6 +301,39 @@
 			$this->db->update('usuarios',array("clave"=>$clave));
 			if($this->db->affected_rows()>0) $mensaje = "Clave actualizada";
 			else $mensaje = "No se pudo actualizar la clave";
+			return $mensaje;
+		}
+
+		public function verificaAvatar($nickname){
+			$mensaje = 0;
+			$this->db
+			->select("ua.id",false)
+			->from("usuarioavatar ua")
+			->join("usuarios u","u.id=ua.idusuario","inner")
+			->where("u.nickname",$nickname);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$mensaje = $row->id;
+				}
+			}
+			return $mensaje;
+		}
+
+		public function getBlobAvatar($id){
+			$mensaje = array('archivo'=>'No hay archivo','tipo'=>'text/plain','extension'=>'.txt');
+			$this->db
+			->select("archivo,tipo,extension",false)
+			->from("usuarioavatar")
+			->where("id",$id);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$mensaje['archivo'] = $row->archivo;
+					$mensaje['tipo'] = $row->tipoarchivo;
+					$mensaje['extension'] = $row->extension;
+				}
+			}
 			return $mensaje;
 		}
 	}

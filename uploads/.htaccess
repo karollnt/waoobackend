@@ -8,7 +8,7 @@ Header set Content-Disposition attachment
 
 # The following unsets the forced type and Content-Disposition headers
 # for known image files:
-<FilesMatch "(?i)\.(gif|jpg|png|jpe?g|pdf|doc?x|xml|xls?x)$">
+<FilesMatch "(?i)\.(gif|jpg|png|jpe?g|pdf|doc?x|xml|xls?x|txt|zip|rar)$">
 	ForceType none
 	Header unset Content-Disposition
 </FilesMatch>
