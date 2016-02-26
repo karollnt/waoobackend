@@ -47,8 +47,9 @@
                 // Output the errors
                 $errors = array('error' => $this->upload->display_errors());
                 foreach($errors as $k => $error){
-                    echo $error;
+                    $resp = array("msg"=>html_entity_decode($error));
                 }
+				echo json_encode($resp);
             }
 			// Exit to avoid further execution
 			exit();
