@@ -96,6 +96,7 @@
 			$datos = array(
 				'nombres'=>trim($this->input->post('nombre')), 'apellidos'=>trim($this->input->post('apellido'))
 			);
+			$mensaje = $this->UsuariosModel->modificarUsuario($idusuario,$datos);
 			//upload avatar img
 			$path = './uploads/';
             $this->load->library('upload');
@@ -103,7 +104,7 @@
             $this->upload->initialize(array(
                 "upload_path"       =>  $path,
                 "allowed_types"     =>  "gif|jpg|png|jpeg|bmp",
-                "max_size"          =>  '12400',
+                "max_size"          =>  '12400000',
                 "max_width"         =>  '1024',
                 "max_height"        =>  '768'
             ));
@@ -112,20 +113,26 @@
 				$datosarchivo = $this->upload->data();
 				$rutaarchivo = $datosarchivo['full_path'];
 				$extension = $datosarchivo['file_ext'];
-				$fp = fopen($rutaarchivo, 'r');
+				$fp = fopen($rutaarchivo, 'rb');
 				$content = fread($fp, filesize($rutaarchivo));
 				$finfo = finfo_open(FILEINFO_MIME_TYPE);
-				$tipoarchivo=finfo_file($finfo, $rutaarchivo);
-				$archivo = addslashes($content);
+				$tipoarchivo = finfo_file($finfo, $rutaarchivo);
+				//$archivo = addslashes($content);
 				fclose($fp);
+				$archivo = file_get_contents($rutaarchivo);
 				$datos1 = array('archivo'=>$archivo,'tipo'=>$tipoarchivo,'extension'=>$extension);
-				$this->UsuariosModel->actualizaImagen($idusuario,$datos1);
+				$mensaje .= "\n".$this->UsuariosModel->actualizaImagen($idusuario,$datos1);
+				unlink($rutaarchivo);
 			}
-			$mensaje = $this->UsuariosModel->modificarUsuario($idusuario,$datos);
+			else {
+				$errors = array('error' => $this->upload->display_errors());
+                foreach($errors as $k => $error){
+                    $mensaje .= ".".html_entity_decode($error);
+                }
+			}
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
-			unlink($rutaarchivo);
-			exit();
+			//exit();
 		}
 
 		public function datosUsuario(){
@@ -265,5 +272,14 @@
 				flush();
 				echo ($msg['archivo']);
 			}
+		}
+
+		public function actualizarCuenta(){
+			$msg = '';
+			$nickname = $this->input->post('nickname');
+			$numerocuenta = $this->input->post('numerocuenta');
+			$idbanco = $this->input->post('idbanco');
+			$msg = $this->UsuariosModel->actualizarCuenta($nickname,$numerocuenta,$idbanco);
+			echo '{"msg":"'.$msg.'"}';
 		}
 	}

@@ -83,7 +83,7 @@
 			$this->db->where('id',$idusuario);
 			$this->db->update('usuarios',$datos);
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
-			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			else $mensaje = "No se han modificado datos personales";
 			return $mensaje;
 		}
 
@@ -97,15 +97,15 @@
 			if($res->num_rows()>0){
 				$this->db->where('idusuario',$idusuario);
 				$this->db->update('usuarioavatar',$datos);
-				if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
-				else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+				if($this->db->affected_rows()>0) $mensaje = "Imagen actualizada";
+				else $mensaje = "No se pudo actualizar la imagen";
 			}
 			else{
 				$datos1 = $datos;
 				$datos1['idusuario'] = $idusuario;
 				$this->db->insert('usuarioavatar',$datos1);
-				if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
-				else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+				if($this->db->affected_rows()>0) $mensaje = "Imagen ingresada";
+				else $mensaje = "No se pudo actualizar la imagen";
 			}
 			return $mensaje;
 		}
@@ -334,6 +334,15 @@
 					$mensaje['extension'] = $row->extension;
 				}
 			}
+			return $mensaje;
+		}
+
+		public function actualizarCuenta($nickname,$numerocuenta,$idbanco){
+			$mensaje = "";
+			$this->db->where('nickname',$nickname);
+			$this->db->update('usuarios',array("numerocuenta"=>$numerocuenta,"idbanco"=>$idbanco));
+			if($this->db->affected_rows()>0) $mensaje = "Datos actualizados";
+			else $mensaje = "No se han modificado datos";
 			return $mensaje;
 		}
 	}

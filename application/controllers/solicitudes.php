@@ -32,8 +32,9 @@
 				$content = fread($fp, filesize($rutaarchivo));
 				$finfo = finfo_open(FILEINFO_MIME_TYPE);
 				$tipoarchivo=finfo_file($finfo, $rutaarchivo);
-				$archivo = addslashes($content);
+				//$archivo = addslashes($content);
 				fclose($fp);
+				$archivo = file_get_contents($rutaarchivo);
 				$usuario = $this->UsuariosModel->usuarioObj($nickname);
 				$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,
 				"titulo"=>$titulo,"descripcion"=>$descripcion);
