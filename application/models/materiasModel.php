@@ -10,7 +10,8 @@
 			$this->db
 			->select("*",false)
 			->from("materia")
-			->where("estado",1);
+			->where("estado",1)
+			->order_by("nombre","asc");
 			$res = $this->db->get();
 			if($res->num_rows()>0){
 				$cont1 = 0;
@@ -30,7 +31,8 @@
 			->from("materia m")
 			->join("asistentemateria am","am.idmateria=m.id","inner")
 			->join("usuarios u","u.id=am.idasistente","inner")
-			->where(array("am.estado"=>1,"u.nickname"=>$nickname,"m.estado"=>1));
+			->where(array("am.estado"=>1,"u.nickname"=>$nickname,"m.estado"=>1))
+			->order_by("m.nombre","asc");
 			$res = $this->db->get();
 			if($res->num_rows()>0){
 				$cont1 = 0;
