@@ -268,7 +268,7 @@
 		public function notificacionesNoLeidas($nickname){
 			$mensaje = '';
 			$this->db
-			->select("n.id,n.mensaje,n.fecha,n.idtrabajo,t.titulo",false)
+			->select("n.id,n.mensaje,n.fecha,n.idtrabajo,t.titulo,u.tipo",false)
 			->from("notificacionesusuario n")
 			->join("usuarios u","u.id=n.idusuario","inner")
 			->join("trabajo t","t.id=n.idtrabajo","inner")
@@ -279,7 +279,7 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","mensaje":"'.($row->mensaje).'","fecha":"'.($row->fecha).'","idtrabajo":"'.($row->idtrabajo).'","titulo":"'.($row->titulo).'"}';
+					$mensaje .= '{"id":"'.($row->id).'","mensaje":"'.($row->mensaje).'","fecha":"'.($row->fecha).'","idtrabajo":"'.($row->idtrabajo).'","titulo":"'.($row->titulo).'","tipo":"'.($row->tipo).'"}';
 				}
 			}
 			return $mensaje;
