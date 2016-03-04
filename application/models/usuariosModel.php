@@ -279,7 +279,9 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","mensaje":"'.($row->mensaje).'","fecha":"'.($row->fecha).'","idtrabajo":"'.($row->idtrabajo).'","titulo":"'.($row->titulo).'","tipo":"'.($row->tipo).'"}';
+					$mensaje .= '{"id":"'.($row->id).'","mensaje":"'.($row->mensaje).'",'
+					.'"fecha":"'.($row->fecha).'","idtrabajo":"'.($row->idtrabajo).'","titulo":"'.($row->titulo).'"'
+					.',"tipo":"'.($row->tipo).'"}';
 				}
 			}
 			return $mensaje;
