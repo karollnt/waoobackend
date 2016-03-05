@@ -8,8 +8,11 @@
 
 		public function crearSolicitud($datos,$datos2){
 			$mensaje = '';
-			$this->db->insert('trabajo',$datos);
-			if($this->db->affected_rows()>0) $mensaje = "Se ha creado la solicitud";
+			//$this->db->insert('trabajo',$datos);
+			$ins = $this->db->simple_query("INSERT INTO trabajo(idusuario,idmateria,titulo,descripcion) "
+			." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).")");
+			if($ins) $mensaje = "Se ha creado la solicitud";
+			//if($this->db->affected_rows()>0) $mensaje = "Se ha creado la solicitud";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();
 			if($datos2!=null){
@@ -291,11 +294,11 @@
 			return $mensaje;
 		}
 
-		public function notificarAsistentesTrabajoCreado($idtrabajo,$mensaje){
+		public function notificarAsistentesTrabajoCreado($idtrabajo,$msg){
 			$mensaje = '';
 			$this->db
 			->query("INSERT INTO notificacionesusuario (idusuario,idtrabajo,mensaje)
-			SELECT amt.idasistente,t.id,'{$mensaje}'
+			SELECT amt.idasistente,t.id,'{$msg}'
 			FROM trabajo t
 			INNER JOIN materia m ON t.idmateria = m.id
 			INNER JOIN asistentemateria amt ON amt.idmateria=m.id
@@ -320,7 +323,7 @@
 					$calif = $this->UsuariosModel->calificacionAsesor($row->nickname);
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje = '{"id":"'.($row->idtrabajo).'","valor":"'.($row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'"}';
+					$mensaje .= '{"id":"'.($row->idtrabajo).'","valor":"'.($row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'"}';
 				}
 			}
 			return $mensaje;
@@ -339,7 +342,7 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje = '{"id":"'.($row->id).'","tipoarchivo":"'.($row->tipoarchivo).'","usuario":"'.($row->nickname).'"}';
+					$mensaje .= '{"id":"'.($row->id).'","tipoarchivo":"'.($row->tipoarchivo).'","usuario":"'.($row->nickname).'"}';
 				}
 			}
 			return $mensaje;
