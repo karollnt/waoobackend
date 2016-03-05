@@ -272,7 +272,8 @@
 			->from("notificacionesusuario n")
 			->join("usuarios u","u.id=n.idusuario","inner")
 			->join("trabajo t","t.id=n.idtrabajo","inner")
-			->where(array("u.nickname"=>$nickname,"n.leido"=>0));
+			->where(array("u.nickname"=>$nickname,"n.leido"=>0))
+			->order_by("n.fecha","desc");
 			$res = $this->db->get();
 			if($res->num_rows()>0){
 				$cont1 = 0;
