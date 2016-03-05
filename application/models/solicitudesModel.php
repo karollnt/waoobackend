@@ -12,9 +12,13 @@
 			if($this->db->affected_rows()>0) $mensaje = "Se ha creado la solicitud";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();
-			$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$datos['idusuario'],
-			'archivo'=>$datos2['archivo'],'tipoarchivo'=>$datos2['tipoarchivo'],'extension'=>$datos2['extension']);
-			$this->ingresarArchivos($idtrabajo,$dats);
+			if($datos2!=null){
+				foreach($datos2 as $i=>$v){
+					$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$datos['idusuario'],
+					'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);
+					$this->ingresarArchivos($idtrabajo,$dats);
+				}
+			}
 			$this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
 			return $mensaje;
 		}

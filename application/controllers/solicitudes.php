@@ -19,39 +19,43 @@
             $this->upload->initialize(array(
                 "upload_path"       =>  $path,
                 "allowed_types"     =>  "gif|jpg|png|jpeg|bmp|pdf|doc|docx|xls|xlsx|txt|zip|rar",
-                "max_size"          =>  '10240',
-                "max_width"         =>  '1024',
-                "max_height"        =>  '768'
+                "max_size"          =>  '2000000',
+                "max_width"         =>  '4096',
+                "max_height"        =>  '2048'
             ));
-
-            if($this->upload->do_upload("uploadfile")){
-                $datosarchivo = $this->upload->data();
-				$rutaarchivo = $datosarchivo['full_path'];
-				$extension = $datosarchivo['file_ext'];
-				$fp = fopen($rutaarchivo, 'r');
-				$content = fread($fp, filesize($rutaarchivo));
-				$finfo = finfo_open(FILEINFO_MIME_TYPE);
-				$tipoarchivo=finfo_file($finfo, $rutaarchivo);
-				//$archivo = addslashes($content);
-				fclose($fp);
-				$archivo = file_get_contents($rutaarchivo);
-				$usuario = $this->UsuariosModel->usuarioObj($nickname);
-				$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,
-				"titulo"=>$titulo,"descripcion"=>$descripcion);
-				$datos2 = array("archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
-				unlink($rutaarchivo);
-				$mensaje = $this->SolicitudesModel->crearSolicitud($datos,$datos2);
-				$resp = array("msg"=>html_entity_decode($mensaje));
-				echo json_encode($resp);
-            }
-			else{
-                // Output the errors
-                $errors = array('error' => $this->upload->display_errors());
-                foreach($errors as $k => $error){
-                    $resp = array("msg"=>html_entity_decode($error));
-                }
-				echo json_encode($resp);
-            }
+			$cantfiles = $this->input->post('cantfiles');
+			$datos = null; $datos2 = array();
+			if($cantfiles>0){
+				for($ic=1;$ic<=$cantfiles;$ic++){
+					if($this->upload->do_upload("uploadfile{$ic}")){
+						$datosarchivo = $this->upload->data();
+						$rutaarchivo = $datosarchivo['full_path'];
+						$extension = $datosarchivo['file_ext'];
+						$fp = fopen($rutaarchivo, 'r');
+						$content = fread($fp, filesize($rutaarchivo));
+						$finfo = finfo_open(FILEINFO_MIME_TYPE);
+						$tipoarchivo=finfo_file($finfo, $rutaarchivo);
+						//$archivo = addslashes($content);
+						fclose($fp);
+						$archivo = file_get_contents($rutaarchivo);
+						$datos2[] = array("archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
+						unlink($rutaarchivo);
+					}
+					else{
+						// Output the errors
+						$errors = array('error' => $this->upload->display_errors());
+						foreach($errors as $k => $error){
+							$resp = array("msg"=>html_entity_decode($error));
+						}
+						echo json_encode($resp);
+					}
+				}
+			}
+			$usuario = $this->UsuariosModel->usuarioObj($nickname);
+			$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>$titulo,"descripcion"=>$descripcion);
+            $mensaje = $this->SolicitudesModel->crearSolicitud($datos,$datos2);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
 			// Exit to avoid further execution
 			exit();
 		}
