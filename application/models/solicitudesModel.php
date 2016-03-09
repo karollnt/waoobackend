@@ -25,7 +25,7 @@
 			foreach($datos as $i=>$v){
 				$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
 				'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);
-				$this->db->insert('trabajoarchivos',$datos);
+				$this->db->insert('trabajoarchivos',$dats);
 				if($this->db->affected_rows()>0) $mensaje = "Se ha guardado el archivo";
 				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			}
