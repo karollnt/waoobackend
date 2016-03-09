@@ -15,22 +15,20 @@
 			//if($this->db->affected_rows()>0) $mensaje = "Se ha creado la solicitud";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();
-			if($datos2!=null){
-				foreach($datos2 as $i=>$v){
-					$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$datos['idusuario'],
-					'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);
-					$this->ingresarArchivos($idtrabajo,$dats);
-				}
-			}
 			$this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
+			if($datos2!=null) $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
 			return $mensaje;
 		}
 
-		public function ingresarArchivos($idtrabajo,$datos){
+		public function ingresarArchivos($idtrabajo,$idusuario,$datos){
 			$mensaje = '';
-			$this->db->insert('trabajoarchivos',$datos);
-			if($this->db->affected_rows()>0) $mensaje = "Se ha guardado el archivo";
-			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
+			foreach($datos as $i=>$v){
+				$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
+				'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);
+				$this->db->insert('trabajoarchivos',$datos);
+				if($this->db->affected_rows()>0) $mensaje = "Se ha guardado el archivo";
+				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
+			}
 			return $mensaje;
 		}
 
