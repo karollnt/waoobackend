@@ -200,32 +200,35 @@
 			    "max_width"         =>  '1024',
 			    "max_height"        =>  '768'
 			));
-
-            if($this->upload->do_upload("uploadfile")){
-                $datosarchivo = $this->upload->data();
-				$rutaarchivo = $datosarchivo['full_path'];
-				$extension = $datosarchivo['file_ext'];
-				$fp = fopen($rutaarchivo, 'r');
-				$content = fread($fp, filesize($rutaarchivo));
-				$finfo = finfo_open(FILEINFO_MIME_TYPE);
-				$tipoarchivo=finfo_file($finfo, $rutaarchivo);
-				$archivo = addslashes($content);
-				fclose($fp);
-				$usuario = $this->UsuariosModel->usuarioObj($nickname);
-				$datos = array("idusuario"=>($usuario->id),"idtrabajo"=>$idtrabajo,"archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
-				unlink($rutaarchivo);
-				$mensaje = $this->SolicitudesModel->enviarSolucion($datos);
-				$resp = array("msg"=>html_entity_decode($mensaje));
-				echo json_encode($resp);
-            }
-			else{
-                // Output the errors
-                $errors = array('error' => $this->upload->display_errors());
-                foreach($errors as $k => $error){
-                    echo $error;
-                }
-            }
-			// Exit to avoid further execution
+			$cantfiles = $this->input->post('cantfiles');
+			$datos2 = array();
+			if($cantfiles>0){
+				for($ic=1;$ic<=$cantfiles;$ic++){
+					if($this->upload->do_upload("uploadfile{$ic}")){
+						$datosarchivo = $this->upload->data();
+						$rutaarchivo = $datosarchivo['full_path'];
+						$extension = $datosarchivo['file_ext'];
+						$fp = fopen($rutaarchivo, 'r');
+						$content = fread($fp, filesize($rutaarchivo));
+						$finfo = finfo_open(FILEINFO_MIME_TYPE);
+						$tipoarchivo=finfo_file($finfo, $rutaarchivo);
+						fclose($fp);
+						$archivo = file_get_contents($rutaarchivo);
+						$datos = array("idusuario"=>($usuario->id),"idtrabajo"=>$idtrabajo,"archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
+						unlink($rutaarchivo);
+					}
+					else{
+						$errors = array('error' => $this->upload->display_errors());
+						foreach($errors as $k => $error){
+							$resp = array("msg"=>html_entity_decode($error));
+						}
+						echo json_encode($resp);
+					}
+				}
+			}
+			$mensaje = $this->SolicitudesModel->enviarSolucion($datos);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
 			exit();
 		}
 
