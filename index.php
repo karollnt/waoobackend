@@ -1,13 +1,6 @@
 <?php
 /**
- * <html>
- <head>
-  <title>Prueba de PHP</title>
- </head>
- <body>
- <?php echo '<p>Hola Mundo</p>'; ?>
- </body>
-</html>
+ *  hola mundo
  * CodeIgniter
  *
  * An open source application development framework for PHP
