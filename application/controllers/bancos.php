@@ -4,7 +4,7 @@
 			parent::__construct();
 			$this->load->model('BancosModel');
 		}
-		
+
 		public function listaBancos(){
 			$mensaje = "";
 			$msg = $this->BancosModel->listaBancos();
@@ -12,5 +12,5 @@
 			else $mensaje = '{"bancos":['.$msg.']}';
 			echo $mensaje;
 		}
-		
+
 	}
