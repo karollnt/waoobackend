@@ -1,13 +1,23 @@
 <IfModule mod_rewrite.c>
 
-  RewriteEngine On
+    RewriteEngine On
 
-  RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
 
-  RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
 
-  RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ /waoobackend/index.php/$1 [L]
 
-  RewriteRule ^(.*)$ index.php?/$1 [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+
+    ErrorDocument 404 /waoobackend/index.php
+
+</IfModule>
+
+<IfModule mod_headers.c>
+
+    Header set Access-Control-Allow-Origin "*"
 
 </IfModule>
