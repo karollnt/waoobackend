@@ -1,10 +1,10 @@
 <?php
 	class BancosModel extends CI_Model{
-		
+
 		public function __construct(){
 			$this->load->database();
 		}
-		
+
 		public function listaBancos(){
 			$mensaje = '';
 			$this->db
@@ -22,5 +22,5 @@
 			}
 			return $mensaje;
 		}
-		
+
 	}
