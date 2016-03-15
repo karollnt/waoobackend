@@ -2,7 +2,7 @@
 	class Usuarios extends CI_Controller{
 
 		private $errores = array(
-			'usuex'=>"E01001: Nombre de usuario ya registrados",
+			'usuex'=>"E01001: Nombre de usuario ya registrado",
 			'usuv'=>"Debe escribir un nombre de usuario",
 			'clavev'=>"E01003: Debe escribir una clave",
 			'clavec'=>"E01004: Clave demasiado corta",
