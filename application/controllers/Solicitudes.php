@@ -39,13 +39,6 @@
 						$datos2[] = array("archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
 						unlink($rutaarchivo);
 					}
-					else{
-						$errors = array('error' => $this->upload->display_errors());
-						foreach($errors as $k => $error){
-							$resp = array("msg"=>html_entity_decode($error));
-						}
-						echo json_encode($resp);
-					}
 				}
 			}
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
