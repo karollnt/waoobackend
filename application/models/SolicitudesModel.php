@@ -22,12 +22,23 @@
 
 		public function ingresarArchivos($idtrabajo,$idusuario,$datos){
 			$mensaje = '';
+			$this->load->library('s3');
+			$buckName = 'waoofiles';
+			$bucket = $this->s3->getBucket($buckName);
+			if($bucket !==false) ;
+			else{
+				$this->s3->putBucket($buckName,$this->s3->ACL_PUBLIC_READ);
+				$bucket = $this->s3->getBucket($buckName);
+			}
 			foreach($datos as $i=>$v){
-				$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
-				'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);
-				$this->db->insert('trabajoarchivos',$dats);
-				if($this->db->affected_rows()>0) $mensaje = "Se ha guardado el archivo";
+				/*$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
+				'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);*/
+				//$this->db->insert('trabajoarchivos',$dats);
+				$putf = $this->putObject($v['archivo'],$bucket,"upl-{$idusuario}-{$i}.".$v['extension'],$this->s3->ACL_PUBLIC_READ);
+				if($putf) $mensaje = "Se ha guardado el archivo";
 				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
+				/*if($this->db->affected_rows()>0) $mensaje = "Se ha guardado el archivo";
+				else $mensaje = "No se pudo ingresar la informaci&oacute;n";*/
 			}
 			return $mensaje;
 		}
