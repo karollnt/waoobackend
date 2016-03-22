@@ -34,7 +34,7 @@
 				/*$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
 				'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);*/
 				//$this->db->insert('trabajoarchivos',$dats);
-				$putf = $this->s3->putObject($v['archivo'],$bucket,"upl-{$idusuario}-{$i}.".$v['extension'],$this->s3->ACL_PUBLIC_READ);
+				$putf = $this->s3->putObject($v['archivo'],$bucket,"upl-{$idusuario}-{$i}.".$v['extension'],'public-read');
 				if($putf) $mensaje = "Se ha guardado el archivo";
 				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 				/*if($this->db->affected_rows()>0) $mensaje = "Se ha guardado el archivo";
