@@ -268,7 +268,7 @@ class S3 {
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			trigger_error(sprintf("S3::putBucket({$bucket}, {$acl}, {$location}): [%s] %s",
+			trigger_error(sprintf("S3::putBucket({$bucket}, {$acl}, {$location}): ".(self::$__access_key." ... ".self::$__secret_key)." [%s] %s",
 							$rest->error['code'], $rest->error['message']), E_USER_WARNING);
 			return false;
 		}
