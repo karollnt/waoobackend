@@ -27,7 +27,7 @@
 			$bucket = $this->s3->getBucket($buckName);
 			if($bucket !==false) ;
 			else{
-				$this->s3->putBucket($buckName,$this->s3->ACL_PUBLIC_READ);
+				$this->s3->putBucket($buckName,'public-read');
 				$bucket = $this->s3->getBucket($buckName);
 			}
 			foreach($datos as $i=>$v){
