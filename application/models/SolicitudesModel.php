@@ -34,7 +34,7 @@
 				/*$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
 				'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);*/
 				//$this->db->insert('trabajoarchivos',$dats);
-				$nombrearch = random_str(32);
+				$nombrearch = $this->random_str(32);
 				$putf = $this->s3->putObject($v['archivo'],$buckName,$nombrearch.$v['extension'],'public-read');
 				if($putf) $mensaje = "Se ha guardado el archivo";
 				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
@@ -397,7 +397,7 @@
 			return $mensaje;
 		}
 
-		function random_str($length){
+		public function random_str($length){
 			$keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			$str = '';
 			$max = mb_strlen($keyspace, '8bit') - 1;
