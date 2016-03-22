@@ -28,13 +28,12 @@
 			if($bucket !==false) ;
 			else{
 				$this->s3->putBucket($buckName,'public-read-write');
-				$bucket = $this->s3->getBucket($buckName);
 			}
 			foreach($datos as $i=>$v){
 				/*$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
 				'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);*/
 				//$this->db->insert('trabajoarchivos',$dats);
-				$putf = $this->s3->putObject($v['archivo'],$bucket,"upl-{$idusuario}-{$i}.".$v['extension'],'public-read');
+				$putf = $this->s3->putObject($v['archivo'],$buckName,"upl-{$idusuario}-{$i}.".$v['extension'],'public-read');
 				if($putf) $mensaje = "Se ha guardado el archivo";
 				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 				/*if($this->db->affected_rows()>0) $mensaje = "Se ha guardado el archivo";
