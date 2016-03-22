@@ -54,8 +54,8 @@ class S3 {
 	public static $use_ssl = false;
 	public static $verify_peer = true;
 
-	private static $__access_key = NULL; // AWS Access key
-	private static $__secret_key = NULL; // AWS Secret key
+	private static $__access_key = 'AKIAIYO6EQOUXKGKDPXQ'; // AWS Access key
+	private static $__secret_key = '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'; // AWS Secret key
 
 	function __construct($config = array())
 	{
@@ -171,7 +171,7 @@ class S3 {
 			$response->error = array('code' => $response->code, 'message' => 'Unexpected HTTP status');
 		if ($response->error !== false)
 		{
-			trigger_error(sprintf("S3::getBucket(): ".(self::$__access_key)." [%s] %s", $response->error['code'], $response->error['message']), E_USER_WARNING);
+			trigger_error(sprintf("S3::getBucket(): [%s] %s", $response->error['code'], $response->error['message']), E_USER_WARNING);
 			return false;
 		}
 
