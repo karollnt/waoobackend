@@ -55,7 +55,7 @@ class S3 {
 	public static $verify_peer = true;
 
 	private static $__access_key = 'AKIAIYO6EQOUXKGKDPXQ'; // AWS Access key
-	private static $__secret_key = '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'; // AWS Secret key
+	private static $__secret_key = 'VaU2IA2f6pC+MfZxz6PXDgWyEREkslXOl+7v+v49'; // AWS Secret key
 
 	function __construct($config = array())
 	{

@@ -551,7 +551,7 @@ $config['access_key'] = 'AKIAIYO6EQOUXKGKDPXQ';
 | Your Amazon S3 Secret Key.
 |
 */
-$config['secret_key'] = 'VaU2IA2f6pC+MfZxz6PXDgWyEREksIXOI+7v+v49';
+$config['secret_key'] = 'VaU2IA2f6pC+MfZxz6PXDgWyEREkslXOl+7v+v49';
 /*
 |--------------------------------------------------------------------------
 | Use Enviroment?
