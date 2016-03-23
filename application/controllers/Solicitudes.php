@@ -173,6 +173,7 @@
 
 		public function verArchivoSolicitud($idreg){
 			//$idreg = $this->input->get("id");
+			$buckName = 'waoofiles';
 			$this->load->library('s3');
 			$buckName = 'waoofiles';
 			$msg = $this->SolicitudesModel->getBlobArchivoSolicitud($idreg);
@@ -180,7 +181,7 @@
 			header("Content-Disposition: attachment; filename=".($msg['archivo']).($msg['extension']));
 			ob_clean();
 			flush();
-			echo ($this->s3->getObject($msg['archivo']));
+			echo ($this->s3->getObject($buckName,$msg['archivo']));
 		}
 
 		public function enviarSolucion(){
