@@ -30,7 +30,7 @@
 				$this->s3->putBucket($buckName,'public-read-write');
 			}
 			foreach($datos as $i=>$v){
-				$nombrearch = $this->random_str(48)."_".$idusuario;
+				$nombrearch = $this->random_str(48)."_".$i;
 				$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
 				'archivo'=>$nombrearch,'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);
 				$this->db->insert('trabajoarchivos',$dats);
