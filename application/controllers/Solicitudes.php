@@ -177,10 +177,10 @@
 			$this->load->library('s3');
 			$buckName = 'waoofiles';
 			$msg = $this->SolicitudesModel->getBlobArchivoSolicitud($idreg);
-			header("Content-type: ".($msg['tipo']));
+			/*header("Content-type: ".($msg['tipo']));
 			header("Content-Disposition: attachment; filename=".($msg['archivo']).($msg['extension']));
 			ob_clean();
-			flush();
+			flush();*/
 			echo (($buckName."--".$msg['archivo']));
 		}
 
