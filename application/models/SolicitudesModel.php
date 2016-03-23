@@ -29,17 +29,16 @@
 			else{
 				$this->s3->putBucket($buckName,'public-read-write');
 			}
-
 			foreach($datos as $i=>$v){
-				/*$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
-				'archivo'=>$v['archivo'],'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);*/
-				//$this->db->insert('trabajoarchivos',$dats);
-				$nombrearch = $this->random_str(32);
+				$nombrearch = $this->random_str(48)."_".$idusuario;
+				$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
+				'archivo'=>$nombrearch,'tipoarchivo'=>$v['tipoarchivo'],'extension'=>$v['extension']);
+				$this->db->insert('trabajoarchivos',$dats);
 				$putf = $this->s3->putObject($v['archivo'],$buckName,$nombrearch.$v['extension'],'public-read');
-				if($putf) $mensaje = "Se ha guardado el archivo";
+				if($putf) $mensaje = "Se ha guardado el archivo.";
+				else $mensaje = "No se pudo subir el archivo.";
+				if($this->db->affected_rows()>0) $mensaje = "Se ha creado el registro";
 				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
-				/*if($this->db->affected_rows()>0) $mensaje = "Se ha guardado el archivo";
-				else $mensaje = "No se pudo ingresar la informaci&oacute;n";*/
 			}
 			return $mensaje;
 		}
@@ -400,9 +399,9 @@
 		public function random_str($length){
 			$keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			$str = '';
-			$max = mb_strlen($keyspace, '8bit') - 1;
+			$max = strlen($keyspace) - 1;
 			for ($i = 0; $i < $length; ++$i) {
-				$str .= $keyspace[random_int(0, $max)];
+				$str .= $keyspace[rand(0, $max)];
 			}
 			return $str;
 		}
