@@ -181,7 +181,8 @@
 			header("Content-Disposition: attachment; filename=".($msg['archivo']).($msg['extension']));
 			ob_clean();
 			flush();*/
-			echo (($buckName."--".$msg['archivo']));
+			$resp = array("msg"=>html_entity_decode("https://".$buckName.".s3.amazonaws.com/".$msg['archivo'].$msg['extension']));
+			echo json_encode($resp);
 		}
 
 		public function enviarSolucion(){
