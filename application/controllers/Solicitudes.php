@@ -181,7 +181,7 @@
 			header("Content-Disposition: attachment; filename=".($msg['archivo']).($msg['extension']));
 			ob_clean();
 			flush();
-			echo ($this->s3->getObject($buckName,$msg['archivo']));
+			echo (($buckName."--"$msg['archivo']));
 		}
 
 		public function enviarSolucion(){
