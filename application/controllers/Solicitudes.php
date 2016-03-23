@@ -181,7 +181,7 @@
 			header("Content-Disposition: attachment; filename=".($msg['archivo']).($msg['extension']));
 			ob_clean();
 			flush();
-			echo (($buckName."--"$msg['archivo']));
+			echo (($buckName."--".$msg['archivo']));
 		}
 
 		public function enviarSolucion(){
