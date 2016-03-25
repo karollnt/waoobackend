@@ -12,7 +12,7 @@
 			//$this->db->insert('trabajo',$datos);
 			$ins = $this->db->simple_query("INSERT INTO trabajo(idusuario,idmateria,titulo,descripcion) "
 			." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).")");
-			if($ins) $mensaje = "Se ha creado la solicitud";
+			if($ins) $mensaje = "ok";
 			//if($this->db->affected_rows()>0) $mensaje = "Se ha creado la solicitud";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();

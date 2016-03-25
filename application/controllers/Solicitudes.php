@@ -177,10 +177,6 @@
 			$this->load->library('s3');
 			$buckName = 'waoofiles';
 			$msg = $this->SolicitudesModel->getBlobArchivoSolicitud($idreg);
-			/*header("Content-type: ".($msg['tipo']));
-			header("Content-Disposition: attachment; filename=".($msg['archivo']).($msg['extension']));
-			ob_clean();
-			flush();*/
 			$resp = array("msg"=>html_entity_decode("https://".$buckName.".s3.amazonaws.com/".$msg['archivo'].$msg['extension']));
 			echo json_encode($resp);
 		}
