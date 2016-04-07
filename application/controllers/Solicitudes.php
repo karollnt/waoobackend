@@ -243,36 +243,9 @@
 			echo json_encode($resp);
 		}
 
-		private function configuracionPayU($usuario,$idtrabajo,$valor){
-			$order = array();
-			$order['notifyUrl'] = 'http://localhost'.dirname($_SERVER['REQUEST_URI']).'/OrderNotify.php';
-			$order['continueUrl'] = 'http://localhost'.dirname($_SERVER['REQUEST_URI']).'/../../layout/success.php';
-			$order['customerIp'] = '127.0.0.1';
-			$order['merchantPosId'] = OpenPayU_Configuration::getMerchantPosId();
-			$order['description'] = 'Pago de trabajo '.$idtrabajo;
-			$order['currencyCode'] = 'COP';
-			$order['totalAmount'] = $valor;
-			$order['extOrderId'] = uniqid('', true);
-			$order['products'][0]['name'] = 'Product1';
-			$order['products'][0]['unitPrice'] = $valor;
-			$order['products'][0]['quantity'] = 1;
-			$order['buyer']['email'] = $usuario->email;
-			$order['buyer']['phone'] = $usuario->celular;
-			$order['buyer']['firstName'] = $usuario->nombres;
-			$order['buyer']['lastName'] = $usuario->apellidos;
-			return $order;
-		}
-
-		//Para payu: https://github.com/PayU/openpayu_php
-		public function pagarConPayU(){
-			$idpreciotrabajo = $this->input->post("idpreciotrabajo");
-			$valor = $this->SolicitudesModel->valorOfertaTrabajo($idpreciotrabajo);
-			$idtrabajo = $this->SolicitudesModel->idTrabajoDesdeOfertaTrabajo($idpreciotrabajo);
-			$nickname = "(SELECT nickname FROM trabajo WHERE id={$idtrabajo})";
-			$usuario = $this->UsuariosModel->usuarioObj($nickname);
-			$orden = $this->configuracionPayU($usuario,$idtrabajo,$valor);
-			$orderFormData = OpenPayU_Order::hostedOrderForm($orden);
-			echo $orderFormData;
+		public function datosPasarela(){
+			$resp = array('apiLogin'=>'','apiKey'=>'');
+			echo json_encode($resp);
 		}
 
 	}

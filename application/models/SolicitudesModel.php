@@ -194,13 +194,29 @@
 			return $resp;
 		}
 
+		public function verificarPrimerTrabajo($idasistente){
+			$primer = true;
+			$this->db
+			->select('id')
+			->from('trabajo')
+			->where('idasistente',$idasistente);
+			$res = $this->db->get();
+			if($res->num_rows()>0) $primer = false;
+			return $primer;
+		}
+
 		public function enviarPrecioTrabajo($idtrabajo,$idasistente,$valor){
 			$mensaje = '';
 			$verif = $this->verificaSiAsistenteOferto($idtrabajo,$idasistente);
 			if($verif['hizo']) $mensaje = "Ya has hecho una oferta por ".number_format($verif['valor'],0,".",",")." para esta solicitud";
 			else{
+				$verif = $this->verificarPrimerTrabajo($idasistente);
+				//if($verif) $valor = 0;
 				$this->db->insert('ofertatrabajo',array("idtrabajo"=>$idtrabajo,"idasistente"=>$idasistente,"valor"=>$valor,'estado'=>1));
-				if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
+				if($this->db->affected_rows()>0){
+					$mensaje = "Informaci&oacute;n ingresada";
+					if($verif) $mensaje .= ".Recuerde que su primer trabajo no es cobrado";
+				}
 				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 				$msg = "Ha recibido una oferta para realizar su trabajo por ".number_format($valor,0,".",",").". Verifique en Mis solicitudes las ofertas recibidas.";
 				$this->notificarUsuario($msg,"(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})",$idtrabajo);
@@ -213,8 +229,11 @@
 			$idtrabajo = "(SELECT idtrabajo FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
 			$idasistente = "(SELECT idasistente FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
 			$idusuario = "(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})";
+			$aupd = array("estado"=>1);
+			$verif = $this->verificaSiAsistenteOferto($idtrabajo,$idasistente);
+			if($verif) $aupd["valor"] = 0;
 			$this->db->where('id',$idpreciotrabajo);
-			$this->db->update('ofertatrabajo',array("estado"=>1));
+			$this->db->update('ofertatrabajo',$aupd);
 			if($this->db->affected_rows()>0){
 				$mensaje = $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 				if(strcasecmp($mensaje,"Informaci&oacute;n actualizada")==0){
@@ -321,7 +340,7 @@
 			$mensaje = '';
 			$this->load->model('UsuariosModel');
 			$this->db
-			->select("otr.idtrabajo,otr.valor,u.nickname",false)
+			->select("otr.idtrabajo,otr.valor,u.nickname,otr.idasistente",false)
 			->from("ofertatrabajo otr")
 			->join("usuarios u","u.id=otr.idasistente","inner")
 			->where("idtrabajo",$idtrabajo);
@@ -330,9 +349,10 @@
 				$cont1 = 0;
 				foreach($res->result() as $row){
 					$calif = $this->UsuariosModel->calificacionAsesor($row->nickname);
+					$verif = $this->verificaSiAsistenteOferto($idtrabajo,$row->idasistente);
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->idtrabajo).'","valor":"'.($row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'"}';
+					$mensaje .= '{"id":"'.($row->idtrabajo).'","valor":"'.($verif==true?0:$row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'"}';
 				}
 			}
 			return $mensaje;
