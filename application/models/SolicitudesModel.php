@@ -205,17 +205,18 @@
 			return $primer;
 		}
 
-		public function enviarPrecioTrabajo($idtrabajo,$idasistente,$valor){
+		public function enviarPrecioTrabajo($idtrabajo,$idasistente,$val){
 			$mensaje = '';
 			$verif = $this->verificaSiAsistenteOferto($idtrabajo,$idasistente);
 			if($verif['hizo']) $mensaje = "Ya has hecho una oferta por ".number_format($verif['valor'],0,".",",")." para esta solicitud";
 			else{
 				$verif = $this->verificarPrimerTrabajo($idasistente);
-				//if($verif) $valor = 0;
+				if($verif) $valor = 0;
+				else $valor = $val;
 				$this->db->insert('ofertatrabajo',array("idtrabajo"=>$idtrabajo,"idasistente"=>$idasistente,"valor"=>$valor,'estado'=>1));
 				if($this->db->affected_rows()>0){
-					$mensaje = "Informaci&oacute;n ingresada";
-					if($verif) $mensaje .= ".Recuerde que su primer trabajo no es cobrado";
+					$mensaje = "Oferta ingresada";
+					if($verif) $mensaje .= ". Recuerde que su primer trabajo no es cobrado";
 				}
 				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 				$msg = "Ha recibido una oferta para realizar su trabajo por ".number_format($valor,0,".",",").". Verifique en Mis solicitudes las ofertas recibidas.";
@@ -349,7 +350,7 @@
 				$cont1 = 0;
 				foreach($res->result() as $row){
 					$calif = $this->UsuariosModel->calificacionAsesor($row->nickname);
-					$verif = $this->verificaSiAsistenteOferto($idtrabajo,$row->idasistente);
+					$verif = $this->verificarPrimerTrabajo($row->idasistente);
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$mensaje .= '{"id":"'.($row->idtrabajo).'","valor":"'.($verif==true?0:$row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'"}';
