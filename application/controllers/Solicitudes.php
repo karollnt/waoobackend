@@ -244,7 +244,7 @@
 		}
 
 		public function datosPasarela(){
-			$resp = array('apiLogin'=>'','apiKey'=>'');
+			$resp = array('pubKey'=>'TEST-3206830a-fc33-4b26-8856-f8dc77c090ca','accToken'=>'');
 			echo json_encode($resp);
 		}
 
