@@ -258,6 +258,33 @@
 			return $mensaje;
 		}
 
+		public function asistenteOferta($idoferta){
+			$id = 0;
+			$this->db->select('idasistente')->from('ofertatrabajo')->where('id',$idoferta);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$id = $row->idasistente;
+				}
+			}
+			return $id;
+		}
+
+		public function nickAsistenteOferta($idoferta){
+			$nick = "";
+			$this->db->select('u.nickname',false)
+			->from('ofertatrabajo o')
+			->join('usuarios u','u.id=o.idasistente','inner')
+			->where('o.id',$idoferta);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$nick = $row->nickname;
+				}
+			}
+			return $nick;
+		}
+
 		public function logTrabajo($idtrabajo,$idusuario,$tipo,$desc){
 			$mensaje = '';
 			$this->db->insert('trabajolog',array("idtrabajo"=>$idtrabajo,"idusuario"=>$idusuario,"tipolog"=>$tipo,"descripcion"=>$desc));
@@ -276,10 +303,7 @@
 
 		public function valorOfertaTrabajo($idoferta){
 			$valor = 0;
-			$this->db
-			->select("valor",false)
-			->from("ofertatrabajo")
-			->where("id",$idoferta);
+			$this->db->select("valor",false)->from("ofertatrabajo")->where("id",$idoferta);
 			$res = $this->db->get();
 			if($res->num_rows()>0){
 				foreach($res->result() as $row){

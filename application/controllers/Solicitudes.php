@@ -131,7 +131,7 @@
 				'payment_method_id'=>$this->input->post("tipoPago"),'description'=>'Waoo - Cobro por realizar tarea',
 				'payer'=>array('email'=>$this->input->post("email")),'issuer_id'=>$this->input->post("issuer"));
 			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante,$datosmp);
-			$resp = array("msg"=>html_entity_decode($mensaje));
+			$resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
