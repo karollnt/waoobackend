@@ -20,7 +20,7 @@ class MP {
     private $sandbox = FALSE;
 
     function __construct() {
-        $this->setAccessToken('');
+        $this->setAccessToken('TEST-3239097762560906-041410-f58cdf4530b58b7e7bfa4dbbf7ecaef6__LA_LC__-211156505');
     }
 
     public function setAccessToken($value){
