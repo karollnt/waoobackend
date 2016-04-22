@@ -232,7 +232,7 @@
 			$idasistente = "(SELECT idasistente FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
 			$idusuario = "(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})";
 			$aupd = array("estado"=>1);
-			$verif = $this->verificaSiAsistenteOferto($idtrabajo,$idasistente);
+			$verif = $this->verificarPrimerTrabajo($idasistente);
 			if($verif) $aupd["valor"] = 0;
 			$this->db->where('id',$idpreciotrabajo);
 			$this->db->update('ofertatrabajo',$aupd);
