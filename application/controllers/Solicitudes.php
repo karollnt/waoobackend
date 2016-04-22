@@ -126,7 +126,7 @@
 			$mensaje = '';
 			$idpreciotrabajo = $this->input->post("idpreciotrabajo");
 			$numcomprobante = $this->input->post("numcomprobante");
-			$datosmp = array('transaction_amount'=>$this->SolicitudesModel->valorOfertaTrabajo($idpreciotrabajo),
+			$datosmp = array('transaction_amount'=>$this->input->post('valorOferta'),
 				'token'=>$this->input->post("token"),'installments'=>$this->input->post("cuotas"),
 				'payment_method_id'=>$this->input->post("tipoPago"),'description'=>'Waoo - Cobro por realizar tarea',
 				'payer'=>array('email'=>$this->input->post("email")),'issuer_id'=>$this->input->post("issuer"));
