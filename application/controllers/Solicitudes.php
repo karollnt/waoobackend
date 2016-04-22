@@ -130,6 +130,7 @@
 				'token'=>$this->input->post("token"),'installments'=>$this->input->post("cuotas"),
 				'payment_method_id'=>$this->input->post("tipoPago"),'description'=>'Waoo - Cobro por realizar tarea',
 				'payer'=>array('email'=>$this->input->post("email")),'issuer_id'=>$this->input->post("issuer"));
+			var_dump($datosmp);
 			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante,$datosmp);
 			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
 			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
