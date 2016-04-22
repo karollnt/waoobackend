@@ -143,7 +143,8 @@
 			$numcomprobante = $this->input->post('numcomprobante');
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
 			$mensaje = $this->SolicitudesModel->asignarAsistenteTrabajo($usuario->id,$idtrabajo,$numcomprobante);
-			$resp = array("msg"=>html_entity_decode($mensaje));
+			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
+			else $resp = array("msg"=>html_entity_decode($mensaje));
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
