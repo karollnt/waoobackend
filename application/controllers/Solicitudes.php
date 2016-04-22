@@ -131,7 +131,20 @@
 				'payment_method_id'=>$this->input->post("tipoPago"),'description'=>'Waoo - Cobro por realizar tarea',
 				'payer'=>array('email'=>$this->input->post("email")),'issuer_id'=>0);
 			//$this->input->post("issuer")
-			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante,$datosmp);
+			$this->load->library('mp');
+			$this->mp->sandbox_mode(true);
+			$payment = $this->mp->post("/v1/payments", $datosmp);
+			var_dump($payment);
+			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante);
+			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
+			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
+		}
+
+		public function aceptarPrecioCero(){
+			$idpreciotrabajo = $this->input->post("idpreciotrabajo");
+			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"first");
 			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
 			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
 			//echo $_GET['callback'].'('.json_encode($resp).')';

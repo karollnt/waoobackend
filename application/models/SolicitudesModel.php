@@ -225,9 +225,8 @@
 			return $mensaje;
 		}
 
-		public function aceptarPrecio($idpreciotrabajo,$numcomprobante,$datosmp){
+		public function aceptarPrecio($idpreciotrabajo,$numcomprobante){
 			$mensaje = "";
-			$this->load->library('mp');
 			$idtrabajo = "(SELECT idtrabajo FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
 			$idasistente = "(SELECT idasistente FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
 			$idusuario = "(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})";
@@ -237,11 +236,6 @@
 			$this->db->where('id',$idpreciotrabajo);
 			$this->db->update('ofertatrabajo',$aupd);
 			if($this->db->affected_rows()>0){
-				if(!$verif){
-					$this->mp->sandbox_mode(true);
-					$payment = $this->mp->post("/v1/payments", $datosmp);
-					var_dump($payment);
-				}
 				$mensaje = $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 				if(strcasecmp($mensaje,"Informaci&oacute;n actualizada")==0){
 					$mensaje = $this->asignarAsistenteTrabajo($idtrabajo,$idasistente,$numcomprobante);
