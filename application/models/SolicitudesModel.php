@@ -237,7 +237,7 @@
 			$this->db->where('id',$idpreciotrabajo);
 			$this->db->update('ofertatrabajo',$aupd);
 			if(!$verif){
-				$this->mp->setAccessToken("TEST-3239097762560906-041410-f58cdf4530b58b7e7bfa4dbbf7ecaef6__LA_LC__-211156505");
+				$this->mp->sandbox_mode(true);
 				$payment = $this->mp->post("/v1/payments", $datosmp);
 				var_dump($payment);
 			}
