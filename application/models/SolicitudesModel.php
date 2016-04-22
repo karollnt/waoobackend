@@ -240,6 +240,7 @@
 				if(!$verif){
 					$this->mp->setAccessToken("TEST-3239097762560906-041410-f58cdf4530b58b7e7bfa4dbbf7ecaef6__LA_LC__-211156505");
 					$payment = $this->mp->post("/v1/payments", $datosmp);
+					var_dump($payment);
 				}
 				$mensaje = $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 				if(strcasecmp($mensaje,"Informaci&oacute;n actualizada")==0){
