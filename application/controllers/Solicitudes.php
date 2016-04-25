@@ -144,7 +144,7 @@
 			}
 			catch (Exception $e) {
 				// var_dump($e->message);
-				echo json_encode(array("msg"=>"Ha ocurrido un error"));
+				echo json_encode(array("error"=>"Ha ocurrido un error"));
 			}
 		}
 
