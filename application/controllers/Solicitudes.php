@@ -133,7 +133,7 @@
 			//$this->input->post("issuer")
 			$this->load->library('mp');
 			$this->mp->sandbox_mode(true);
-			$payment = $this->mp->post("/v1/payments", $datosmp);
+			$payment = $this->mp->post(array("uri"=>"/v1/payments", "data"=>$datosmp));
 			var_dump($payment);
 			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante);
 			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
