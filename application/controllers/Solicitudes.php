@@ -131,13 +131,19 @@
 				'payment_method_id'=>$this->input->post("paymentMethodId"),'description'=>'Waoo - Cobro por realizar tarea',
 				'payer'=>array('email'=>$this->input->post("email")),'issuer_id'=>0);
 			//$this->input->post("issuer")
-			$this->load->library('mp');
-			$this->mp->sandbox_mode(true);
-			$payment = $this->mp->post(array("uri"=>"/v1/payments", "data"=>$datosmp));
-			var_dump($payment);
-			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante);
-			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
-			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
+			try {
+				$this->load->library('mp');
+				$this->mp->sandbox_mode(true);
+				$payment = $this->mp->post(array("uri"=>"/v1/payments", "data"=>$datosmp));
+				var_dump($payment);
+				$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante);
+				if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
+				else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
+			}
+			catch (Exception $e) {
+				var_dump($e);
+			}
+
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
