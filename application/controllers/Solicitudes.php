@@ -139,13 +139,13 @@
 				$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante);
 				if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
 				else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
+				//echo $_GET['callback'].'('.json_encode($resp).')';
+				echo json_encode($resp);
 			}
 			catch (Exception $e) {
-				var_dump($e);
+				// var_dump($e->message);
+				echo json_encode(array("msg"=>($e->code).": ".($e->message)."->".($e->sstring)));
 			}
-
-			//echo $_GET['callback'].'('.json_encode($resp).')';
-			echo json_encode($resp);
 		}
 
 		public function aceptarPrecioCero(){
