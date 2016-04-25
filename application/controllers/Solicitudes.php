@@ -144,7 +144,7 @@
 			}
 			catch (Exception $e) {
 				// var_dump($e->message);
-				echo json_encode(array("msg"=>($e->code).": ".($e->message)."->".($e->sstring)));
+				echo json_encode(array("msg"=>"Ha ocurrido un error"));
 			}
 		}
 
