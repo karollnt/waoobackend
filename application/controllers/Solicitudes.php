@@ -127,8 +127,8 @@
 			$idpreciotrabajo = $this->input->post("idpreciotrabajo");
 			$numcomprobante = $this->input->post("numcomprobante");
 			$datosmp = array('transaction_amount'=>$this->input->post('valorOferta')*1,
-				'token'=>$this->input->post("token"),'installments'=>$this->input->post("cuotas")*1,
-				'payment_method_id'=>$this->input->post("tipoPago"),'description'=>'Waoo - Cobro por realizar tarea',
+				'token'=>$this->input->post("token"),'installments'=>$this->input->post("installments")*1,
+				'payment_method_id'=>$this->input->post("paymentMethodId"),'description'=>'Waoo - Cobro por realizar tarea',
 				'payer'=>array('email'=>$this->input->post("email")),'issuer_id'=>0);
 			//$this->input->post("issuer")
 			$this->load->library('mp');
