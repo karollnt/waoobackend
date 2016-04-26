@@ -238,8 +238,8 @@
 			if($this->db->affected_rows()>0){
 				$mensaje = $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 				if(strcasecmp($mensaje,"Informaci&oacute;n ingresada")==0){
-					$mensaje = $this->asignarAsistenteTrabajo($idtrabajo,$idasistente,$numcomprobante);
-					$this->notificarUsuario("Su oferta para el trabajo {$idtrabajo} ha sido aceptada",$idasistente,$idtrabajo);
+					$mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
+					$this->notificarUsuario("CONCAT('Su oferta para el trabajo', {$idtrabajo}, 'ha sido aceptada')",$idasistente,$idtrabajo);
 				}
 				else $mensaje = "No se pudo actualizar la informacion";
 			}
