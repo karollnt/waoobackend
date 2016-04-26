@@ -237,7 +237,7 @@
 			$this->db->update('ofertatrabajo',$aupd);
 			if($this->db->affected_rows()>0){
 				$mensaje = $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
-				if(strcasecmp($mensaje,"Informaci&oacute;n actualizada")==0){
+				if(strcasecmp($mensaje,"Informaci&oacute;n ingresada")==0){
 					$mensaje = $this->asignarAsistenteTrabajo($idtrabajo,$idasistente,$numcomprobante);
 					$this->notificarUsuario("Su oferta para el trabajo {$idtrabajo} ha sido aceptada",$idasistente,$idtrabajo);
 				}
