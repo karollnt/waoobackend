@@ -292,7 +292,7 @@
 
 		public function notificarUsuario($msg,$idusuario,$idtrabajo){
 			$mensaje = '';
-			$res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},{$msg},{$idtrabajo});");
+			$res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}'',{$idtrabajo});");
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
