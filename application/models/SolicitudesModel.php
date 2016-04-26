@@ -239,7 +239,7 @@
 				$mensaje = $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 				if(strcasecmp($mensaje,"Informaci&oacute;n ingresada")==0){
 					$mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
-					$this->notificarUsuario("CONCAT('Su oferta para el trabajo', {$idtrabajo}, 'ha sido aceptada')",$idasistente,$idtrabajo);
+					$this->notificarUsuario("Una de sus ofertas ha sido aceptadas",$idasistente,$idtrabajo);
 				}
 				else $mensaje = "No se pudo actualizar la informacion";
 			}
@@ -292,7 +292,7 @@
 
 		public function notificarUsuario($msg,$idusuario,$idtrabajo){
 			$mensaje = '';
-			$res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
+			$res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},{$msg},{$idtrabajo});");
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
