@@ -285,7 +285,7 @@
 
 		public function logTrabajo($idtrabajo,$idusuario,$tipo,$desc){
 			$mensaje = '';
-			$this->db->insert('trabajolog',array("idtrabajo"=>$idtrabajo,"idusuario"=>$idusuario,"tipolog"=>$tipo,"descripcion"=>$desc));
+			$this->db->query("INSERT INTO trabajolog(idtrabajo,idusuario,tipolog,descripcion) VALUES ({$idtrabajo},{$idusuario},{$tipo},'{$desc}')");
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
