@@ -236,12 +236,9 @@
 			$this->db->where('id',$idpreciotrabajo);
 			$this->db->update('ofertatrabajo',$aupd);
 			if($this->db->affected_rows()>0){
-				$mensaje = $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
-				if(strcasecmp($mensaje,"Informaci&oacute;n ingresada")==0){
-					$mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
-					$this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo);
-				}
-				else $mensaje = "No se pudo actualizar la informacion";
+				$this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
+				$mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
+				$this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo);
 			}
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
 			return $mensaje;
