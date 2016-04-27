@@ -133,8 +133,6 @@
 			//$this->input->post("issuer")
 			$this->load->library('mp');
 			//$this->mp->sandbox_mode(true);
-			$arraydt = array("uri"=>"/v1/payments", "data"=>$datosmp);
-			var_dump($arraydt);
 			$payment = $this->mp->post(array("uri"=>"/v1/payments", "data"=>$datosmp));
 			//var_dump($payment);
 			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante);
