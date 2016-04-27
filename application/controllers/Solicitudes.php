@@ -133,8 +133,10 @@
 			//$this->input->post("issuer")
 			$this->load->library('mp');
 			//$this->mp->sandbox_mode(true);
+			$arraydt = array("uri"=>"/v1/payments", "data"=>$datosmp);
+			var_dump($arraydt);
 			$payment = $this->mp->post(array("uri"=>"/v1/payments", "data"=>$datosmp));
-			var_dump($payment);
+			//var_dump($payment);
 			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante);
 			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
 			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
