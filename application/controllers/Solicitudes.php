@@ -132,14 +132,21 @@
 				'payer'=>array('email'=>$this->input->post("email")),'issuer_id'=>0);
 			//$this->input->post("issuer")
 			$this->load->library('mp');
-			//$this->mp->sandbox_mode(true);
-			$payment = $this->mp->post(array("uri"=>"/v1/payments", "data"=>$datosmp));
+			//$payment = $this->mp->post("/v1/payments", $datosmp);
+			//test con curl
+			$handler = curl_init('https://api.mercadopago.com/v1/payments?access_token=TEST-3239097762560906-041410-f58cdf4530b58b7e7bfa4dbbf7ecaef6__LA_LC__-211156505');
+	    curl_setopt($handler, CURLOPT_POST,true);
+	    curl_setopt($handler, CURLOPT_POSTFIELDS, json_encode($datosmp));
+	    $response = curl_exec($handler);
+	    var_dump($response);
+	    curl_close($handler);
+			/*
 			//var_dump($payment);
 			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$numcomprobante);
 			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
 			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
 			//echo $_GET['callback'].'('.json_encode($resp).')';
-			echo json_encode($resp);
+			echo json_encode($resp);*/
 		}
 
 		public function aceptarPrecioCero(){
