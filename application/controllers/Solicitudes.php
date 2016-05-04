@@ -131,18 +131,18 @@
 				'payer'=>array('email'=>$this->input->post("email")));
 			$this->load->library('mp');
 			$payment = $this->mp->post("/v1/payments", $datosmp);
-			var_dump($payment);
-			// if(stripos($payment,'bool(true)')===false) $json = $payment;
-			// else $json = substr($payment,0,strlen($payment)-strlen('bool(true)'));
-			// $obj = json_decode($json);
-			// if($obj->status=="approved"){
-			// 	$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$obj->id);
-			// 	if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
-			// 	else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
-			// }
-			// else $resp = array("error" => $obj->status );
-			// //echo $_GET['callback'].'('.json_encode($resp).')';
-			// echo json_encode($resp);
+			if($payment['response']){
+				$pay = $payment['response'];
+				if($pay['status']=="approved"){
+					$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$pay['id']);
+					if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
+					else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
+				}
+				else $resp = array("error" => $pay['status']);
+			}
+			else $resp = array("error" => "No hubo respuesta del proveedor de servicio" );
+			//echo $_GET['callback'].'('.json_encode($resp).')';
+			echo json_encode($resp);
 		}
 
 		public function aceptarPrecioCero(){
