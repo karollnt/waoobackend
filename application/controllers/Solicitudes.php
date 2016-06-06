@@ -18,9 +18,9 @@
 			$this->upload->initialize(array(
 			    "upload_path"       =>  $path,
 			    "allowed_types"     =>  "gif|jpg|png|jpeg|bmp|pdf|doc|docx|xls|xlsx|txt|zip|rar",
-			    "max_size"          =>  '2000000',
-			    "max_width"         =>  '4096',
-			    "max_height"        =>  '2048'
+			    "max_size"          =>  '20000000',
+			    "max_width"         =>  '13684',
+			    "max_height"        =>  '13684'
 			));
 			$cantfiles = $this->input->post('cantfiles');
 			$datos2 = array();
