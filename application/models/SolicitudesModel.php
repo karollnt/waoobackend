@@ -415,7 +415,7 @@
 		public function enviarSolucion($datos){
 			$mensaje = '';
 			$this->db->insert('trabajoarchivos',$datos);
-			$this->logTrabajo($datos['idusuario'],$datos['idtrabajo'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
+			$this->logTrabajo($datos['idtrabajo'],$datos['idusuario'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
 			$this->notificarUsuario("Archivo de solucion para solicitud recibido, click <a href='#' onclick='verSolucion(".$datos['idtrabajo'].");'>ac&aacute;</a> para verlo ".$datos['idtrabajo']." enviado",$datos['idusuario'],$datos['idtrabajo']);
 			$this->db->where('id',$datos['idtrabajo']);
 			$this->db->update("trabajo",array("estado"=>3));
