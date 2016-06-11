@@ -234,6 +234,7 @@
 				}
 			}
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
+			$idtrabajo = $this->input->post('idtrabajo');
 			$datos = array("idusuario"=>($usuario->id),"idtrabajo"=>$idtrabajo);
 			if($datos2!=null) $this->SolicitudesModel->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
 			$mensaje = $this->SolicitudesModel->enviarSolucion($datos);
