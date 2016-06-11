@@ -415,12 +415,12 @@
 		public function enviarSolucion($datos){
 			$mensaje = '';
 			$this->db->insert('trabajoarchivos',$datos);
-			if($this->db->affected_rows()>0) $mensaje = "Se ha actualizado la solicitud";
-			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$this->logTrabajo($datos['idusuario'],$datos['idtrabajo'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
 			$this->notificarUsuario("Archivo de solucion para solicitud recibido, click <a href='#' onclick='verSolucion(".$datos['idtrabajo'].");'>ac&aacute;</a> para verlo ".$datos['idtrabajo']." enviado",$datos['idusuario'],$datos['idtrabajo']);
 			$this->db->where('id',$datos['idtrabajo']);
 			$this->db->update("trabajo",array("estado"=>3));
+			if($this->db->affected_rows()>0) $mensaje = "Se ha actualizado la solicitud";
+			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
 
@@ -435,7 +435,7 @@
 		}
 
 		public function random_str($length){
-			$keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			$keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_';
 			$str = '';
 			$max = strlen($keyspace) - 1;
 			for ($i = 0; $i < $length; ++$i) {
