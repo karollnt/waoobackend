@@ -42,7 +42,7 @@
 				}
 			}
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
-			$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>$titulo,"descripcion"=>$descripcion);
+			$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>utf8_encode($titulo),"descripcion"=>utf8_encode($descripcion));
 			$mensaje = $this->SolicitudesModel->crearSolicitud($datos,$datos2);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
@@ -71,7 +71,7 @@
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->SolicitudesModel->solicitudesUsuario($nickname);
 			if(strcasecmp($mensaje,"")==0) $mensaje = 'No hay resultados';
-			$resp = array("msg"=>html_entity_decode('['.$mensaje.']'));
+			$resp = array("msg"=>html_entity_decode('['.utf8_decode($mensaje).']'));
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
