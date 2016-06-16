@@ -71,7 +71,7 @@
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->SolicitudesModel->solicitudesUsuario($nickname);
 			if(strcasecmp($mensaje,"")==0) $mensaje = 'No hay resultados';
-			$resp = array("msg"=>html_entity_decode('['.utf8_decode($mensaje).']'));
+			$resp = array("msg"=>html_entity_decode('['.utf8_encode($mensaje).']'));
 			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
