@@ -42,7 +42,7 @@
 				}
 			}
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
-			$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>utf8_encode($titulo),"descripcion"=>utf8_encode($descripcion));
+			$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>utf8_decode($titulo),"descripcion"=>utf8_decode($descripcion));
 			$mensaje = $this->SolicitudesModel->crearSolicitud($datos,$datos2);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
