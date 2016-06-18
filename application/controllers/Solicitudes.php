@@ -10,8 +10,8 @@
 
 		public function crearSolicitud(){
 			$nickname = $this->input->post('nickname');
-			$titulo = $this->input->post('titulo');
-			$descripcion = $this->input->post('descripcion');
+			$titulo = utf8_decode($this->input->post('titulo'));
+			$descripcion = utf8_decode($this->input->post('descripcion'));
 			$idmateria = $this->input->post('idmateria');
 			$path = './uploads/';
 			$this->load->library('upload');
@@ -42,7 +42,7 @@
 				}
 			}
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
-			$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>utf8_encode($titulo),"descripcion"=>utf8_encode($descripcion));
+			$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>($titulo),"descripcion"=>($descripcion));
 			$mensaje = $this->SolicitudesModel->crearSolicitud($datos,$datos2);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
@@ -61,8 +61,7 @@
 				else $mensaje .= '|';
 				$mensaje .= $obj->nombre.';['.($this->SolicitudesModel->solicitudesAsistenteMateria($nickname,$obj->id)).']';
 			}
-			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
+			$resp = array("msg"=>html_entity_decode(utf8_encode($mensaje)));
 			echo json_encode($resp);
 		}
 
@@ -71,16 +70,14 @@
 			$nickname = $this->input->post('nickname');
 			$mensaje = $this->SolicitudesModel->solicitudesUsuario($nickname);
 			if(strcasecmp($mensaje,"")==0) $mensaje = 'No hay resultados';
-			$resp = array("msg"=>html_entity_decode('['.utf8_decode($mensaje).']'));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
+			$resp = array("msg"=>html_entity_decode('['.utf8_encode($mensaje).']'));
 			echo json_encode($resp);
 		}
 
 		function solicitudesSinAsignar(){
 			$mensaje = '';
 			$mensaje = $this->SolicitudesModel->solicitudesSinAsignar();
-			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
+			$resp = array("msg"=>html_entity_decode(utf8_encode($mensaje)));
 			echo json_encode($resp);
 		}
 
@@ -96,8 +93,7 @@
 				else $mensaje .= '|';
 				$mensaje .= $obj->nombre.';['.($this->SolicitudesModel->solicitudesSinAsignarPorMateria($obj->id)).']';
 			}
-			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
+			$resp = array("msg"=>html_entity_decode(utf8_encode($mensaje)));
 			echo json_encode($resp);
 		}
 
@@ -105,8 +101,7 @@
 			$mensaje = '';
 			$idmateria = $this->input->post('idmateria');
 			$mensaje = $this->SolicitudesModel->solicitudesSinAsignarPorMateria($idmateria);
-			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
+			$resp = array("msg"=>html_entity_decode(utf8_encode($mensaje)));
 			echo json_encode($resp);
 		}
 
@@ -118,7 +113,6 @@
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
 			$mensaje = $this->SolicitudesModel->enviarPrecioTrabajo($idtrabajo,$usuario->id,$valor);
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -141,7 +135,6 @@
 				else $resp = array("error" => $pay['status']);
 			}
 			else $resp = array("error" => "No hubo respuesta del proveedor de servicio" );
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -150,7 +143,6 @@
 			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"first");
 			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
 			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -162,7 +154,6 @@
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
 			$mensaje = $this->SolicitudesModel->asignarAsistenteTrabajo($usuario->id,$idtrabajo,$numcomprobante);
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -171,7 +162,6 @@
 			$id = $this->input->post('id');
 			$mensaje = $this->SolicitudesModel->detallesSolicitud($id);
 			$resp = array("msg"=>html_entity_decode($mensaje));
-			//echo $_GET['callback'].'('.json_encode($resp).')';
 			echo json_encode($resp);
 		}
 
@@ -180,7 +170,7 @@
 			$idtrabajo = $this->input->post('idtrabajo');
 			$mensaje = $this->SolicitudesModel->ofertasParaTrabajo($idtrabajo);
 			if(strcasecmp($mensaje,"")==0) $mensaje = 'No hay ofertas';
-			$resp = array("msg"=>html_entity_decode($mensaje));
+			$resp = array("msg"=>html_entity_decode(utf8_encode($mensaje)));
 			echo json_encode($resp);
 		}
 
@@ -194,7 +184,6 @@
 		}
 
 		public function verArchivoSolicitud($idreg){
-			//$idreg = $this->input->get("id");
 			$buckName = 'waoofiles';
 			$this->load->library('s3');
 			$buckName = 'waoofiles';

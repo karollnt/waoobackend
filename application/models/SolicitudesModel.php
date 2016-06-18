@@ -9,11 +9,9 @@
 
 		public function crearSolicitud($datos,$datos2){
 			$mensaje = '';
-			//$this->db->insert('trabajo',$datos);
 			$ins = $this->db->simple_query("INSERT INTO trabajo(idusuario,idmateria,titulo,descripcion) "
 			." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).")");
 			if($ins) $mensaje = "ok";
-			//if($this->db->affected_rows()>0) $mensaje = "Se ha creado la solicitud";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();
 			$this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
@@ -26,9 +24,7 @@
 			$buckName = 'waoofiles';
 			$bucket = $this->s3->getBucket($buckName);
 			if($bucket !==false) ;
-			else{
-				$this->s3->putBucket($buckName,'public-read-write');
-			}
+			else $this->s3->putBucket($buckName,'public-read-write');
 			foreach($datos as $i=>$v){
 				$nombrearch = $this->random_str(48)."_".$i;
 				$dats = array('idtrabajo'=>$idtrabajo,'idusuario'=>$idusuario,
