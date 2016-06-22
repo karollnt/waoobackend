@@ -235,6 +235,7 @@
 		function aceptarSolucion(){
 			$mensaje = '';
 			$idtrabajo = $this->input->post('idtrabajo');
+			$idusuario = $this->input->post('idusuario');
 			$calificacion = $this->input->post('calificacion');
 			$solicitud = $this->SolicitudesModel->detallesSolicitud($idtrabajo);
 			$solicitud = '['.$solicitud.']';
