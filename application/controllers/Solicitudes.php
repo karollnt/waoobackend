@@ -242,12 +242,11 @@
 			$sol = $solicitud[0];
 			if($sol){
 				$u1 = $this->UsuariosModel->usuarioObj($sol->usuario);
-				var_dump($u1);
-				/*$mensaje = $this->SolicitudesModel->aceptarSolucion($idtrabajo,$u1->id);
+				$mensaje = $this->SolicitudesModel->aceptarSolucion($idtrabajo,$u1->id);
 				if($calificacion>0){
 					$u2 = $this->UsuariosModel->usuarioObj($sol->asistente);
 					$this->UsuariosModel->calificarAsesor($u2->id,$calificacion);
-				}*/
+				}
 			}
 			else $mensaje = "Hay problemas para procesar la solicitud";
 			$resp = array("msg"=>html_entity_decode($mensaje));
