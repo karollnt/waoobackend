@@ -254,8 +254,8 @@
 		}
 
 		public function datosPasarela(){
-			$resp = array('pubKey'=>'TEST-3206830a-fc33-4b26-8856-f8dc77c090ca','accToken'=>'');
-			//$resp = array('pubKey'=>'APP_USR-e9c2a6eb-6c45-42e7-a3c7-d99cfc16d972','accToken'=>'');
+			//$resp = array('pubKey'=>'TEST-3206830a-fc33-4b26-8856-f8dc77c090ca','accToken'=>'');
+			$resp = array('pubKey'=>'APP_USR-e9c2a6eb-6c45-42e7-a3c7-d99cfc16d972','accToken'=>'');
 			echo json_encode($resp);
 		}
 
