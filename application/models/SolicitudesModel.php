@@ -426,7 +426,7 @@
 			$this->db->update("trabajo",array("estado"=>4));
 			if($this->db->affected_rows()>0) $mensaje = "Se ha marcado la solicitud como resuelta, gracias por usar nuestros servicios";
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
-			$this->logTrabajo($idusuario,$idtrabajo,5,"El usuario ha marcado el trabajo como solucionado");
+			$this->logTrabajo($idtrabajo,$idusuario,5,"El usuario ha marcado el trabajo como solucionado");
 			return $mensaje;
 		}
 
