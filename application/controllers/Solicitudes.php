@@ -259,4 +259,21 @@
 			echo json_encode($resp);
 		}
 
+		public function obtenerDireccionCanalChat(){
+			$idasistente = $this->input->post('idasistente');
+			$mensaje = $this->SolicitudesModel->obtenerDireccionCanalChat($idasistente);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
+		}
+
+		public function actualizarDireccionCanalChat(){
+			$idasistente = $this->input->post('idasistente');
+			$idusuario = $this->input->post('idusuario');
+			$canal = $this->input->post('canal');
+			$mensaje = $this->SolicitudesModel->actualizarDireccionCanalChat($idasistente,$idusuario,$canal);
+			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la apertura del chat");
+			else $resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
+		}
+
 	}

@@ -440,4 +440,29 @@
 			return $str;
 		}
 
+		public function obtenerDireccionCanalChat($idasistente){
+			$canalurl = '';
+			$res = $this->db
+			->query("SELECT canalchat
+				FROM trabajo
+				WHERE idasistente={$idasistente} AND canalchat!='' AND estado=2
+				ORDER BY id DESC");
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$canalurl = $row->canalchat;
+				}
+			}
+			return $canalurl;
+		}
+
+		public function actualizarDireccionCanalChat($idasistente,$idusuario,$canal){
+			$mensaje = '';
+			$this->db
+			->query("UPDATE trabajo
+				SET canalchat='{$canalchat}'
+				WHERE idasistente={$idasistente} AND idusuario={$idusuario} AND estado<=2");
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
+			return $mensaje;
+		}
+
 	}
