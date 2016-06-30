@@ -459,7 +459,7 @@
 			$mensaje = '';
 			$this->db
 			->query("UPDATE trabajo
-				SET canalchat='{$canalchat}'
+				SET canalchat='{$canal}'
 				WHERE idasistente={$idasistente} AND idusuario={$idusuario} AND estado<=2");
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 			return $mensaje;
