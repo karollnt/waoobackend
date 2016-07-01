@@ -261,7 +261,8 @@
 
 		public function obtenerDireccionCanalChat(){
 			$nickname = $this->input->post('idasistente');
-			$idasistente = $this->UsuariosModel->usuarioObj($nickname);
+			$usuario = $this->UsuariosModel->usuarioObj($nickname);
+			$idasistente = $usuario->id;
 			$mensaje = $this->SolicitudesModel->obtenerDireccionCanalChat($idasistente);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
@@ -271,7 +272,8 @@
 			$nickname = $this->input->post('idasistente');
 			$idusuario = $this->input->post('idusuario');
 			$canal = $this->input->post('canal');
-			$idasistente = $this->UsuariosModel->usuarioObj($nickname);
+			$usuario = $this->UsuariosModel->usuarioObj($nickname);
+			$idasistente = $usuario->id;
 			$mensaje = $this->SolicitudesModel->actualizarDireccionCanalChat($idasistente,$idusuario,$canal);
 			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la apertura del chat");
 			else $resp = array("msg"=>html_entity_decode($mensaje));
