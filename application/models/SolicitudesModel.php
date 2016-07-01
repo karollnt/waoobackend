@@ -440,7 +440,7 @@
 			return $str;
 		}
 
-		public function obtenerDireccionCanalChat($idasistente,$canal){
+		public function obtenerDireccionCanalChat($idasistente){
 			$canalurl = '';
 			$res = $this->db
 			->query("SELECT canalchat
