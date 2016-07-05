@@ -348,4 +348,15 @@
 			else $mensaje = "No se han modificado datos";
 			return $mensaje;
 		}
+
+		public function recargarTokens($usuario,$operacion,$cantidad,$fuente){
+			$mensaje = "";
+			$u1 = $this->usuarioObj($usuario);
+			$u2 = $this->usuarioObj($fuente);
+			$datos =  array('usuario'=>$u1->id, 'fuente'=>$u2->id, 'cantidad'=>$cantidad, 'transaccion'=>$operacion);
+			$this->db->insert('recargas',$datos);
+			if($this->db->affected_rows()>0) $mensaje = "Datos actualizados";
+			else $mensaje = "No se han modificado datos";
+			return $mensaje;
+		}
 	}

@@ -282,4 +282,45 @@
 			$msg = $this->UsuariosModel->actualizarCuenta($nickname,$numerocuenta,$idbanco);
 			echo '{"msg":"'.$msg.'"}';
 		}
+
+		public function random_str($length){
+			$keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_';
+			$str = '';
+			$max = strlen($keyspace) - 1;
+			for ($i = 0; $i < $length; ++$i) {
+				$str .= $keyspace[rand(0, $max)];
+			}
+			return $str;
+		}
+
+		public function recargarTokensMP(){
+			$nickname = $this->input->post('nickname');
+			$datosmp = array('transaction_amount'=>$this->input->post('valor')*1,
+				'token'=>$this->input->post("token"),'installments'=>1,
+				'payment_method_id'=>$this->input->post("paymentMethodId"),'description'=>'Waoo - Cobro por realizar tarea',
+				'payer'=>array('email'=>$this->input->post("email")));
+			$this->load->library('mp');
+			$payment = $this->mp->post("/v1/payments", $datosmp);
+			if($payment['response']){
+				$pay = $payment['response'];
+				if($pay['status']=="approved"){
+					$mensaje = $this->SolicitudesModel->recargarTokens($nickname,$pay['id'],$datosmp['transaction_amount']/1000,'mercadopago');
+					if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
+					else $resp = array("msg"=>html_entity_decode($mensaje));
+				}
+				else $resp = array("error" => $pay['status']);
+			}
+			else $resp = array("error" => "No hubo respuesta del proveedor de servicio" );
+		}
+
+		public function recargaTokensOperador(){
+			$nickname = $this->input->post('nickname');
+			$operador = $this->input->post('operador');
+			$cantidad = $this->input->post('cantidad');
+			$trans = "WO-".random_str(10);
+			$mensaje = $this->SolicitudesModel->recargarTokens($nickname,$trans,$cantidad,$operador);
+			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la apertura del chat");
+			else $resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
+		}
 	}
