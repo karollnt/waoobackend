@@ -297,14 +297,14 @@
 			$nickname = $this->input->post('nickname');
 			$datosmp = array('transaction_amount'=>$this->input->post('valor')*1,
 				'token'=>$this->input->post("token"),'installments'=>1,
-				'payment_method_id'=>$this->input->post("paymentMethodId"),'description'=>'Waoo - Cobro por realizar tarea',
+				'payment_method_id'=>$this->input->post("paymentMethodId"),'description'=>'Waoo - Compra de tokens',
 				'payer'=>array('email'=>$this->input->post("email")));
 			$this->load->library('mp');
 			$payment = $this->mp->post("/v1/payments", $datosmp);
 			if($payment['response']){
 				$pay = $payment['response'];
 				if($pay['status']=="approved"){
-					$mensaje = $this->SolicitudesModel->recargarTokens($nickname,$pay['id'],$datosmp['transaction_amount']/1000,'mercadopago');
+					$mensaje = $this->UsuariosModel->recargarTokens($nickname,$pay['id'],$datosmp['transaction_amount']/1000,'mercadopagousr');
 					if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
 					else $resp = array("msg"=>html_entity_decode($mensaje));
 				}
@@ -318,7 +318,7 @@
 			$operador = $this->input->post('operador');
 			$cantidad = $this->input->post('cantidad');
 			$trans = "WO-".random_str(10);
-			$mensaje = $this->SolicitudesModel->recargarTokens($nickname,$trans,$cantidad,$operador);
+			$mensaje = $this->UsuariosModel->recargarTokens($nickname,$trans,$cantidad,$operador);
 			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la apertura del chat");
 			else $resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
