@@ -326,7 +326,7 @@
 
 		public function cantidadTokens(){
 			$nickname = $this->input->post('nickname');
-			$idusuario = "(SELECT id FROM usuarios WHERE id='{$nickname}')";
+			$idusuario = "(SELECT id FROM usuarios WHERE nickname='{$nickname}')";
 			$mensaje = $this->UsuariosModel->cantidadTokens($idusuario);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);

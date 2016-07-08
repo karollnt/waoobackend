@@ -371,7 +371,6 @@
 					$cantidad = $row->tokens * 1;
 				}
 			}
-			$cantidad = "SELECT tokens FROM usuarios WHERE id={$usuario}";
 			return $cantidad;
 		}
 
