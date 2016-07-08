@@ -119,22 +119,10 @@
 		public function aceptarPrecio(){
 			$mensaje = '';
 			$idpreciotrabajo = $this->input->post("idpreciotrabajo");
-			$datosmp = array('transaction_amount'=>$this->input->post('valorOferta')*1,
-				'token'=>$this->input->post("token"),'installments'=>1,
-				'payment_method_id'=>$this->input->post("paymentMethodId"),'description'=>'Waoo - Cobro por realizar tarea',
-				'payer'=>array('email'=>$this->input->post("email")));
-			$this->load->library('mp');
-			$payment = $this->mp->post("/v1/payments", $datosmp);
-			if($payment['response']){
-				$pay = $payment['response'];
-				if($pay['status']=="approved"){
-					$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,$pay['id']);
-					if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
-					else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
-				}
-				else $resp = array("error" => $pay['status']);
-			}
-			else $resp = array("error" => "No hubo respuesta del proveedor de servicio" );
+			$valor = $this->input->post("valor");
+			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"WF-".random_str(10),$valor);
+			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
+			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
 			echo json_encode($resp);
 		}
 
@@ -280,6 +268,16 @@
 			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la apertura del chat");
 			else $resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
+		}
+
+		public function random_str($length){
+			$keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_';
+			$str = '';
+			$max = strlen($keyspace) - 1;
+			for ($i = 0; $i < $length; ++$i) {
+				$str .= $keyspace[rand(0, $max)];
+			}
+			return $str;
 		}
 
 	}

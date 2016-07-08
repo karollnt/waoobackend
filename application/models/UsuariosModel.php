@@ -348,4 +348,26 @@
 			else $mensaje = "No se han modificado datos";
 			return $mensaje;
 		}
+
+		public function recargarTokens($usuario,$operacion,$cantidad,$fuente){
+			$mensaje = "";
+			$u1 = $this->usuarioObj($usuario);
+			$u2 = $this->usuarioObj($fuente);
+			$datos =  array('usuario'=>$u1->id, 'fuente'=>$u2->id, 'cantidad'=>$cantidad, 'transaccion'=>$operacion);
+			$this->db->insert('recargas',$datos);
+			if($this->db->affected_rows()>0) $mensaje = "Recarga ingresada";
+			else $mensaje = "No se ingreso recarga";
+			$this->db->query("UPDATE usuarios SET tokens=tokens + {$cantidad} WHERE id={$usuario}");
+			if($this->db->affected_rows()>0) $mensaje .= ", tokens agregados a la cuenta";
+			else $mensaje .= ", no se agregaron tokens a la cuenta";
+			return $mensaje;
+		}
+
+		public function descontarTokens($usuario,$cantidad){
+			$mensaje = "";
+			$this->db->query("UPDATE usuarios SET tokens=tokens - {$cantidad} WHERE id={$usuario}");
+			if($this->db->affected_rows()>0) $mensaje .= "Tokens descontados de la cuenta";
+			else $mensaje .= "No se descontaron tokens de la cuenta";
+			return $mensaje;
+		}
 	}
