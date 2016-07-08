@@ -120,7 +120,7 @@
 			$mensaje = '';
 			$idpreciotrabajo = $this->input->post("idpreciotrabajo");
 			$valor = $this->input->post("valor");
-			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"WF-".random_str(10),$valor);
+			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"WF-".($this->random_str(10)),$valor);
 			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
 			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
 			echo json_encode($resp);
