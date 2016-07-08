@@ -365,11 +365,7 @@
 
 		public function cantidadTokens($usuario){
 			$cantidad = 0;
-			$this->db
-			->select("tokens",false)
-			->from("usuarios")
-			->where("id",$usuario);
-			$res = $this->db->get();
+			$res = $this->db->query("SELECT tokens FROM usuarios WHERE id={$usuario}");
 			if($res->num_rows()>0){
 				foreach($res->result() as $row){
 					$cantidad = $row->tokens * 1;
