@@ -234,7 +234,7 @@
 			$this->db->update('ofertatrabajo',$aupd);
 			$this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 			$mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
-			$this->UsuariosModel->descontarTokens($idusuario,$valor);
+			if(!$verif) $this->UsuariosModel->descontarTokens($idusuario,$valor);
 			$this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo);
 			return $mensaje;
 		}
