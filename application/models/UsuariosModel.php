@@ -363,6 +363,21 @@
 			return $mensaje;
 		}
 
+		public function cantidadTokens($usuario){
+			$cantidad = 0;
+			$this->db
+			->select("tokens",false)
+			->from("usuarios")
+			->where("id",$usuario);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$cantidad = $row->tokens * 1;
+				}
+			}
+			return $cantidad;
+		}
+
 		public function descontarTokens($usuario,$cantidad){
 			$mensaje = "";
 			$this->db->query("UPDATE usuarios SET tokens=tokens - {$cantidad} WHERE id={$usuario}");
