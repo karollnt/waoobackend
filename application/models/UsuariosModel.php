@@ -381,4 +381,13 @@
 			else $mensaje .= "No se descontaron tokens de la cuenta";
 			return $mensaje;
 		}
+
+		public function actualizarToken($token,$idusuario){
+	    $mensaje = "";
+	    $res = $this->db
+	    ->query("UPDATE usuarios SET token='{$token}' WHERE id={$idusuario}");
+	    if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
+	    return $mensaje;
+	  }
+		
 	}

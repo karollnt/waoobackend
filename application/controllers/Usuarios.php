@@ -331,4 +331,14 @@
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
+
+		public function actualizarToken(){
+	    $token = $this->input->post('token');
+	    $nickname = $this->input->post('nickname');
+	    $usuario = $this->UsuariosModel->usuarioObj($nickname);
+	    $mensaje = $this->UsuariosModel->actualizarToken($token,$usuario->id);
+	    $resp = array("msg"=>html_entity_decode($mensaje));
+	    echo json_encode($resp);
+	  }
+		
 	}
