@@ -382,12 +382,12 @@
 			return $mensaje;
 		}
 
-		public function actualizarToken($token,$idusuario){
-	    $mensaje = "";
-	    $res = $this->db
-	    ->query("UPDATE usuarios SET token='{$token}' WHERE id={$idusuario}");
-	    if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
-	    return $mensaje;
-	  }
+		public function actualizarToken($token,$plataforma,$idusuario){
+	    		$mensaje = "";
+	    		$res = $this->db
+	    		->query("UPDATE usuarios SET token='{$token}',plataforma='{$plataforma}' WHERE id={$idusuario}");
+	    		if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
+	    		return $mensaje;
+	  	}
 		
 	}
