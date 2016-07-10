@@ -368,14 +368,14 @@
 		}
 		
 		public function enviarNotificacionPushAsistentes($idtrabajo){
-			$this->db
+			$res = $this->db
 			->query("SELECT amt.idasistente, u.token
 			FROM trabajo t
 			INNER JOIN materia m ON t.idmateria = m.id
 			INNER JOIN asistentemateria amt ON amt.idmateria=m.id
 			INNER JOIN usuarios u ON u.id = amt.idasistente
 			WHERE t.id={$idtrabajo} AND u.token IS NOT NULL", false);
-			$res = $this->db->get();
+
 			if($res->num_rows() > 0){
 				foreach($res->result() as $row){
 					$this->pushbots->AlertOne("Nuevo trabajo recibido");
