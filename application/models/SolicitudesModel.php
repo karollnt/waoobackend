@@ -389,7 +389,7 @@
 					$this->pushbots->PushOne();
 				}
 			}
-			return true;
+			return "Mensaje enviado";
 		}
 
 		public function ofertasParaTrabajo($idtrabajo){
