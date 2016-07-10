@@ -369,7 +369,7 @@
 		
 		public function enviarNotificacionPushAsistentes($idtrabajo){
 			$res = $this->db
-			->query("SELECT amt.idasistente, u.token
+			->query("SELECT amt.idasistente, u.token, u.plataforma
 			FROM trabajo t
 			INNER JOIN materia m ON t.idmateria = m.id
 			INNER JOIN asistentemateria amt ON amt.idmateria=m.id
