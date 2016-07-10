@@ -4,6 +4,8 @@
 		public function __construct(){
 			$this->load->database();
 			$this->load->library('s3');
+			$this->load->library('pushbots');
+			$this->pushbots->App('575f09fc4a9efab5a28b4568', 'd76f68e6bb1c17593807881c2fa29fe5');
 			//$this->db->get_compiled_select();
 		}
 
@@ -15,6 +17,7 @@
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();
 			$this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
+			$this->enviarNotificacionPushAsistentes($idtrabajo);
 			if($datos2!=null) $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
 			return $mensaje;
 		}
@@ -362,6 +365,31 @@
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
+		}
+		
+		public function enviarNotificacionPushAsistentes($idtrabajo){
+			$this->db
+			->select("u.token AS token", false)
+			->from("trabajo t")
+			->join("materia m","t.idmateria = m.id","inner")
+			->join("asistentemateria amt", "amt.idmateria=m.id", "inner")
+			->join("usuarios u", "u.id = amt.idasistente", "inner")
+			->where("t.id",$idtrabajo)
+			->where("u.token IS NOT NULL");
+			$res = $this->db->get();
+			if($res->num_rows() > 0){
+				foreach($res->result() as $row){
+					$this->pushbots->AlertOne("Nuevo trabajo recibido");
+					if($row->plataforma == "Android"){
+						$this->pushbots->PlatformOne("1");
+					else {
+						$this->pushbots->PlatformOne("0");
+					}
+					$this->pushbots->TokenOne($row->token);
+					$this->pushbots->PushOne();
+				}
+			}
+			return true;
 		}
 
 		public function ofertasParaTrabajo($idtrabajo){
