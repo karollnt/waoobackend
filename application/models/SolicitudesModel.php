@@ -17,7 +17,7 @@
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();
 			$this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
-			$this->enviarNotificacionPushAsistentes($idtrabajo);
+			//$this->enviarNotificacionPushAsistentes($idtrabajo);
 			if($datos2!=null) $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
 			return $mensaje;
 		}
