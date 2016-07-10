@@ -17,7 +17,7 @@
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();
 			$this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
-			//$this->enviarNotificacionPushAsistentes($idtrabajo);
+			$this->enviarNotificacionPushAsistentes($idtrabajo);
 			if($datos2!=null) $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
 			return $mensaje;
 		}
@@ -375,7 +375,7 @@
 			->join("asistentemateria amt", "amt.idmateria=m.id", "inner")
 			->join("usuarios u", "u.id = amt.idasistente", "inner")
 			->where("t.id",$idtrabajo)
-			->where("u.token IS NOT NULL");
+			->where("u.token IS NOT NULL", null, false);
 			$res = $this->db->get();
 			if($res->num_rows() > 0){
 				foreach($res->result() as $row){
