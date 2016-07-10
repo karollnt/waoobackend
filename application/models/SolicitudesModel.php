@@ -369,13 +369,12 @@
 		
 		public function enviarNotificacionPushAsistentes($idtrabajo){
 			$this->db
-			->select("u.token AS token", false)
-			->from("trabajo t")
-			->join("materia m","t.idmateria = m.id","inner")
-			->join("asistentemateria amt", "amt.idmateria=m.id", "inner")
-			->join("usuarios u", "u.id = amt.idasistente", "inner")
-			->where("t.id",$idtrabajo)
-			->where("u.token IS NOT NULL", null, false);
+			->query("SELECT amt.idasistente, u.token
+			FROM trabajo t
+			INNER JOIN materia m ON t.idmateria = m.id
+			INNER JOIN asistentemateria amt ON amt.idmateria=m.id
+			INNER JOIN usuarios u ON u.id = amt.idasistente
+			WHERE t.id={$idtrabajo} AND u.token IS NOT NULL", false);
 			$res = $this->db->get();
 			if($res->num_rows() > 0){
 				foreach($res->result() as $row){
