@@ -382,6 +382,7 @@
 					$this->pushbots->AlertOne("Nuevo trabajo recibido");
 					if($row->plataforma == "Android"){
 						$this->pushbots->PlatformOne("1");
+					}
 					else {
 						$this->pushbots->PlatformOne("0");
 					}
