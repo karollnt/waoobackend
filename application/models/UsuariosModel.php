@@ -22,6 +22,26 @@
 			return $mensaje;
 		}
 
+		public function verificaLogin2($u,$p,$t=1){
+			$mensaje = "";
+			$arraywhere = array("nickname"=>$u,"clave"=>$p,"estado"=>1);
+			if($t==2){
+				$arraywhere["tipo"] = 4;
+			}
+			$this->db
+			->select("id,TRIM(CONCAT(nombres,' ',apellidos)) AS nombrecompleto",false)
+			->from("usuarios")
+			->where($arraywhere);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				$mensaje = "ok";
+			}
+			else{
+				$mensaje = "Usuario y/o constrase&ntilde;a incorrecto(a)";
+			}
+			return $mensaje;
+		}
+
 		public function cambiarClave($u,$p,$p2){
 			$mensaje = "";
 			$arraywhere = array("nickname"=>$u,"clave"=>md5($p),"estado"=>1);
@@ -389,5 +409,5 @@
 	    		if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
 	    		return $mensaje;
 	  	}
-		
+
 	}
