@@ -218,7 +218,7 @@
 					if($verif) $mensaje .= ". Recuerde que su primer trabajo no es cobrado";
 				}
 				else $mensaje = "No se pudo ingresar la informaci&oacute;n";
-				$msg = "Ha recibido una oferta para realizar su trabajo por ".number_format($valor,0,".",",").". Verifique en Mis solicitudes las ofertas recibidas.";
+				$msg = "Ha recibido una oferta para realizar su trabajo por ".number_format($valor,0,".",",")." tokens. Verifique en Mis solicitudes las ofertas recibidas.";
 				$this->notificarUsuario($msg,"(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})",$idtrabajo);
 			}
 			return $mensaje;
@@ -366,7 +366,7 @@
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
-		
+
 		public function enviarNotificacionPushAsistentes($idtrabajo){
 			$res = $this->db
 			->query("SELECT amt.idasistente, u.token, u.plataforma
