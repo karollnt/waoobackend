@@ -299,8 +299,23 @@
 
 		public function notificarUsuario($msg,$idusuario,$idtrabajo){
 			$mensaje = '';
-			$res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
-			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
+			$res1 = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
+			$res2 = $this->db->query("SELECT token, plataforma FROM usuarios WHERE id = {$idusuario}", false);
+			
+			if($res2->num_rows() > 0){
+				foreach($res2->result() as $row){
+					$this->pushbots->AlertOne("Nuevo trabajo recibido");
+					if($row->plataforma == "Android"){
+						$this->pushbots->PlatformOne("1");
+					}
+					else {
+						$this->pushbots->PlatformOne("0");
+					}
+					$this->pushbots->TokenOne($row->token);
+					$this->pushbots->PushOne();
+				}
+			}
+			if($res1->num_rows() > 0) $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
