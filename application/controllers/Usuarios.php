@@ -316,7 +316,7 @@
 		public function recargaTokensOperador(){
 			$nickname = $this->input->post('nickname');
 			$operador = $this->input->post('operador');
-			$cantidad = $this->input->post('cantidad');
+			$cantidad = $this->input->post('valor');
 			$trans = "WO-".$this->random_str(10);
 			$mensaje = $this->UsuariosModel->recargarTokens($nickname,$trans,$cantidad,$operador);
 			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la recarga");
