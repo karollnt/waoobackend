@@ -319,7 +319,7 @@
 			$cantidad = $this->input->post('cantidad');
 			$trans = "WO-".$this->random_str(10);
 			$mensaje = $this->UsuariosModel->recargarTokens($nickname,$trans,$cantidad,$operador);
-			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la apertura del chat");
+			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la recarga");
 			else $resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
