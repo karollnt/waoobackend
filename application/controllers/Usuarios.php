@@ -317,7 +317,7 @@
 			$nickname = $this->input->post('nickname');
 			$operador = $this->input->post('operador');
 			$cantidad = $this->input->post('cantidad');
-			$trans = "WO-".random_str(10);
+			$trans = "WO-".$this->random_str(10);
 			$mensaje = $this->UsuariosModel->recargarTokens($nickname,$trans,$cantidad,$operador);
 			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la apertura del chat");
 			else $resp = array("msg"=>html_entity_decode($mensaje));
@@ -333,13 +333,13 @@
 		}
 
 		public function actualizarToken(){
-	    		$token = $this->input->post('token');
-	    		$plataforma = $this->input->post('plataforma');
-	    		$nickname = $this->input->post('nickname');
-	    		$usuario = $this->UsuariosModel->usuarioObj($nickname);
-	    		$mensaje = $this->UsuariosModel->actualizarToken($token,$plataforma,$usuario->id);
-	    		$resp = array("msg"=>html_entity_decode($mensaje));
-	    		echo json_encode($resp);
-	  	}
-		
+  		$token = $this->input->post('token');
+  		$plataforma = $this->input->post('plataforma');
+  		$nickname = $this->input->post('nickname');
+  		$usuario = $this->UsuariosModel->usuarioObj($nickname);
+  		$mensaje = $this->UsuariosModel->actualizarToken($token,$plataforma,$usuario->id);
+  		$resp = array("msg"=>html_entity_decode($mensaje));
+  		echo json_encode($resp);
+  	}
+
 	}
