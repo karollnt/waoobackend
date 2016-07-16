@@ -377,7 +377,7 @@
 			$this->db->insert('recargas',$datos);
 			if($this->db->affected_rows()>0) $mensaje = "Recarga ingresada";
 			else $mensaje = "No se ingreso recarga";
-			$this->db->query("UPDATE usuarios SET tokens=tokens + {$cantidad} WHERE id={$u1}");
+			$this->db->query("UPDATE usuarios SET tokens=tokens + {$cantidad} WHERE id=".($u1->id).")";
 			if($this->db->affected_rows()>0) $mensaje .= ", tokens agregados a la cuenta";
 			else $mensaje .= ", no se agregaron tokens a la cuenta";
 			return $mensaje;
