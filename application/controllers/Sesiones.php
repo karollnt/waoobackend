@@ -13,11 +13,11 @@
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
-		
+
 		public function loginOperador(){
 			$usuario = $this->input->post('nickname');
 			$clave  = $this->input->post('clave');
-			$mensaje = $this->UsuariosModel->verificaLogin($usuario,$clave,2);
+			$mensaje = $this->UsuariosModel->verificaLogin2($usuario,$clave,2);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
