@@ -473,12 +473,11 @@
 			$this->logTrabajo($datos['idtrabajo'],$datos['idusuario'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
 			$sol = json_decode($this->detallesSolicitud($datos['idtrabajo']));
 			$usuario = $this->UsuariosModel->usuarioObj($sol->usuario);
-			var_dump($usuario);
-			//$this->notificarUsuario("Archivo de solucion para solicitud recibido",$usuario->id,$datos['idtrabajo']);
-			/*$this->db->where('id',$datos['idtrabajo']);
+			$this->notificarUsuario("Archivo de solucion para solicitud recibido",$usuario->id,$datos['idtrabajo']);
+			$this->db->where('id',$datos['idtrabajo']);
 			$this->db->update("trabajo",array("estado"=>3));
 			if($this->db->affected_rows()>0) $mensaje = "Se ha actualizado la solicitud";
-			else*/ $mensaje = "No se pudo ingresar la informaci&oacute;n";
+			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
 
