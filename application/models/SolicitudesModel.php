@@ -300,12 +300,12 @@
 		public function notificarUsuario($msg,$idusuario,$idtrabajo){
 			$mensaje = '';
 			$res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
-			
+
 			if($this->db->affected_rows()>0)  $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 
 			$res = $this->db->query("SELECT token, plataforma FROM usuarios WHERE id = {$idusuario}", false);
-			
+
 			if($res->num_rows() > 0){
 				foreach($res->result() as $row){
 					$this->pushbots->AlertOne($msg);
@@ -469,15 +469,16 @@
 
 		public function enviarSolucion($datos){
 			$mensaje = '';
-			$this->db->insert('trabajoarchivos',$datos);
+			//$this->db->insert('trabajoarchivos',$datos);
 			$this->logTrabajo($datos['idtrabajo'],$datos['idusuario'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
 			$sol = $this->detallesSolicitud($datos['idtrabajo']);
 			$usuario = $this->UsuariosModel->usuarioObj($sol->usuario);
-			$this->notificarUsuario("Archivo de solucion para solicitud recibido",$usuario->id,$datos['idtrabajo']);
-			$this->db->where('id',$datos['idtrabajo']);
+			var_dump($usuario);
+			//$this->notificarUsuario("Archivo de solucion para solicitud recibido",$usuario->id,$datos['idtrabajo']);
+			/*$this->db->where('id',$datos['idtrabajo']);
 			$this->db->update("trabajo",array("estado"=>3));
 			if($this->db->affected_rows()>0) $mensaje = "Se ha actualizado la solicitud";
-			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
+			else*/ $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			return $mensaje;
 		}
 
