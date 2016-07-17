@@ -471,7 +471,7 @@
 			$mensaje = '';
 			//$this->db->insert('trabajoarchivos',$datos);
 			$this->logTrabajo($datos['idtrabajo'],$datos['idusuario'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
-			$sol = $this->detallesSolicitud($datos['idtrabajo']);
+			$sol = json_decode($this->detallesSolicitud($datos['idtrabajo']));
 			$usuario = $this->UsuariosModel->usuarioObj($sol->usuario);
 			var_dump($usuario);
 			//$this->notificarUsuario("Archivo de solucion para solicitud recibido",$usuario->id,$datos['idtrabajo']);
