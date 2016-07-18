@@ -22,6 +22,14 @@
 			echo json_encode($resp);
 		}
 
+		public function loginAdmin(){
+			$usuario = $this->input->post('nickname');
+			$clave  = $this->input->post('clave');
+			$mensaje = $this->UsuariosModel->verificaLogin2($usuario,$clave,3);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
+		}
+
 		public function logout(){
 			$this->load->library('session');
 			if($this->session->userdata('uid')){

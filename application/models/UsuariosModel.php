@@ -5,28 +5,14 @@
 			$this->load->database();
 		}
 
-		public function verificaLogin($u,$p){
-			$mensaje = "";
-			$arraywhere = array("nickname"=>$u,"clave"=>md5($p),"estado"=>1);
-			$this->db
-			->select("id,TRIM(CONCAT(nombres,' ',apellidos)) AS nombrecompleto",false)
-			->from("usuarios")
-			->where($arraywhere);
-			$res = $this->db->get();
-			if($res->num_rows()>0){
-				$mensaje = "ok";
-			}
-			else{
-				$mensaje = "Usuario y/o constrase&ntilde;a incorrecto(a)";
-			}
-			return $mensaje;
-		}
-
-		public function verificaLogin2($u,$p,$t=1){
+		public function verificaLogin($u,$p,$t=1){
 			$mensaje = "";
 			$arraywhere = array("nickname"=>$u,"clave"=>$p,"estado"=>1);
 			if($t==2){
 				$arraywhere["tipo"] = 4;
+			}
+			if($t==3){
+				$arraywhere["tipo"] = 3;
 			}
 			$this->db
 			->select("id,TRIM(CONCAT(nombres,' ',apellidos)) AS nombrecompleto",false)
