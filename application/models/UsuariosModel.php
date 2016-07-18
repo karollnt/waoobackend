@@ -128,7 +128,7 @@
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$cal = $this->calificacionAsesor($row->nickname);
-					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'",'
+					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'","nickname":"'.($row->nickname).'",'
 					.'"nombre":"'.($row->nombres).'","apellido":"'.($row->apellidos).'",'
 					.'"celular":"'.($row->celular).'","email":"'.($row->email).'","calificacion":"'.($cal).'",'
 					.'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'
