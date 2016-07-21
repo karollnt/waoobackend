@@ -243,7 +243,7 @@
 				$this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 				$mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
 				if($valor>0) $this->UsuariosModel->descontarTokens($idusuario,$valor);
-				$this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo);
+				$this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo,false);
 			}
 			else {
 				$mensaje = "No tienes saldo suficiente";
@@ -294,26 +294,28 @@
 			return $mensaje;
 		}
 
-		public function notificarUsuario($msg,$idusuario,$idtrabajo){
+		public function notificarUsuario($msg,$idusuario,$idtrabajo,$enviarPush = true){
 			$mensaje = '';
 			$res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
 
 			if($this->db->affected_rows()>0)  $mensaje = "Informaci&oacute;n ingresada";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 
-			$res = $this->db->query("SELECT token, plataforma FROM usuarios WHERE id = {$idusuario}", false);
+			if($enviarPush){
+				$res = $this->db->query("SELECT token, plataforma FROM usuarios WHERE id = {$idusuario}", false);
 
-			if($res->num_rows() > 0){
-				foreach($res->result() as $row){
-					$this->pushbots->AlertOne($msg);
-					if($row->plataforma == "Android"){
-						$this->pushbots->PlatformOne("1");
+				if($res->num_rows() > 0){
+					foreach($res->result() as $row){
+						$this->pushbots->AlertOne($msg);
+						if($row->plataforma == "Android"){
+							$this->pushbots->PlatformOne("1");
+						}
+						else {
+							$this->pushbots->PlatformOne("0");
+						}
+						$this->pushbots->TokenOne($row->token);
+						$this->pushbots->PushOne();
 					}
-					else {
-						$this->pushbots->PlatformOne("0");
-					}
-					$this->pushbots->TokenOne($row->token);
-					$this->pushbots->PushOne();
 				}
 			}
 			return $mensaje;
