@@ -232,20 +232,17 @@
 			$idusuario = "(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})";
 			$aupd = array("estado"=>1);
 			$verif = $this->verificarPrimerTrabajo($idasistente);
-			$tokens = 0;
+			$tokens = $this->UsuariosModel->cantidadTokens($idusuario) * 1;
+			$valor = $valor * 1;
 			if($verif){
 				$aupd["valor"] = 0;
-				$valor = 0;
-			}
-			else{
-				$tokens = $this->UsuariosModel->cantidadTokens($idusuario);
 			}
 			if($tokens >= $valor){
 				$this->db->where('id',$idpreciotrabajo);
 				$this->db->update('ofertatrabajo',$aupd);
 				$this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 				$mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
-				if(!$verif) $this->UsuariosModel->descontarTokens($idusuario,$valor);
+				if($valor>0) $this->UsuariosModel->descontarTokens($idusuario,$valor);
 				$this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo);
 			}
 			else {
@@ -469,11 +466,10 @@
 
 		public function enviarSolucion($datos){
 			$mensaje = '';
-			//$this->db->insert('trabajoarchivos',$datos);
 			$this->logTrabajo($datos['idtrabajo'],$datos['idusuario'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
 			$sol = json_decode($this->detallesSolicitud($datos['idtrabajo']));
 			$usuario = $this->UsuariosModel->usuarioObj($sol->usuario);
-			$this->notificarUsuario("Archivo de solucion para solicitud recibido",$usuario->id,$datos['idtrabajo']);
+			$this->notificarUsuario("Archivo de solucion para solicitud recibido","(SELECT idusuario FROM trabajo WHERE id=".$datos['idtrabajo'].")",$datos['idtrabajo']);
 			$this->db->where('id',$datos['idtrabajo']);
 			$this->db->update("trabajo",array("estado"=>3));
 			if($this->db->affected_rows()>0) $mensaje = "Se ha actualizado la solicitud";

@@ -126,14 +126,6 @@
 			echo json_encode($resp);
 		}
 
-		public function aceptarPrecioCero(){
-			$idpreciotrabajo = $this->input->post("idpreciotrabajo");
-			$mensaje = $this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"first",0);
-			if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
-			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
-			echo json_encode($resp);
-		}
-
 		public function asignarAsistenteTrabajo(){
 			$mensaje = '';
 			$nickname = $this->input->post('nickname');
