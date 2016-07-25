@@ -16,7 +16,7 @@
 		public function crearBanco(){
 			$mensaje = "";
 			$nombre = $this->input->post('nombre');
-			$mensaje = $this->MateriasModel->crearBanco($nombre);
+			$mensaje = $this->BancosModel->crearBanco($nombre);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
@@ -24,7 +24,7 @@
 		public function borrarBanco(){
 			$mensaje = "";
 			$id = $this->input->post('id');
-			$mensaje = $this->MateriasModel->borrarBanco($id);
+			$mensaje = $this->BancosModel->borrarBanco($id);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
