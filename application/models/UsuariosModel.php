@@ -77,7 +77,7 @@
 
 		public function borrarUsuario($usuario){
 			$mensaje = "";
-			$this->db->where('usuario',$usuario);
+			$this->db->where('id',$usuario);
 			$this->db->delete('usuarios');
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
@@ -395,5 +395,24 @@
   		if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n ingresada";
   		return $mensaje;
   	}
+
+		public function listarUsuarios(){
+			$mensaje = '';
+			$res = $this->db
+			->query("SELECT u.id, u.nickname, u.email, t.nombre AS tipo, u.tokens
+			FROM usuarios u
+			INNER JOIN tipousuario t ON t.id=u.tipo");
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'","nickname":"'.($row->nickname).'",'
+					'","email":"'.($row->email).'","tokens":"'.(row->tokens).'"'
+					.'}';
+				}
+			}
+			return $mensaje;
+		}
 
 	}

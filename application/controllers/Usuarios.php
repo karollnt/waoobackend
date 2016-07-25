@@ -77,7 +77,7 @@
 
 		public function borrarUsuario(){
 			$mensaje = "";
-			$usuario = trim($this->input->post('nickname'));
+			$usuario = trim($this->input->post('id'));
 			if($this->existeUsuario($usuario)){
 				$mensaje = $this->UsuariosModel->borrarUsuario($usuario);
 			}
@@ -99,15 +99,15 @@
 			$mensaje = $this->UsuariosModel->modificarUsuario($idusuario,$datos);
 			//upload avatar img
 			$path = './uploads/';
-            $this->load->library('upload');
-            // Define file rules
-            $this->upload->initialize(array(
-                "upload_path"       =>  $path,
-                "allowed_types"     =>  "gif|jpg|png|jpeg|bmp",
-                "max_size"          =>  '12400000',
-                "max_width"         =>  '1024',
-                "max_height"        =>  '768'
-            ));
+      $this->load->library('upload');
+      // Define file rules
+      $this->upload->initialize(array(
+        "upload_path"       =>  $path,
+        "allowed_types"     =>  "gif|jpg|png|jpeg|bmp",
+        "max_size"          =>  '12400000',
+        "max_width"         =>  '1024',
+        "max_height"        =>  '768'
+      ));
 			$rutaarchivo = "";
 			if($this->upload->do_upload("img-profile")){
 				$datosarchivo = $this->upload->data();
@@ -152,27 +152,6 @@
 			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
 			else $mensaje = '{"usuarios":['.$msg.']}';
 			echo $mensaje;
-		}
-
-		public function panelUsuario(){
-			$nickname = $this->input->post('nickname');
-			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
-			$u = '['.$u.']';
-			$usr = json_decode($u);
-			$usuario = $usr[0];
-			$datos = '{"datos":[';
-			switch($usuario->tipo){
-				case 1:
-					$datos .= '{"menu":"Perfil;Solicitudes;Soporte;Estad&iacute;sticas"}';
-					break;
-				case 2:
-					$datos .= '{"menu":"Perfil;Solicitudes"}';
-					break;
-				case 3:
-					$datos .= '{"menu":"Perfil;Solicitar;Mis solicitudes;Cargar saldo;Soporte"}';
-					break;
-			}
-			$datos .= ']}';
 		}
 
 		public function tipoUsuario(){
@@ -342,5 +321,11 @@
   		echo json_encode($resp);
   	}
 
+		public function listarUsuarios(){
+			$msg = $this->UsuariosModel->listarUsuarios();
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
+			else $mensaje = '{"usuarios":['.$msg.']}';
+			echo utf8_decode($mensaje);
+		}
+
 	}
-     
