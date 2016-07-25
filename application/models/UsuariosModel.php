@@ -415,4 +415,27 @@
 			return $mensaje;
 		}
 
+		public function trabajosRealizadosSemana(){
+			$mensaje = '';
+			$res = $this->db
+			->query("SELECT tr.id,u.nickname,TRIM(CONCAT(u.nombres,' ',u.apellidos)) AS nombreasistente,u.numerocuenta,b.nombre AS banco,o.valor AS tokens
+			FROM trabajolog t
+			INNER JOIN trabajo tr ON tr.id=t.idtrabajo
+			INNER JOIN usuarios u ON u.id=tr.idasistente
+			INNER JOIN bancos b ON b.id=u.idbanco
+			INNER JOIN ofertatrabajo o ON o.idtrabajo=t.idtrabajo AND o.idasistente=u.id
+			WHERE t.tipolog=5 AND YEARWEEK(t.fecha)=YEARWEEK(CURDATE(),1) AND o.estado=1");
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje .= '{"id":"'.($row->id).'","nombreasistente":"'.($row->nombreasistente).'","nickname":"'.($row->nickname).'",'
+					.'"numerocuenta":"'.($row->numerocuenta).'","banco":"'.($row->banco).'","tokens":"'.($row->tokens).'"'
+					.'}';
+				}
+			}
+			return $mensaje;
+		}
+
 	}

@@ -322,9 +322,18 @@
   	}
 
 		public function listarUsuarios(){
+			$mensaje = '';
 			$msg = $this->UsuariosModel->listarUsuarios();
 			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
 			else $mensaje = '{"usuarios":['.$msg.']}';
+			echo utf8_decode($mensaje);
+		}
+
+		public function trabajosRealizadosSemana(){
+			$mensaje = '';
+			$msg = $this->UsuariosModel->trabajosRealizadosSemana();
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
+			else $mensaje = '{"trabajos":['.$msg.']}';
 			echo utf8_decode($mensaje);
 		}
 
