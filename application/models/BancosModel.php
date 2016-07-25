@@ -23,4 +23,21 @@
 			return $mensaje;
 		}
 
+		public function crearBanco($nombre){
+			$mensaje = '';
+			$this->db->insert('bancos',array("nombre"=>$nombre));
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			return $mensaje;
+		}
+
+		public function borrarBanco($id){
+			$mensaje = '';
+			$this->db->where('id',$id);
+			$this->db->update('bancos',array("estado"=>0));
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			return $mensaje;
+		}
+
 	}
