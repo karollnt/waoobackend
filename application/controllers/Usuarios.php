@@ -47,7 +47,7 @@
 						$tipo = 1;
 						$banco = 1;
 						if($this->input->post('tipo')!=null) $tipo = $this->input->post('tipo');
-						if($this->input->post('banco')!=null) $banco = $this->input->post('banco');
+						if($this->input->post('idbanco')!=null) $banco = $this->input->post('idbanco');
 						$datos = array(
 							'nickname'=>$usuario, 'clave'=>md5($clave),'tipo'=>trim($tipo),
 							'nombres'=>trim($this->input->post('nombre')), 'apellidos'=>trim($this->input->post('apellido')),
