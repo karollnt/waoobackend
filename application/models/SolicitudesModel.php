@@ -306,7 +306,7 @@
 
 				if($res->num_rows() > 0){
 					foreach($res->result() as $row){
-						$this->pushbots->AlertOne("Nuevo trabajo recibido");
+						$this->pushbots->AlertOne($msg);
 						if($row->plataforma == "Android"){
 							$this->pushbots->PlatformOne("1");
 						}
