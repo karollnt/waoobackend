@@ -459,7 +459,7 @@
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$mensaje .= '{"id":"'.($row->id).'","usuario":"'.($row->usuario).'","nickname":"'.($row->nickname).'",'
-					.',"tokens":"'.($row->tokens).'","titulo":"'.($row->titulo).'"'
+					.'"tokens":"'.($row->tokens).'","titulo":"'.($row->titulo).'"'
 					.'}';
 				}
 			}
