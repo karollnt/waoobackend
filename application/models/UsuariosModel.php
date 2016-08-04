@@ -472,7 +472,7 @@
 			->query("SELECT u.id, u.nickname, u.email, t.nombre AS tipo, u.tokens
 			FROM usuarios u
 			INNER JOIN tipousuario t ON t.id=u.tipo
-			WHERE u.tipo=2");
+			WHERE u.tipo=2 AND u.estado=1");
 			if($res->num_rows()>0){
 				$cont1 = 0;
 				foreach($res->result() as $row){
