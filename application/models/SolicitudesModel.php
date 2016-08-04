@@ -259,6 +259,14 @@
 			return $mensaje;
 		}
 
+		public function reasignarAsistenteTrabajo($idasistente,$idtrabajo){
+			$mensaje = '';
+			$this->db->query("UPDATE trabajo SET idasistente={$idasistente} WHERE id={$idtrabajo}");
+			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
+			return $mensaje;
+		}
+
 		public function asistenteOferta($idoferta){
 			$id = 0;
 			$this->db->select('idasistente')->from('ofertatrabajo')->where('id',$idoferta);

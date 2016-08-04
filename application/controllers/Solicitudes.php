@@ -137,6 +137,16 @@
 			echo json_encode($resp);
 		}
 
+		public function reasignarAsistenteTrabajo(){
+			$mensaje = '';
+			$nickname = $this->input->post('idasistente');
+			$idtrabajo = $this->input->post('idtrabajo');
+			$usuario = $this->UsuariosModel->usuarioObj($nickname);
+			$mensaje = $this->SolicitudesModel->reasignarAsistenteTrabajo($usuario->id,$idtrabajo,$numcomprobante);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
+		}
+
 		public function detallesSolicitud(){
 			$mensaje = '';
 			$id = $this->input->post('id');
