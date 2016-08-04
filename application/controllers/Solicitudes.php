@@ -141,7 +141,7 @@
 			$mensaje = '';
 			$idasistente = $this->input->post('idasistente');
 			$idtrabajo = $this->input->post('idtrabajo');
-			$mensaje = $this->SolicitudesModel->reasignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
+			$mensaje = $this->SolicitudesModel->reasignarAsistenteTrabajo($idasistente,$idtrabajo);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
 		}
