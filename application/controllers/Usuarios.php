@@ -331,9 +331,29 @@
 
 		public function trabajosRealizadosSemana(){
 			$mensaje = '';
-			$msg = $this->UsuariosModel->trabajosRealizadosSemana();
+			$cant = $this->input->post('registros');
+			if($cant=='' || $cant == null) $cant = null;
+			$msg = $this->UsuariosModel->trabajosRealizadosSemana($cant);
 			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
 			else $mensaje = '{"trabajos":['.$msg.']}';
+			echo utf8_decode($mensaje);
+		}
+
+		public function ofertasAceptadasSemana(){
+			$mensaje = '';
+			$cant = $this->input->post('registros');
+			if($cant=='' || $cant == null) $cant = null;
+			$msg = $this->UsuariosModel->trabajosAceptadosSemana($cant);
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
+			else $mensaje = '{"trabajos":['.$msg.']}';
+			echo utf8_decode($mensaje);
+		}
+
+		public function listarAsistentes(){
+			$mensaje = '';
+			$msg = $this->UsuariosModel->listarAsistentes();
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
+			else $mensaje = '{"usuarios":['.$msg.']}';
 			echo utf8_decode($mensaje);
 		}
 

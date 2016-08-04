@@ -415,8 +415,9 @@
 			return $mensaje;
 		}
 
-		public function trabajosRealizadosSemana(){
+		public function trabajosRealizadosSemana($cant=null){
 			$mensaje = '';
+			$cant_query = $cant!=null ? "LIMIT {$cant}" : "";
 			$res = $this->db
 			->query("SELECT tr.id,u.nickname,TRIM(CONCAT(u.nombres,' ',u.apellidos)) AS nombreasistente,u.numerocuenta,b.nombre AS banco,o.valor AS tokens
 			FROM trabajolog t
@@ -424,7 +425,8 @@
 			INNER JOIN usuarios u ON u.id=tr.idasistente
 			INNER JOIN bancos b ON b.id=u.idbanco
 			INNER JOIN ofertatrabajo o ON o.idtrabajo=t.idtrabajo AND o.idasistente=u.id
-			WHERE t.tipolog=5 AND YEARWEEK(t.fecha)=YEARWEEK(CURDATE(),1) AND o.estado=1");
+			WHERE t.tipolog=5 AND YEARWEEK(t.fecha)=YEARWEEK(CURDATE(),1) AND o.estado=1
+			{$cant_query}");
 			if($res->num_rows()>0){
 				$cont1 = 0;
 				foreach($res->result() as $row){
@@ -432,6 +434,52 @@
 					else $mensaje .= ',';
 					$mensaje .= '{"id":"'.($row->id).'","nombreasistente":"'.($row->nombreasistente).'","nickname":"'.($row->nickname).'",'
 					.'"numerocuenta":"'.($row->numerocuenta).'","banco":"'.($row->banco).'","tokens":"'.($row->tokens).'"'
+					.'}';
+				}
+			}
+			return $mensaje;
+		}
+
+		public function ofertasAceptadasSemana($cant=null){
+			$mensaje = '';
+			$cant_query = $cant!=null ? "LIMIT {$cant}" : "";
+			$res = $this->db
+			->query("SELECT tr.id,u.nickname,u2.nickname AS usuario,o.valor AS tokens,tr.titulo
+			FROM trabajolog t
+			INNER JOIN trabajo tr ON tr.id=t.idtrabajo
+			INNER JOIN usuarios u ON u.id=tr.idasistente
+			INNER JOIN usuarios u2 ON u2.id=tr.idusuario
+			INNER JOIN ofertatrabajo o ON o.idtrabajo=t.idtrabajo AND o.idasistente=u.id
+			WHERE t.tipolog=2 AND YEARWEEK(t.fecha)=YEARWEEK(CURDATE(),1) AND o.estado=1
+			GROUP BY tr.id
+			{$cant_query}");
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje .= '{"id":"'.($row->id).'","usuario":"'.($row->usuario).'","nickname":"'.($row->nickname).'",'
+					.',"tokens":"'.($row->tokens).'","titulo":"'.($row->titulo).'"'
+					.'}';
+				}
+			}
+			return $mensaje;
+		}
+
+		public function listarAsistentes(){
+			$mensaje = '';
+			$res = $this->db
+			->query("SELECT u.id, u.nickname, u.email, t.nombre AS tipo, u.tokens
+			FROM usuarios u
+			INNER JOIN tipousuario t ON t.id=u.tipo
+			WHERE u.tipo=2");
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'","nickname":"'.($row->nickname).'",'
+					.'"email":"'.($row->email).'","tokens":"'.($row->tokens).'"'
 					.'}';
 				}
 			}
