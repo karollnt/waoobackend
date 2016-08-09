@@ -532,4 +532,33 @@
 			return $mensaje;
 		}
 
+		public function canalChatTrabajo($idtrabajo){
+			$canalurl = '';
+			$res = $this->db
+			->query("SELECT canalchat
+				FROM trabajo
+				WHERE id={$idtrabajo} ");
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$canalurl = $row->canalchat;
+				}
+			}
+			return $canalurl;
+		}
+
+		public function nickAsistenteTrabajo($idtrabajo){
+			$nickname = '';
+			$res = $this->db
+			->query("SELECT u.nickname
+				FROM trabajo t
+				INNER JOIN usuarios u ON u.id=t.idasistente
+				WHERE id={$idtrabajo} ");
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$nickname = $row->nickname;
+				}
+			}
+			return $nickname;
+		}
+
 	}

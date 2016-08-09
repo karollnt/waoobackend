@@ -486,4 +486,24 @@
 			return $mensaje;
 		}
 
+		public function rankingAsistentesCalificacion(){
+			$mensaje = '';
+			$res = $this->db
+			->query("SELECT COALESCE(AVG(r.puntaje),0) AS prom, u.nickname
+			FROM usuarios u
+			LEFT JOIN rating r ON r.idusuario=u.id
+			WHERE u.tipo=2 AND u.estado=1
+			GROUP BY u.id
+			ORDER BY prom DESC");
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje .= '{"nickname":"'.($row->nickname).'","calificacion":"'.($row->prom).'"}';
+				}
+			}
+			return $mensaje;
+		}
+
 	}

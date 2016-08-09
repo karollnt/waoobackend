@@ -126,9 +126,9 @@
 			}
 			else {
 				$errors = array('error' => $this->upload->display_errors());
-                foreach($errors as $k => $error){
-                    $mensaje .= ".".html_entity_decode($error);
-                }
+        foreach($errors as $k => $error){
+        	$mensaje .= ".".html_entity_decode($error);
+        }
 			}
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
@@ -352,6 +352,14 @@
 		public function listarAsistentes(){
 			$mensaje = '';
 			$msg = $this->UsuariosModel->listarAsistentes();
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
+			else $mensaje = '{"usuarios":['.$msg.']}';
+			echo utf8_decode($mensaje);
+		}
+
+		public function rankingAsistentesCalificacion(){
+			$mensaje = '';
+			$msg = $this->UsuariosModel->rankingAsistentesCalificacion();
 			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"'.$this->errores['nousf'].'"}';
 			else $mensaje = '{"usuarios":['.$msg.']}';
 			echo utf8_decode($mensaje);
