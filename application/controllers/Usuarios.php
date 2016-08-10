@@ -78,7 +78,7 @@
 		public function borrarUsuario(){
 			$mensaje = "";
 			$usuario = trim($this->input->post('id'));
-			if($this->existeUsuario($usuario)){
+			if($usuario!=''){
 				$mensaje = $this->UsuariosModel->borrarUsuario($usuario);
 			}
 			else{
