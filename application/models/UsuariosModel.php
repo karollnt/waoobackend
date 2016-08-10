@@ -506,4 +506,19 @@
 			return $mensaje;
 		}
 
+		public function tipoUsuario($nickname){
+			$tipo = 1;
+			$this->db
+			->select("tipo",false)
+			->from("usuarios")
+			->where("nickname",$nickname);
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				foreach($res->result() as $row){
+					$tipo = ($row->tipo)*1;
+				}
+			}
+			return $tipo;
+		}
+
 	}

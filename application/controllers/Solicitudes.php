@@ -283,10 +283,13 @@
 
 		public function canalChatTrabajo(){
 			$idtrabajo = $this->input->post('idtrabajo');
+			$usr = $this->input->post('nickname');
 			$mensaje = $this->SolicitudesModel->canalChatTrabajo($idtrabajo);
-			$nickasistente = $this->SolicitudesModel->nickAsistenteTrabajo($idtrabajo);
+			$tipo = $this->UsuariosModel->tipoUsuario($usr);
+			if(tipo==1) $nick = $this->SolicitudesModel->nickAsistenteTrabajo($idtrabajo);
+			else $nick = $this->SolicitudesModel->nickUsuarioTrabajo($idtrabajo);
 			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la solicitud");
-			else $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$nickasistente);
+			else $resp = array("msg"=>html_entity_decode($mensaje),"nickusr"=>$nick);
 			echo json_encode($resp);
 		}
 
