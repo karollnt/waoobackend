@@ -552,7 +552,7 @@
 			->query("SELECT u.nickname
 				FROM trabajo t
 				INNER JOIN usuarios u ON u.id=t.idasistente
-				WHERE id={$idtrabajo} ");
+				WHERE t.id={$idtrabajo} ");
 			if($res->num_rows()>0){
 				foreach($res->result() as $row){
 					$nickname = $row->nickname;
