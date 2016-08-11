@@ -582,7 +582,7 @@
 			->select("tr.id,tr.titulo,o.valor AS tokens",false)
 			->from("trabajolog t")
 			->join("trabajo tr","tr.id=t.idtrabajo","inner")
-			->join("usuarios u","u.id=t.idasistente","inner")
+			->join("usuarios u","u.id=tr.idasistente","inner")
 			->join("ofertatrabajo o","o.idtrabajo=t.idtrabajo AND o.idasistente=u.id","inner")
 			->where(array("u.nickname"=>$usr,"t.tipolog"=>5))
 			->order_by("tr.fecharegistro","desc");
