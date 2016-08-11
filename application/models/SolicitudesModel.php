@@ -576,4 +576,26 @@
 			return $nickname;
 		}
 
+		public function historialTrabajosAceptados($usr){
+			$mensaje = '';
+			$this->db
+			->select("t.id,t.titulo,o.valor AS tokens",false)
+			->from("trabajolog t")
+			->join("trabajo tr","tr.id=t.idtrabajo","inner")
+			->join("usuarios u","u.id=t.idasistente","inner")
+			->join("ofertatrabajo o","o.idtrabajo=t.idtrabajo AND o.idasistente=u.id","inner")
+			->where(array("u.nickname"=>$nickname,"t.tipolog"=>5))
+			->order_by("tr.fecharegistro","desc");
+			$res = $this->db->get();
+			if($res->num_rows()>0){
+				$cont1 = 0;
+				foreach($res->result() as $row){
+					if($cont1==0) $cont1 = 1;
+					else $mensaje .= ',';
+					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'",'"tokens":"'.trim($row->tokens).'"'}';
+				}
+			}
+			return $mensaje;
+		}
+
 	}

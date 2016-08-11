@@ -293,4 +293,11 @@
 			echo json_encode($resp);
 		}
 
+		public function historialTrabajosAceptados(){
+			$usr = $this->input->post('nickname');
+			$mensaje = $this->SolicitudesModel->historialTrabajosAceptados($usr);
+			$resp = array("msg"=>html_entity_decode($mensaje));
+			echo json_encode($resp);
+		}
+
 	}
