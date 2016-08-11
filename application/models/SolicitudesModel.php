@@ -579,7 +579,7 @@
 		public function historialTrabajosAceptados($usr){
 			$mensaje = '';
 			$this->db
-			->select("tr.id,tr.titulo,o.valor AS tokens",false)
+			->select("tr.id,t.fecha,tr.titulo,o.valor AS tokens",false)
 			->from("trabajolog t")
 			->join("trabajo tr","tr.id=t.idtrabajo","inner")
 			->join("usuarios u","u.id=tr.idasistente","inner")
@@ -592,7 +592,7 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","tokens":"'.trim($row->tokens).'"}';
+					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","fecha":"'.($row->fecha).'","tokens":"'.trim($row->tokens).'"}';
 				}
 			}
 			return $mensaje;
