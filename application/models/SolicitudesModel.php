@@ -592,7 +592,7 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'",'"tokens":"'.trim($row->tokens).'"'}';
+					$mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","tokens":"'.trim($row->tokens).'"}';
 				}
 			}
 			return $mensaje;
