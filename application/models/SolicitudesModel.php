@@ -579,7 +579,7 @@
 		public function historialTrabajosAceptados($usr){
 			$mensaje = '';
 			$this->db
-			->select("t.id,t.titulo,o.valor AS tokens",false)
+			->select("tr.id,tr.titulo,o.valor AS tokens",false)
 			->from("trabajolog t")
 			->join("trabajo tr","tr.id=t.idtrabajo","inner")
 			->join("usuarios u","u.id=t.idasistente","inner")
