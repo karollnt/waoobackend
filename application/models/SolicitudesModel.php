@@ -584,7 +584,7 @@
 			->join("trabajo tr","tr.id=t.idtrabajo","inner")
 			->join("usuarios u","u.id=t.idasistente","inner")
 			->join("ofertatrabajo o","o.idtrabajo=t.idtrabajo AND o.idasistente=u.id","inner")
-			->where(array("u.nickname"=>$nickname,"t.tipolog"=>5))
+			->where(array("u.nickname"=>$usr,"t.tipolog"=>5))
 			->order_by("tr.fecharegistro","desc");
 			$res = $this->db->get();
 			if($res->num_rows()>0){
