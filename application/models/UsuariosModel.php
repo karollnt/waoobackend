@@ -399,7 +399,7 @@
 		public function listarUsuarios(){
 			$mensaje = '';
 			$res = $this->db
-			->query("SELECT u.id, u.nickname, u.email, t.nombre AS tipo, u.tokens
+			->query("SELECT u.id, TRIM(CONCAT(u.nombres,' ',u.apellidos)) AS nombre, u.nickname, u.email, t.nombre AS tipo, u.tokens
 			FROM usuarios u
 			INNER JOIN tipousuario t ON t.id=u.tipo");
 			if($res->num_rows()>0){
@@ -408,7 +408,7 @@
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'","nickname":"'.($row->nickname).'",'
-					.'"email":"'.($row->email).'","tokens":"'.($row->tokens).'"'
+						.'"nombre":"'.($row->nombre).'","apellido":"'.($row->apellidos).'", "email":"'.($row->email).'","tokens":"'.($row->tokens).'"'
 					.'}';
 				}
 			}
