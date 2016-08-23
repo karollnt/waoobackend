@@ -408,7 +408,7 @@
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'","nickname":"'.($row->nickname).'",'
-						.'"nombre":"'.($row->nombre).'","apellido":"'.($row->apellidos).'", "email":"'.($row->email).'","tokens":"'.($row->tokens).'"'
+						.'"nombre":"'.($row->nombre).'", "email":"'.($row->email).'","tokens":"'.($row->tokens).'"'
 					.'}';
 				}
 			}
