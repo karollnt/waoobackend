@@ -15,6 +15,7 @@
 			$idmateria = $this->input->post('idmateria');
 			$fecha = $this->input->post('anio')."-".$this->input->post('mes')."-".$this->input->post('dia')." "
 				.$this->input->post('hora').":".$this->input->post('minutos').":00";
+			if(strcasecmp($fecha,":00")==0 || $fecha == null) $fecha = "0000-00-00 00:00:00";
 			$path = './uploads/';
 			$this->load->library('upload');
 			$this->upload->initialize(array(
