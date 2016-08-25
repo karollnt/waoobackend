@@ -11,8 +11,8 @@
 
 		public function crearSolicitud($datos,$datos2){
 			$mensaje = '';
-			$ins = $this->db->query("INSERT INTO trabajo(idusuario,idmateria,titulo,descripcion) "
-			." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).")");
+			$ins = $this->db->query("INSERT INTO trabajo(idusuario,idmateria,titulo,descripcion,fechaEntrega) "
+			." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).",'".$datos['fechaEntrega']."')");
 			if($this->db->affected_rows()>0) $mensaje = "ok";
 			else $mensaje = "No se pudo ingresar la informaci&oacute;n";
 			$idtrabajo = $this->db->insert_id();

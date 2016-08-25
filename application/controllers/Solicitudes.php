@@ -13,6 +13,8 @@
 			$titulo = utf8_decode($this->input->post('titulo'));
 			$descripcion = utf8_decode($this->input->post('descripcion'));
 			$idmateria = $this->input->post('idmateria');
+			$fecha = $this->input->post('anio')."-".$this->input->post('mes')."-".$this->input->post('dia')." "
+				.$this->input->post('hora').":".$this->input->post('minutos').":00";
 			$path = './uploads/';
 			$this->load->library('upload');
 			$this->upload->initialize(array(
@@ -42,7 +44,7 @@
 				}
 			}
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
-			$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>($titulo),"descripcion"=>($descripcion));
+			$datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>($titulo),"descripcion"=>($descripcion),"fechaEntrega"=>($fecha));
 			$mensaje = $this->SolicitudesModel->crearSolicitud($datos,$datos2);
 			$resp = array("msg"=>html_entity_decode($mensaje));
 			echo json_encode($resp);
