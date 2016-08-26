@@ -359,7 +359,7 @@
 		public function detallesSolicitud($id){
 			$mensaje = '';
 			$this->db
-			->select("t.id,t.titulo,t.descripcion,t.fecharegistro,t.fecharesuelto,e.nombre AS nestado,m.nombre AS nmateria,u.nickname,COALESCE(u1.nickname,'Ninguno') AS nickasistente,t.estado",false)
+			->select("t.id,t.titulo,t.descripcion,t.fecharegistro,t.fecharesuelto,e.nombre AS nestado,m.nombre AS nmateria,u.nickname,COALESCE(u1.nickname,'Ninguno') AS nickasistente,t.estado,t.fechaEntrega",false)
 			->from("trabajo t")
 			->join("usuarios u","u.id=t.idusuario","inner")
 			->join("usuarios u1","u1.id=t.idasistente","left")
@@ -369,7 +369,7 @@
 			$res = $this->db->get();
 			if($res->num_rows()>0){
 				foreach($res->result() as $row){
-					$mensaje = '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","descripcion":"'.($row->descripcion).'",'
+					$mensaje = '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","descripcion":"'.($row->descripcion).'","fechaentrega":"'.($row->fechaEntrega).'",'
 					.'"fecharegistro":"'.($row->fecharegistro).'","fecharesuelto":"'.($row->fecharesuelto).'","estado":"'.($row->nestado).'","idestado":"'.($row->estado).'",'
 					.'"materia":"'.($row->nmateria).'","usuario":"'.($row->nickname).'","asistente":"'.($row->nickasistente).'"}';
 				}
