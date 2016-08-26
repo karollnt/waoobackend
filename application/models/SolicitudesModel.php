@@ -243,7 +243,7 @@
 				$this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
 				$mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
 				if($valor>0) $this->UsuariosModel->descontarTokens($idusuario,$valor);
-				$this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo,false);
+				$this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo,true);
 			}
 			else {
 				$mensaje = "No tienes saldo suficiente";
