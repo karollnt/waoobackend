@@ -441,7 +441,7 @@
 		public function listaArchivosTrabajo($idtrabajo){
 			$mensaje = '';
 			$this->db
-			->select("tra.id,tra.tipoarchivo,u.nickname",false)
+			->select("tra.id,tra.tipoarchivo,u.nickname, CONCAT(archivo,extension) AS nombreArchivo",false)
 			->from("trabajoarchivos tra")
 			->join("usuarios u","u.id=tra.idusuario","inner")
 			->where("tra.idtrabajo",$idtrabajo);
@@ -451,7 +451,7 @@
 				foreach($res->result() as $row){
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
-					$mensaje .= '{"id":"'.($row->id).'","tipoarchivo":"'.($row->tipoarchivo).'","usuario":"'.($row->nickname).'"}';
+					$mensaje .= '{"id":"'.($row->id).'","tipoarchivo":"'.($row->tipoarchivo).'","nombrearchivo":"'.($row->nombreArchivo).'","usuario":"'.($row->nickname).'"}';
 				}
 			}
 			return $mensaje;
