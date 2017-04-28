@@ -272,24 +272,54 @@
 			return $str;
 		}
 
-		public function recargarTokensMP(){
-			$nickname = $this->input->post('nickname');
-			$datosmp = array('transaction_amount'=>$this->input->post('valor')*1,
-				'token'=>$this->input->post("token"),'installments'=>1,
-				'payment_method_id'=>$this->input->post("paymentMethodId"),'description'=>'Waoo - Compra de tokens',
-				'payer'=>array('email'=>$this->input->post("email")));
-			$this->load->library('mp');
-			$payment = $this->mp->post("/v1/payments", $datosmp);
-			if($payment['response']){
-				$pay = $payment['response'];
-				if($pay['status']=="approved"){
-					$mensaje = $this->UsuariosModel->recargarTokens($nickname,$pay['id'],$datosmp['transaction_amount']/1000,'mercadopagousr');
-					if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
-					else $resp = array("msg"=>html_entity_decode($mensaje));
-				}
-				else $resp = array("error" => $pay['status']);
+		public function recargarTokensMP() {
+      $resp = "";
+			try {
+        $nickname = $this->input->post('nickname');
+  			$datosmp = array('transaction_amount'=>$this->input->post('valor')*1,
+          'token'=>$this->input->post("token"),'installments'=>$this->input->post("installments"),
+          'payment_method_id'=>$this->input->post("paymentMethodId"),'description'=>'Waoo - Compra de tokens',
+          'payer'=>array('email'=>$this->input->post("email")));
+        $status = array(
+          'approved' => '¡Listo, se acredit&oacute; tu pago!',
+          'in_process' => array(
+            'pending_contingency' => 'Estamos procesando el pago.\nEn menos de una hora te enviaremos por e-mail el resultado.',
+            'pending_review_manual' => 'Estamos procesando el pago.\nEn menos de 2 d&iacute;as &aacute;ábiles te diremos por e-mail si se acredit&oacute; o si necesitamos más informaci&oacute;n.'
+          ),
+          'rejected' => array(
+            'cc_rejected_bad_filled_card_number' => 'Revisa el número de tarjeta.',
+            'cc_rejected_bad_filled_date' => 'Revisa la fecha de vencimiento.',
+            'cc_rejected_bad_filled_other' => 'Revisa los datos.',
+            'cc_rejected_bad_filled_security_code' => 'Revisa el código de seguridad.',
+            'cc_rejected_blacklist' => 'No pudimos procesar tu pago.',
+            'cc_rejected_call_for_authorize' => 'Debes autorizar ante '.($this->input->post("paymentMethodId")).' el pago de '.($this->input->post('valor')).' a MercadoPago',
+            'cc_rejected_card_disabled' => 'Llama a '.($this->input->post("paymentMethodId")).' para que active tu tarjeta',
+            'cc_rejected_card_error' => 'No pudimos procesar tu pago.',
+            'cc_rejected_duplicated_payment' => 'Ya hiciste un pago por ese valor.\nSi necesitas volver a pagar usa otra tarjeta u otro medio de pago.',
+            'cc_rejected_high_risk' => 'Tu pago fue rechazado.\nElige otro de los medios de pago, te recomendamos con medios en efectivo.',
+            'cc_rejected_insufficient_amount' => 'Tu '.($this->input->post("paymentMethodId")).' no tiene fondos suficientes.',
+            'cc_rejected_invalid_installments' => ($this->input->post("paymentMethodId")).' no procesa pagos en '.($this->input->post("installments")).' cuotas.',
+            'cc_rejected_max_attempts' => 'Llegaste al límite de intentos permitidos.\nElige otra tarjeta u otro medio de pago.',
+            'cc_rejected_other_reason' => ($this->input->post("paymentMethodId")).' no procesó el pago.'
+          )
+        );
+  			$this->load->library('mp');
+  			$payment = $this->mp->post("/v1/payments", $datosmp);
+  			if($payment['response']){
+  				$pay = $payment['response'];
+  				if($pay['status']=="approved"){
+  					$mensaje = $this->UsuariosModel->recargarTokens($nickname,$pay['id'],$datosmp['transaction_amount']/1000,'mercadopagousr');
+  					if(strcasecmp($mensaje,"No se pudo actualizar la informaci&oacute;n")==0) $resp = array("error"=>html_entity_decode($mensaje));
+  					else $resp = array("msg"=>html_entity_decode($mensaje));
+  				}
+  				else $resp = array("error" => $pay['status']);
+  			}
+  			else $resp = array("error" => "No hubo respuesta del proveedor de servicio" );
 			}
-			else $resp = array("error" => "No hubo respuesta del proveedor de servicio" );
+      catch (Exception $e) {
+        $resp = array("error" => $e->getMessage() );
+			}
+      return $resp;
 		}
 
 		public function recargaTokensOperador(){
