@@ -403,7 +403,7 @@
           array_push($areas[$row->nombre], $row->token);
         }
         foreach ($areas as $key => $value) {
-          $this->pushwoosh->sendMessage($msg.' '$key, $value);
+          $this->pushwoosh->sendMessage($msg.' '.$key, $value);
         }
       }
       return "Mensaje enviado";
