@@ -316,7 +316,7 @@
           foreach($res->result() as $row){
             array_push($tokens, $row->token);
           }
-          $this->Pushwoosh->sendMessage($msg, $tokens);
+          $this->pushwoosh->sendMessage($msg, $tokens);
         }
       }
       return $mensaje;
@@ -403,7 +403,7 @@
           array_push($areas[$row->nombre], $row->token);
         }
         foreach ($areas as $key => $value) {
-          $this->Pushwoosh->sendMessage($msg.' '.$key, $value);
+          $this->pushwoosh->sendMessage($msg.' '.$key, $value);
         }
       }
       return "Mensaje enviado";

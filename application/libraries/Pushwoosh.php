@@ -4,9 +4,9 @@
  * @category  Library
  */
 class Pushwoosh {
-  const API_TOKEN = 'VO36G0kuQ86ls0FNe1BaEgI9GlDQSx9ywzk1w2jGaQtyA6eU753BuLOeoXNaM0Q8w7qhqWsvwQVYD1DY6FWp';
-  const APPLICATION_CODE = '0E566-1EDAC';
-  const PW_DEBUG = true;
+  private $API_TOKEN = 'VO36G0kuQ86ls0FNe1BaEgI9GlDQSx9ywzk1w2jGaQtyA6eU753BuLOeoXNaM0Q8w7qhqWsvwQVYD1DY6FWp';
+  private $APPLICATION_CODE = '0E566-1EDAC';
+  private $PW_DEBUG = false;
 
   function __construct() {
     # code...
@@ -14,8 +14,8 @@ class Pushwoosh {
 
   private function pwCall($method, $options=array()) {
     $data = array (
-      'application' => APPLICATION_CODE,
-      'auth' => API_TOKEN,
+      'application' => $this->APPLICATION_CODE,
+      'auth' => $this->API_TOKEN,
       'notifications' => $options
     );
     $url = 'https://cp.pushwoosh.com/json/1.3/' . $method;
@@ -34,7 +34,7 @@ class Pushwoosh {
     $err = curl_error($ch);
     curl_close($ch);
 
-    if (PW_DEBUG) {
+    if ($this->PW_DEBUG) {
       print "[PW] request: $request\n";
       print "[PW] response: $response\n";
       print '[PW] info: ' . print_r($info, true);
