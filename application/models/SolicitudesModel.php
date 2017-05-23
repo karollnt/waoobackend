@@ -4,7 +4,7 @@
     public function __construct(){
       $this->load->database();
       $this->load->library('s3');
-      $this->load->library('Pushwoosh');
+      $this->load->library('OneSignal');
       //$this->db->get_compiled_select();
     }
 
@@ -316,7 +316,7 @@
           foreach($res->result() as $row){
             array_push($tokens, $row->token);
           }
-          $this->pushwoosh->sendMessage($msg, $tokens);
+          $this->onesignal->sendMessageToUsers($msg, $tokens);
         }
       }
       return $mensaje;
@@ -403,7 +403,7 @@
           array_push($areas[$row->nombre], $row->token);
         }
         foreach ($areas as $key => $value) {
-          $this->pushwoosh->sendMessage($msg.' '.$key, $value);
+          $this->onesignal->sendMessageToUsers($msg.' '.$key, $value);
         }
       }
       return "Mensaje enviado";
