@@ -351,6 +351,16 @@
   		echo json_encode($resp);
   	}
 
+    public function obtenerToken() {
+      $token = '';
+      $this->load->library('OneSignal');
+      $token = $this->onesignal->addDevice(
+        $this->input->get('plataforma'),
+        $this->input->get('version_sistema')
+      );
+      echo json_encode($token);
+    }
+
 		public function listarUsuarios(){
 			$mensaje = '';
 			$msg = $this->UsuariosModel->listarUsuarios();

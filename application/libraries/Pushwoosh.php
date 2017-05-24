@@ -54,8 +54,7 @@ class Pushwoosh {
       array(
         'send_date' => 'now',
         'content' => $msg,
-        'data' => array('custom' => 'json data'),
-        'link' => 'http://pushwoosh.com/',
+        'link' => '',
         'devices' => $devices
       )
     );
