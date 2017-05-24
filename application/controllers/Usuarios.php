@@ -276,7 +276,7 @@
       $resp = "";
 			try {
         $nickname = $this->input->post('nickname');
-  			$datosmp = array('transaction_amount'=>$this->input->post('valor')*1,
+  			$datosmp = array('transaction_amount'=>$this->input->post('valor')*1000,
           'token'=>$this->input->post("token"),'installments'=>$this->input->post("installments"),
           'payment_method_id'=>$this->input->post("paymentMethodId"),'description'=>'Waoo - Compra de tokens',
           'payer'=>array('email'=>$this->input->post("email")));

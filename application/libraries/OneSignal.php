@@ -10,11 +10,11 @@ class OneSignal {
   private $GOOGLE_KEY = "AIzaSyCsx4LCDDHkRPGwbEdpGMniPoYFA_lW9pw";
   private $IOS_KEY = "";
   private $API_URL = "https://onesignal.com/api/v1/";
-  private $DEVICE_KEYS = array('Android' => $this->$GOOGLE_KEY, 'iOS' => $this->$IOS_KEY);
-  private $DEVICE_TYPES = array('iOS', 'Android', 'Amazon', 'WinCE', 'browser', 'browser', 'WinCE', 'Mac OS X', 'Firefox OS', 'Mac OS X')
+  private $DEVICE_KEYS;
+  private $DEVICE_TYPES = array('iOS', 'Android', 'Amazon', 'WinCE', 'browser', 'browser', 'WinCE', 'Mac OS X', 'Firefox OS', 'Mac OS X');
 
   function __construct() {
-    # code...
+    $this->DEVICE_KEYS = array('Android' => $this->GOOGLE_KEY, 'iOS' => $this->IOS_KEY);
   }
 
   private function postToAPI($fields, $api) {
@@ -43,10 +43,10 @@ class OneSignal {
   public function sendMessageToUsers($msg, $tokens) {
     $fields = array(
       'app_id' => $this->APP_ID,
-      'include_player_ids' => $tokens
+      'include_player_ids' => $tokens,
       'data' => array("foo" => "bar"),
       'contents' => array(
-        'es' => $msg
+        'en' => $msg
       )
     );
 
