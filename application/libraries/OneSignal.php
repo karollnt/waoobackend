@@ -34,7 +34,7 @@ class OneSignal {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
     $response = curl_exec($ch);
-    $err = curl_error($curl);
+    $err = curl_error($ch);
     curl_close($ch);
 
     if ($err) {
