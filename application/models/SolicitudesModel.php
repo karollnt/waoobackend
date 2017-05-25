@@ -316,7 +316,9 @@
           foreach($res->result() as $row){
             array_push($tokens, $row->token);
           }
-          $this->onesignal->sendMessageToUsers($msg, $tokens);
+          if (count($tokens) > 0) {
+            $this->onesignal->sendMessageToUsers($msg, $tokens);
+          }
         }
       }
       return $mensaje;

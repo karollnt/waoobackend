@@ -18,8 +18,9 @@ class OneSignal {
   }
 
   private function postToAPI($fields, $api) {
+    $fields = json_encode($fields);
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $this->API_URL.$api);
+    curl_setopt($ch, CURLOPT_URL, ($this->API_URL).$api);
     curl_setopt($ch, CURLOPT_HTTPHEADER,
       array(
         'Content-Type: application/json charset=utf-8',
@@ -33,10 +34,18 @@ class OneSignal {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
     $response = curl_exec($ch);
+    $err = curl_error($curl);
     curl_close($ch);
 
-    $return["allresponses"] = $response;
-    $return = json_encode($return);
+    if ($err) {
+      $return = "cURL Error #:" . $err;
+    }
+    else {
+      $return["allresponses"] = $response;
+      $return = json_encode($return);
+    }
+
+
     return $return;
   }
 
@@ -44,7 +53,6 @@ class OneSignal {
     $fields = array(
       'app_id' => $this->APP_ID,
       'include_player_ids' => $tokens,
-      'data' => array("foo" => "bar"),
       'contents' => array(
         'en' => $msg
       )
