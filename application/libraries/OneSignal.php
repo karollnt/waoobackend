@@ -18,20 +18,21 @@ class OneSignal {
   }
 
   private function postToAPI($fields, $api) {
-    $fields = json_encode($fields);
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ($this->API_URL).$api);
-    curl_setopt($ch, CURLOPT_HTTPHEADER,
-      array(
-        'Content-Type: application/json charset=utf-8',
-        'Authorization: Basic MWRjZTAzZDgtMGMzNC00YTVhLWJlMjgtMGE1NzljMGI3YjFl'
-      )
-    );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_HEADER, FALSE);
-    curl_setopt($ch, CURLOPT_POST, TRUE);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt_array($ch, array(
+      CURLOPT_URL => ($this->API_URL).$api,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => "",
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => $fields,
+      CURLOPT_HTTPHEADER => array(
+        "authorization: Basic MWRjZTAzZDgtMGMzNC00YTVhLWJlMjgtMGE1NzljMGI3YjFl",
+        "Content-Type: application/json"
+      ),
+    ));
 
     $response = curl_exec($ch);
     $err = curl_error($ch);
@@ -44,8 +45,6 @@ class OneSignal {
       $return["allresponses"] = $response;
       $return = json_encode($return);
     }
-
-
     return $return;
   }
 
