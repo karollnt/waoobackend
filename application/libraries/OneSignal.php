@@ -48,7 +48,7 @@ class OneSignal {
     return $return;
   }
 
-  public function sendMessageToUsers($msg, $tokens) {
+  public function sendMessageToUsers($msg, $tokens, $extraData=null) {
     $fields = array(
       'app_id' => $this->APP_ID,
       'include_player_ids' => $tokens,
@@ -56,6 +56,9 @@ class OneSignal {
         'en' => $msg
       )
     );
+    if ($extraData) {
+      $fields['data'] = $extraData;
+    }
 
     $fields = json_encode($fields);
     return $this->postToAPI($fields, "notifications");
