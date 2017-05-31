@@ -303,4 +303,13 @@
 			echo json_encode($resp);
 		}
 
+    public function notificarAperturaChatOfertaAceptada() {
+      $urlChat = $this->input->post("urlChat");
+      $idpreciotrabajo = $this->input->post("idpreciotrabajo");
+      $nickAsistenteTrabajo = $this->input->post("nickasistente");
+      $mensaje = $this->SolicitudesModel->notificarAperturaChatOfertaAceptada($idpreciotrabajo,$nickAsistenteTrabajo,$urlChat);
+      $resp = array("msg"=>html_entity_decode($mensaje));
+      echo json_encode($resp);
+    }
+
 	}

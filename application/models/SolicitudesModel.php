@@ -242,7 +242,7 @@
         $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
         $mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
         if($valor>0) $this->UsuariosModel->descontarTokens($idusuario,$valor);
-        $this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo,true);
+        // $this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo,true);
       }
       else {
         $mensaje = "No tienes saldo suficiente";
@@ -301,7 +301,7 @@
       return $mensaje;
     }
 
-    public function notificarUsuario($msg,$idusuario,$idtrabajo,$enviarPush = true){
+    public function notificarUsuario($msg,$idusuario,$idtrabajo,$enviarPush = true, $extraData = null){
       $mensaje = '';
       $res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
 
@@ -317,7 +317,7 @@
             array_push($tokens, $row->token);
           }
           if (count($tokens) > 0) {
-            $this->onesignal->sendMessageToUsers($msg, $tokens);
+            $this->onesignal->sendMessageToUsers($msg, $tokens, $extraData);
           }
         }
       }
@@ -590,6 +590,14 @@
           $mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","fecha":"'.($row->fecha).'","tokens":"'.trim($row->tokens).'"}';
         }
       }
+      return $mensaje;
+    }
+
+    public function notificarAperturaChatOfertaAceptada($idpreciotrabajo, $nickasistente, $urlChat) {
+      $idtrabajo = "(SELECT idtrabajo FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
+      $idasistente = "(SELECT idasistente FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
+      $extraData = array('open_chat' => true, 'channel_id' => $urlChat, 'assistant_nick' => $nickasistente);
+      $mensaje = $this->notificarUsuario("Una de tus ofertas ha sido aceptada. Presiona aqui para ir al chat",$idasistente,$idtrabajo,true,$extraData);
       return $mensaje;
     }
 
