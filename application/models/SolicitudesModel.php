@@ -303,10 +303,11 @@
 
     public function notificarUsuario($msg,$idusuario,$idtrabajo,$enviarPush = true, $extraData = null){
       $mensaje = '';
-      $res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
-
-      if($this->db->affected_rows()>0)  $mensaje = "Informaci&oacute;n ingresada";
-      else $mensaje = "No se pudo ingresar la informaci&oacute;n";
+      if ($idtrabajo > 0) {
+        $res = $this->db->query("INSERT INTO notificacionesusuario(idusuario,mensaje,idtrabajo) VALUES ({$idusuario},'{$msg}',{$idtrabajo});");
+        if($this->db->affected_rows()>0)  $mensaje = "Informaci&oacute;n ingresada";
+        else $mensaje = "No se pudo ingresar la informaci&oacute;n";
+      }
 
       if($enviarPush){
         $res = $this->db->query("SELECT token, plataforma FROM usuarios WHERE id = {$idusuario}", false);
@@ -594,10 +595,32 @@
     }
 
     public function notificarAperturaChatOfertaAceptada($idpreciotrabajo, $nickasistente, $urlChat) {
-      $idtrabajo = "(SELECT idtrabajo FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
-      $idasistente = "(SELECT idasistente FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
+      $msg = "";
+      if ($idpreciotrabajo > 0) {
+        $idtrabajo = "(SELECT idtrabajo FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
+        $idasistente = "(SELECT idasistente FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
+        $msg = "Una de tus ofertas ha sido aceptada. Presiona aqui para ir al chat";
+      }
+      else {
+        $idtrabajo = -1;
+        $idasistente = "(SELECT id FROM usuarios WHERE nickname='{$nickasistente}')";
+        $tituloSolicitud = $this->nombreSolicitudConIdCanalChat($urlChat);
+        $textoSolicitud = (strcasecmp($tituloSolicitud,"")!=0 ? "({$tituloSolicitud})" : "");
+        $msg = "Un solicitante ha hecho clic en sustentacion{$textoSolicitud}. Presiona para ir al chat.";
+      }
       $extraData = array('open_chat' => true, 'channel_id' => $urlChat, 'assistant_nick' => $nickasistente);
-      $mensaje = $this->notificarUsuario("Una de tus ofertas ha sido aceptada. Presiona aqui para ir al chat",$idasistente,$idtrabajo,true,$extraData);
+      $mensaje = $this->notificarUsuario($msg,$idasistente,$idtrabajo,true,$extraData);
+      return $mensaje;
+    }
+
+    private function nombreSolicitudConIdCanalChat($idcanal) {
+      $mensaje = "";
+      $res = $this->db->query("SELECT titulo FROM trabajo WHERE canalchat='{$idcanal}' LIMIT 1");
+      if($res->num_rows()>0){
+        foreach($res->result() as $row){
+          $mensaje = $row->titulo;
+        }
+      }
       return $mensaje;
     }
 
