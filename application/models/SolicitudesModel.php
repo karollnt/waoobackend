@@ -217,8 +217,9 @@
           if($verif) $mensaje .= ". Recuerde que su primer trabajo no es cobrado";
         }
         else $mensaje = "No se pudo ingresar la informaci&oacute;n";
-        $msg = "Ha recibido una oferta para realizar su trabajo por ".number_format($valor,0,".",",")." tokens. Verifique en Mis solicitudes las ofertas recibidas.";
-        $this->notificarUsuario($msg,"(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})",$idtrabajo);
+        $msg = "Ha recibido una oferta para realizar su trabajo por ".number_format($valor,0,".",",")." tokens. Presione para ver las ofertas recibidas.";
+        $extraData = array('open_offers' => true, 'requirement_id' => $idtrabajo);
+        $this->notificarUsuario($msg,"(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})",$idtrabajo,true,$extraData);
       }
       return $mensaje;
     }
@@ -405,8 +406,9 @@
           }
           array_push($areas[$row->nombre], $row->token);
         }
+        $extraData = array('open_offer' => true, 'requirement_id' => $idtrabajo);
         foreach ($areas as $key => $value) {
-          $this->onesignal->sendMessageToUsers($msg.' '.$key, $value);
+          $this->onesignal->sendMessageToUsers($msg.' '.$key, $value, $extraData);
         }
       }
       return "Mensaje enviado";
@@ -475,7 +477,8 @@
       $this->logTrabajo($datos['idtrabajo'],$datos['idusuario'],4,"Archivo de solucion para idtrabajo ".$datos['idtrabajo']." enviado");
       $sol = json_decode($this->detallesSolicitud($datos['idtrabajo']));
       $usuario = $this->UsuariosModel->usuarioObj($sol->usuario);
-      $this->notificarUsuario("Archivo de solucion para solicitud recibido",$usuario->id,$datos['idtrabajo']);
+      $extraData = array('open_solution' => true, 'requirement_id' => $datos['idtrabajo']);
+      $this->notificarUsuario("Archivo de solucion para solicitud recibido",$usuario->id,$datos['idtrabajo'],true,$extraData);
       $this->db->where('id',$datos['idtrabajo']);
       $this->db->update("trabajo",array("estado"=>3));
       if($this->db->affected_rows()>0) $mensaje = "Se ha actualizado la solicitud";
