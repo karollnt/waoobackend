@@ -312,4 +312,63 @@
       echo json_encode($resp);
     }
 
+    public function ingresarSoporte() {
+      $mensaje = "";
+      $nickname = $this->input->post('user');
+      $tokens = $this->input->post('valor');
+
+      $path = './uploads/';
+      $this->load->library('upload');
+      $this->upload->initialize(array(
+        "upload_path"       =>  $path,
+        "allowed_types"     =>  "gif|jpg|png|jpeg|bmp",
+        "max_size"          =>  '20000000',
+        "max_width"         =>  '13684',
+        "max_height"        =>  '13684'
+      ));
+      if($this->upload->do_upload('archivo')) {
+        $datosarchivo = $this->upload->data();
+        $rutaarchivo = $datosarchivo['full_path'];
+        $extension = $datosarchivo['file_ext'];
+        $myFile = file_get_contents($rutaarchivo);
+        $ruta = $this->subirSoporte($myFile,$extension);
+        unlink($rutaarchivo);
+        $mensaje = $this->SolicitudesModel->ingresarSoporte($nickname,$tokens,$ruta);
+      }
+      else {
+        $mensaje = "No fue posible ingresar el registro";
+      }
+      $resp = array("msg"=>html_entity_decode($mensaje));
+      echo json_encode($resp);
+    }
+
+    public function subirSoporte($myFile,$extension) {
+      $fileRoute = "";
+      $buckName = "waoofiles";
+
+      $bucket = $this->s3->getBucket($buckName);
+      if($bucket !==false) ;
+      else $this->s3->putBucket($buckName,'public-read-write');
+
+      $filename = $this->random_str(48).$extension;
+      $putf = $this->s3->putObject($myFile,$buckName,$filename,'public-read');
+      if ($putf) {
+        $fileRoute = "https://".$buckName.".s3.amazonaws.com/$filename";
+      }
+      return $fileRoute;
+    }
+
+    public function aprobarSoporte() {
+      $id = $this->input->post('id');
+      $mensaje = $this->SolicitudesModel->aprobarSoporte($id);
+      $resp = array("msg"=>html_entity_decode($mensaje));
+      echo json_encode($resp);
+    }
+
+    public function soportesSinAprobar() {
+      $mensaje = $this->SolicitudesModel->soportesSinAprobar();
+      $resp = array("msg"=>html_entity_decode($mensaje));
+      echo json_encode($resp);
+    }
+
   }
