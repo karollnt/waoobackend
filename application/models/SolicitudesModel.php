@@ -649,11 +649,17 @@
       return $mensaje;
     }
 
-    public function aprobarSoporte($id) {
+    public function aprobarSoporte($id,$fuente) {
       $mensaje = '';
       $this->db->where('id',$id);
       $this->db->update('pagosefectivo',array('estado'=>2,'fechaActualizado'=>'now()'));
-      if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
+      if($this->db->affected_rows()>0) {
+        $this->load->model('UsuariosModel');
+        $mensaje = $this->UsuariosModel->recargarTokens(
+          "(SELECT nickname FROM pagosefectivo WHERE id={$id})", "MAP{$id}",
+          "(SELECT tokens FROM pagosefectivo WHERE id={$id})", $fuente
+        );
+      }
       else $mensaje = "No se pudo actualizar la informaci&oacute;n";
       return $mensaje;
     }
