@@ -360,7 +360,8 @@
 
     public function aprobarSoporte() {
       $id = $this->input->post('id');
-      $mensaje = $this->SolicitudesModel->aprobarSoporte($id);
+      $fuente = $this->input->post('fuente');
+      $mensaje = $this->SolicitudesModel->aprobarSoporte($id,$fuente);
       $resp = array("msg"=>html_entity_decode($mensaje));
       echo json_encode($resp);
     }
