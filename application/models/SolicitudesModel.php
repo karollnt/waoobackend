@@ -643,10 +643,21 @@
         foreach($res->result() as $row){
           if($cont1==0) $cont1 = 1;
           else $mensaje .= ',';
-          $mensaje .= '{"id":"'.($row->id).'","nickname":"'.($row->nickname).'","fecha":"'.($row->fecha).'","tokens":"'.trim($row->tokens).'","consignacion":"'.($row->consignacion).'"}';
+          $mensaje .= '{"id":"'.($row->id).'","nickname":"'.($row->nickname).'","fecha":"'.($row->fechaCreacion).'","tokens":"'.trim($row->tokens).'","consignacion":"'.($row->consignacion).'"}';
         }
       }
       return $mensaje;
+    }
+
+    private function obtenerNickSoporte($id) {
+      $nickname = "";
+      $res = $this->db->query("SELECT * FROM pagosefectivo WHERE id={$id}");
+      if($res->num_rows()>0){
+        foreach($res->result() as $row){
+          $nickname = $row->nickname;
+        }
+      }
+      return $nickname;
     }
 
     public function aprobarSoporte($id,$fuente) {
@@ -656,7 +667,7 @@
       if($this->db->affected_rows()>0) {
         $this->load->model('UsuariosModel');
         $mensaje = $this->UsuariosModel->recargarTokens(
-          "(SELECT nickname FROM pagosefectivo WHERE id={$id})", "MAP{$id}",
+          $this->obtenerNickSoporte($id), "MAP{$id}",
           "(SELECT tokens FROM pagosefectivo WHERE id={$id})", $fuente
         );
       }
