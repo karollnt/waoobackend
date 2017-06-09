@@ -368,7 +368,7 @@
 
     public function soportesSinAprobar() {
       $mensaje = $this->SolicitudesModel->soportesSinAprobar();
-      $resp = array("msg"=>html_entity_decode($mensaje));
+      $resp = array("msg"=>"[".html_entity_decode($mensaje)."]");
       echo json_encode($resp);
     }
 
