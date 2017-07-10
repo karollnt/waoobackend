@@ -405,4 +405,10 @@
 			echo utf8_decode($mensaje);
 		}
 
+    public function initBrainTree() {
+      $this->load->library("braintree_lib");
+      $token = $this->braintree_lib->create_client_token();
+      echo($token);
+    }
+
 	}
