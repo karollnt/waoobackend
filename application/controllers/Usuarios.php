@@ -408,7 +408,8 @@
     public function initBrainTree() {
       $this->load->library("braintree_lib");
       $token = $this->braintree_lib->create_client_token();
-      echo($token);
+      $resp = array("msg"=>html_entity_decode($token));
+      echo json_encode($resp);
     }
 
 	}
