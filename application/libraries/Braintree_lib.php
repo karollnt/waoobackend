@@ -11,18 +11,23 @@ include APPPATH.'third_party/Braintree/Braintree.php';
 
 class Braintree_lib {
 
-    function __construct() {
-      $CI = &get_instance();
-      $CI->config->load('braintree', TRUE);
-      $braintree = $CI->config->item('braintree');
-      Braintree_Configuration::environment($braintree['braintree_environment']);
-      Braintree_Configuration::merchantId($braintree['braintree_merchant_id']);
-      Braintree_Configuration::publicKey($braintree['braintree_public_key']);
-      Braintree_Configuration::privateKey($braintree['braintree_private_key']);
-    }
+  function __construct() {
+    $CI = &get_instance();
+    $CI->config->load('braintree', TRUE);
+    $braintree = $CI->config->item('braintree');
+    Braintree_Configuration::environment($braintree['braintree_environment']);
+    Braintree_Configuration::merchantId($braintree['braintree_merchant_id']);
+    Braintree_Configuration::publicKey($braintree['braintree_public_key']);
+    Braintree_Configuration::privateKey($braintree['braintree_private_key']);
+  }
 
-    function create_client_token(){
-      $clientToken = Braintree_ClientToken::generate();
-      return $clientToken;
-    }
+  function create_client_token(){
+    $clientToken = Braintree_ClientToken::generate();
+    return $clientToken;
+  }
+
+  public function create_payment($data) {
+    $result = Braintree_Transaction::sale($data);
+    return $result;
+  }
 }
