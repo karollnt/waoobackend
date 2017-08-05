@@ -411,57 +411,5 @@
       $resp = array("msg"=>html_entity_decode($token));
       echo json_encode($resp);
     }
-    
-    public function procesarPagoBT() {
-      $payment_method = $this->input->post('payment_method_nonce');
-      $resultado = null;
-      if (!isset($payment_method)) {
-        $mensaje = "Informacion de pago no validada";
-        $resp = array("error"=>html_entity_decode($mensaje));
-      }
-      else {
-        $resultado = $this->braintree_lib->create_payment(array(
-          'amount' => $this->input->post('amount'),
-          'paymentMethodNonce' => $this->input->post('payment_method_nonce'),
-          'customer' => array(
-            'firstName' => $this->input->post('firstName'),
-            'lastName' => $this->input->post('lastName')
-          ),
-          'options'=> array(
-            'submitForSettlement' => true,
-            'storeInVaultOnSuccess' => true
-          )
-        ));
-      }
-      if ($resultado === true) {
-        $mensaje = "Pago recibido satisfactoriamente";
-        $resp = array("msg"=>html_entity_decode($mensaje));
-      }
-      else {
-        $type = "error";
-        $codes = array(
-          'authorization_expired' => 'Autorizacion expirada',
-          'authorized' => 'Pago recibido satisfactoriamente',
-          'authorizing' => 'Pendiente de verificar',
-          'settlement_pending' => 'Pendiente por crear',
-          'settlement_confirmed' => 'Creacion confirmada',
-          'settlement_declined' => 'Creacion declinada',
-          'failed' => 'Ha ocurrido un error al procesar el pago',
-          'gateway_rejected' => 'Pago rechazado por la pasarela: '.$resultado->processorResponseText,
-          'processor_declined' => 'Pago declinado por pasarela',
-          'settled' => 'Transaccion creada',
-          'settling' => 'Creando transaccion',
-          'submitted_for_settlement' => 'Enviado para crear transaccion',
-          'voided' => 'Transaccion invalidada'
-        );
-        if (strcasecmp($resultado->status,"authorized") == 0 || strcasecmp($resultado->status,"authorizing") == 0
-            || strcasecmp($resultado->status,"settlement_confirmed") == 0 || strcasecmp($resultado->status,"settled") == 0) {
-          $type = "msg";
-        }
-        $mensaje = $codes[$resultado->status];
-        $resp = array($type=>html_entity_decode($mensaje));
-      }
-      echo json_encode($resp);
-    }
 
 	}
