@@ -381,13 +381,14 @@
       }
       else {
         $this->load->library("braintree_lib");
+        $usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
         $resultado = $this->braintree_lib->create_payment(array(
           'amount' => $this->input->post('amount'),
-          'paymentMethodNonce' => $this->input->post('payment_method_nonce'),
+          'paymentMethodNonce' => $payment_method,
           'customer' => array(
-            'firstName' => $this->input->post('firstName'),
-            'lastName' => $this->input->post('lastName'),
-            'email' => $this->input->post('email')
+            'firstName' => $usuario->nombre,
+            'lastName' => $usuario->apellido,
+            'email' => $usuario->email
           ),
           'options'=> array(
             'submitForSettlement' => true,
