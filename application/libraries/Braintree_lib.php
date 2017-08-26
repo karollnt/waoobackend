@@ -30,4 +30,13 @@ class Braintree_lib {
     $result = Braintree_Transaction::sale($data);
     return $result;
   }
+
+  public function create_customer($data) {
+    $result = Braintree_Customer::create($data);
+    return $result->success ? $result->customer : null;
+  }
+
+  public function create_payment_method($data) {
+    return Braintree_PaymentMethod::create($data);
+  }
 }

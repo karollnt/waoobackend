@@ -519,6 +519,14 @@
 				}
 			}
 			return $tipo;
-		}
+    }
+
+    public function set_bt_token($idusuario, $token) {
+      $mensaje = "";
+      $this->db->query("UPDATE usuarios SET bt_token={$token} WHERE id={$usuario}");
+      if($this->db->affected_rows()>0) $mensaje .= "Token de BT actualizado";
+      else $mensaje .= "No se actualizo el token BT";
+      return $mensaje;
+    }
 
 	}

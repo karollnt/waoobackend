@@ -382,19 +382,35 @@
       else {
         $this->load->library("braintree_lib");
         $usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
-        $resultado = $this->braintree_lib->create_payment(array(
-          'amount' => $this->input->post('amount'),
-          'paymentMethodNonce' => $payment_method,
-          'customer' => array(
+        $customer_id = null;
+        if ( $usuario->bt_token && strcasecmp($usuario->bt_token,'')!=0 ) {
+          $customer_id = $usuario->bt_token;
+        }
+        else {
+          $result = $this->braintree_lib->create_customer($customer_data);
+          $customer_id = $result->success ? $result->customer->id : null;
+        }
+
+        if ($customer_id != null) {
+          if (strcasecmp($customer_id,$usuario->bt_token != 0)) {
+            $this->UsuariosModel->set_bt_token($usuario->id, $customer_id);
+          }
+          $customer_data = array(
             'firstName' => $usuario->nombre,
             'lastName' => $usuario->apellido,
-            'email' => $usuario->email
-          ),
-          'options'=> array(
-            'submitForSettlement' => true,
-            'storeInVaultOnSuccess' => true
-          )
-        ));
+            'email' => $usuario->email,
+            'paymentMethodNonce' => $payment_method
+          );
+          $resultado = $this->braintree_lib->create_payment(array(
+            'amount' => $this->input->post('amount'),
+            'paymentMethodNonce' => $payment_method,
+            'customerId' => $result->customer->id,
+            'options'=> array(
+              'submitForSettlement' => true,
+              'storeInVaultOnSuccess' => true
+            )
+          ));
+        }
       }
       if ($resultado && $resultado->success === true) {
         $idpreciotrabajo = $this->input->post('idpreciotrabajo');
