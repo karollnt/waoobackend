@@ -206,7 +206,7 @@
     public function enviarPrecioTrabajo($idtrabajo,$idasistente,$val){
       $mensaje = '';
       $verif = $this->verificaSiAsistenteOferto($idtrabajo,$idasistente);
-      if($verif['hizo']) $mensaje = "Ya has hecho una oferta por ".number_format($verif['valor'],0,".",",")." para esta solicitud";
+      if($verif['hizo']) $mensaje = "Ya has hecho una oferta por $ ".number_format($verif['valor'],0,".",",")." para esta solicitud";
       else{
         $verif = $this->verificarPrimerTrabajo($idasistente);
         if($verif) $valor = 0;
@@ -217,7 +217,7 @@
           if($verif) $mensaje .= ". Recuerde que su primer trabajo no es cobrado";
         }
         else $mensaje = "No se pudo ingresar la informaci&oacute;n";
-        $msg = "Ha recibido una oferta para realizar su trabajo por ".number_format($valor,0,".",",")." tokens. Presione para ver las ofertas recibidas.";
+        $msg = "Ha recibido una oferta para realizar su trabajo por $ ".number_format($valor,0,".",",")." pesos. Presione para ver las ofertas recibidas.";
         $extraData = array('open_offers' => true, 'requirement_id' => $idtrabajo);
         $this->notificarUsuario($msg,"(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})",$idtrabajo,true,$extraData);
       }
