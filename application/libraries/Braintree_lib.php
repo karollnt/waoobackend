@@ -22,18 +22,15 @@ class Braintree_lib {
   }
 
   function create_client_token(){
-    $clientToken = Braintree_ClientToken::generate();
-    return $clientToken;
+    return Braintree_ClientToken::generate();
   }
 
   public function create_payment($data) {
-    $result = Braintree_Transaction::sale($data);
-    return $result;
+    return Braintree_Transaction::sale($data);
   }
 
   public function create_customer($data) {
-    $result = Braintree_Customer::create($data);
-    return $result->success ? $result->customer : null;
+    return Braintree_Customer::create($data);
   }
 
   public function create_payment_method($data) {

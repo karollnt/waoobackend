@@ -131,7 +131,7 @@
 					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'","nickname":"'.($row->nickname).'",'
 					.'"nombre":"'.($row->nombres).'","apellido":"'.($row->apellidos).'",'
 					.'"celular":"'.($row->celular).'","email":"'.($row->email).'","calificacion":"'.($cal).'",'
-					.'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'
+					.'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'.',"bt_token":"'.($row->bt_token).'"'
 					.'}';
 				}
 			}
@@ -523,7 +523,7 @@
 
     public function set_bt_token($idusuario, $token) {
       $mensaje = "";
-      $this->db->query("UPDATE usuarios SET bt_token={$token} WHERE id={$usuario}");
+      $this->db->query("UPDATE usuarios SET bt_token={$token} WHERE id={$idusuario}");
       if($this->db->affected_rows()>0) $mensaje .= "Token de BT actualizado";
       else $mensaje .= "No se actualizo el token BT";
       return $mensaje;
