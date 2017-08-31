@@ -407,7 +407,14 @@
 
     public function initBrainTree() {
       $this->load->library("braintree_lib");
-      $token = $this->braintree_lib->create_client_token();
+      $nickname = $this->input->post('nickname');
+      if (isset($nickname)) {
+        $usuario = $this->UsuariosModel->usuarioObj($nickname);
+        $token = $this->braintree_lib->create_client_token($usuario->bt_token);
+      }
+      else {
+        $token = $this->braintree_lib->create_client_token();
+      }
       $resp = array("msg"=>html_entity_decode($token));
       echo json_encode($resp);
     }

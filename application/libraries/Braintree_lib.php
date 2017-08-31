@@ -21,8 +21,11 @@ class Braintree_lib {
     Braintree_Configuration::privateKey($braintree['braintree_private_key']);
   }
 
-  function create_client_token(){
-    return Braintree_ClientToken::generate();
+  function create_client_token($customer_id = null){
+    $options = array(
+      'customerId' => $customer_id
+    );
+    return Braintree_ClientToken::generate($options);
   }
 
   public function create_payment($data) {
