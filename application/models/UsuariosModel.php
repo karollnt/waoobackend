@@ -419,7 +419,7 @@
 			$mensaje = '';
 			$cant_query = $cant!=null ? "LIMIT {$cant}" : "";
 			$res = $this->db
-			->query("SELECT tr.id,u.nickname,TRIM(CONCAT(u.nombres,' ',u.apellidos)) AS nombreasistente,u.numerocuenta,b.nombre AS banco,o.valor AS tokens
+			->query("SELECT tr.id,u.nickname,TRIM(CONCAT(u.nombres,' ',u.apellidos)) AS nombreasistente,u.numerocuenta,b.nombre AS banco,o.valor AS tokens, tr.numcomprobante
 			FROM trabajolog t
 			INNER JOIN trabajo tr ON tr.id=t.idtrabajo
 			INNER JOIN usuarios u ON u.id=tr.idasistente
@@ -433,7 +433,7 @@
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$mensaje .= '{"id":"'.($row->id).'","nombreasistente":"'.($row->nombreasistente).'","nickname":"'.($row->nickname).'",'
-					.'"numerocuenta":"'.($row->numerocuenta).'","banco":"'.($row->banco).'","tokens":"'.($row->tokens).'"'
+					.'"numerocuenta":"'.($row->numerocuenta).'","banco":"'.($row->banco).'","tokens":"'.($row->tokens).'", "numcomprobante":"'.($row->numcomprobante).'"'
 					.'}';
 				}
 			}
@@ -444,7 +444,7 @@
 			$mensaje = '';
 			$cant_query = $cant!=null ? "LIMIT {$cant}" : "";
 			$res = $this->db
-			->query("SELECT tr.id,u.nickname,u2.nickname AS usuario,o.valor AS tokens,tr.titulo
+			->query("SELECT tr.id,u.nickname,u2.nickname AS usuario,o.valor AS tokens,tr.titulo, tr.numcomprobante
 			FROM trabajolog t
 			INNER JOIN trabajo tr ON tr.id=t.idtrabajo
 			INNER JOIN usuarios u ON u.id=tr.idasistente
@@ -459,7 +459,7 @@
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$mensaje .= '{"id":"'.($row->id).'","usuario":"'.($row->usuario).'","nickname":"'.($row->nickname).'",'
-					.'"tokens":"'.($row->tokens).'","titulo":"'.($row->titulo).'"'
+					.'"tokens":"'.($row->tokens).'","titulo":"'.($row->titulo).'", "numcomprobante":"'.($row->numcomprobante).'"'
 					.'}';
 				}
 			}

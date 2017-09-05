@@ -209,12 +209,13 @@
       if($verif['hizo']) $mensaje = "Ya has hecho una oferta por $ ".number_format($verif['valor'],0,".",",")." para esta solicitud";
       else{
         $verif = $this->verificarPrimerTrabajo($idasistente);
-        if($verif) $valor = 0;
-        else $valor = $val;
+        /*if($verif) $valor = 0;
+        else */
+        $valor = $val;
         $this->db->insert('ofertatrabajo',array("idtrabajo"=>$idtrabajo,"idasistente"=>$idasistente,"valor"=>$valor,'estado'=>1));
         if($this->db->affected_rows()>0){
           $mensaje = "Oferta ingresada";
-          if($verif) $mensaje .= ". Recuerde que su primer trabajo no es cobrado";
+          //if($verif) $mensaje .= ". Recuerde que su primer trabajo no es cobrado";
         }
         else $mensaje = "No se pudo ingresar la informaci&oacute;n";
         $msg = "Ha recibido una oferta para realizar su trabajo por $ ".number_format($valor,0,".",",")." pesos. Presione para ver las ofertas recibidas.";
@@ -235,7 +236,8 @@
       // $tokens = $this->UsuariosModel->cantidadTokens($idusuario) * 1;
       $valor = $valor * 1;
       if($verif){
-        $aupd["valor"] = 0;
+        //$aupd["valor"] = 0;
+        $numcomprobante = "PT-".$numcomprobante;
       }
       // if($tokens >= $valor){
         $this->db->where('id',$idpreciotrabajo);
