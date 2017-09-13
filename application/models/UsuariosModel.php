@@ -529,4 +529,50 @@
       return $mensaje;
     }
 
+    public function guardarDetalles($nickname, $datos, $datosArchivo) {
+      $mensaje = '';
+      $idusuario = $this->usuarioObj($nickname);
+      $url = $this->subirSoporte($datosArchivo['archivo'], $datosArchivo['extension']);
+      $res = $this->db->query("SELECT id FROM datos_usuario WHERE id_usuario={$idusuario}");
+      if ($res->num_rows()>0) {
+        $this->db->query("UPDATE datos_usuario SET id_nivel={$datos['nivel']}, archivo_certificado='{$url}', "
+          ."descripcion='{$datos['descripcion']}' WHERE id={$idusuario}");
+        if($this->db->affected_rows()>0) $mensaje .= "Datos actualizados";
+        else $mensaje .= "No se actualizaron los datos";
+      }
+      else {
+        $this->db->query("INSERT INTO datos_usuario(id_usuario,id_nivel,descripcion,archivo_certificado) "
+          ."VALUES ({$idusuario},{$datos['nivel']},'{$datos['descripcion']}','{$url}')");
+        if($this->db->affected_rows()>0) $mensaje .= "Datos actualizados";
+        else $mensaje .= "No se actualizaron los datos";
+      }
+      return $mensaje;
+    }
+
+    public function subirSoporte($myFile,$extension) {
+      $fileRoute = "";
+      $buckName = "waoofiles";
+
+      $bucket = $this->s3->getBucket($buckName);
+      if($bucket !==false) ;
+      else $this->s3->putBucket($buckName,'public-read-write');
+
+      $filename = $this->random_str(64).$extension;
+      $putf = $this->s3->putObject($myFile,$buckName,$filename,'public-read');
+      if ($putf) {
+        $fileRoute = "https://".$buckName.".s3.amazonaws.com/$filename";
+      }
+      return $fileRoute;
+    }
+
+    public function random_str($length){
+      $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_,;';
+      $str = '';
+      $max = strlen($keyspace) - 1;
+      for ($i = 0; $i < $length; ++$i) {
+        $str .= $keyspace[rand(0, $max)];
+      }
+      return $str;
+    }
+
 	}
