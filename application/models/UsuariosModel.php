@@ -117,11 +117,15 @@
 		}
 
 		public function buscarUsuarios($columna,$valor){
-			$mensaje = "";
+      $mensaje = "";
+      $columna = "u.".$columna;
 			$this->db
-			->select("*",false)
+      ->select("u.*,du.url_certificado,du.descripcion,du.id_nivel,e.nombre AS nombre_nivel",false)
+      ->from("usuarios u")
+      ->join("datos_usuario du","du.id_usuario = u.id", "left")
+      ->join("nivel_educativo ne","ne.id=du.id_nivel","left")
 			->where($columna,$valor);
-			$res = $this->db->get("usuarios");
+			$res = $this->db->get();
 			if($res->num_rows()>0){
 				$cont1 = 0;
 				foreach($res->result() as $row){
@@ -131,7 +135,9 @@
 					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'","nickname":"'.($row->nickname).'",'
 					.'"nombre":"'.($row->nombres).'","apellido":"'.($row->apellidos).'",'
 					.'"celular":"'.($row->celular).'","email":"'.($row->email).'","calificacion":"'.($cal).'",'
-					.'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'.',"bt_token":"'.($row->bt_token).'"'
+          .'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'.',"bt_token":"'.($row->bt_token).'",'
+          .'"url_certificado":"'.($row->archivo_certificado).'","descripcion":"'.($row->descripcion).'",'
+          .'"id_nivel":'.($row->id_nivel).',"nombre_nivel":"'.($row->nombre_nivel).'"'
 					.'}';
 				}
 			}
@@ -536,7 +542,7 @@
       $res = $this->db->query("SELECT id FROM datos_usuario WHERE id_usuario={$idusuario}");
       if ($res->num_rows()>0) {
         $this->db->query("UPDATE datos_usuario SET id_nivel={$datos['nivel']}, archivo_certificado='{$url}', "
-          ."descripcion='{$datos['descripcion']}' WHERE id={$idusuario}");
+          ."descripcion='{$datos['descripcion']}' WHERE id_usuario={$idusuario}");
         if($this->db->affected_rows()>0) $mensaje .= "Datos actualizados";
         else $mensaje .= "No se actualizaron los datos";
       }
