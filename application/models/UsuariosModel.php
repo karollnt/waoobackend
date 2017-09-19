@@ -120,10 +120,10 @@
       $mensaje = "";
       $columna = "u.".$columna;
 			$this->db
-      ->select("u.*,du.url_certificado,du.descripcion,du.id_nivel,e.nombre AS nombre_nivel",false)
+      ->select("u.*,du.archivo_certificado,du.descripcion,COALESCE(du.id_nivel,0) AS id_nivel,ne.nombre AS nombre_nivel",false)
       ->from("usuarios u")
-      ->join("datos_usuario du","du.id_usuario = u.id", "left")
-      ->join("nivel_educativo ne","ne.id=du.id_nivel","left")
+      ->join("datos_usuario du","u.id = du.id_usuario", "left")
+      ->join("nivel_educativo ne","du.id_nivel = ne.id","left")
 			->where($columna,$valor);
 			$res = $this->db->get();
 			if($res->num_rows()>0){
@@ -143,7 +143,7 @@
 			}
 			else{
 				$mensaje = '{"'.$columna.'":"'.$valor.'"}';
-			}
+      }
 			return $mensaje;
 		}
 

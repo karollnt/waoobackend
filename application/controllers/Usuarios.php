@@ -191,7 +191,7 @@
 			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
 			$u = '['.$u.']';
 			$usr = json_decode($u);
-			$usuario = $usr[0];
+      $usuario = $usr[0];
 			echo '{"tipo":"'.$usuario->tipo.'"}';
 		}
 
