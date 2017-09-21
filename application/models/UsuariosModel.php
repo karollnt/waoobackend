@@ -117,11 +117,15 @@
 		}
 
 		public function buscarUsuarios($columna,$valor){
-			$mensaje = "";
+      $mensaje = "";
+      $columna = "u.".$columna;
 			$this->db
-			->select("*",false)
+      ->select("u.*,du.archivo_certificado,du.descripcion,COALESCE(du.id_nivel,0) AS id_nivel,ne.nombre AS nombre_nivel",false)
+      ->from("usuarios u")
+      ->join("datos_usuario du","u.id = du.id_usuario", "left")
+      ->join("nivel_educativo ne","du.id_nivel = ne.id","left")
 			->where($columna,$valor);
-			$res = $this->db->get("usuarios");
+			$res = $this->db->get();
 			if($res->num_rows()>0){
 				$cont1 = 0;
 				foreach($res->result() as $row){
@@ -131,13 +135,15 @@
 					$mensaje .= '{"id":"'.($row->id).'","tipo":"'.($row->tipo).'","nickname":"'.($row->nickname).'",'
 					.'"nombre":"'.($row->nombres).'","apellido":"'.($row->apellidos).'",'
 					.'"celular":"'.($row->celular).'","email":"'.($row->email).'","calificacion":"'.($cal).'",'
-					.'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'
+          .'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'.',"bt_token":"'.($row->bt_token).'",'
+          .'"url_certificado":"'.($row->archivo_certificado).'","descripcion":"'.($row->descripcion).'",'
+          .'"id_nivel":'.($row->id_nivel).',"nombre_nivel":"'.($row->nombre_nivel).'"'
 					.'}';
 				}
 			}
 			else{
 				$mensaje = '{"'.$columna.'":"'.$valor.'"}';
-			}
+      }
 			return $mensaje;
 		}
 
@@ -419,7 +425,7 @@
 			$mensaje = '';
 			$cant_query = $cant!=null ? "LIMIT {$cant}" : "";
 			$res = $this->db
-			->query("SELECT tr.id,u.nickname,TRIM(CONCAT(u.nombres,' ',u.apellidos)) AS nombreasistente,u.numerocuenta,b.nombre AS banco,o.valor AS tokens
+			->query("SELECT tr.id,u.nickname,TRIM(CONCAT(u.nombres,' ',u.apellidos)) AS nombreasistente,u.numerocuenta,b.nombre AS banco,o.valor AS tokens, tr.numcomprobante
 			FROM trabajolog t
 			INNER JOIN trabajo tr ON tr.id=t.idtrabajo
 			INNER JOIN usuarios u ON u.id=tr.idasistente
@@ -433,7 +439,7 @@
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$mensaje .= '{"id":"'.($row->id).'","nombreasistente":"'.($row->nombreasistente).'","nickname":"'.($row->nickname).'",'
-					.'"numerocuenta":"'.($row->numerocuenta).'","banco":"'.($row->banco).'","tokens":"'.($row->tokens).'"'
+					.'"numerocuenta":"'.($row->numerocuenta).'","banco":"'.($row->banco).'","tokens":"'.($row->tokens).'", "numcomprobante":"'.($row->numcomprobante).'"'
 					.'}';
 				}
 			}
@@ -444,7 +450,7 @@
 			$mensaje = '';
 			$cant_query = $cant!=null ? "LIMIT {$cant}" : "";
 			$res = $this->db
-			->query("SELECT tr.id,u.nickname,u2.nickname AS usuario,o.valor AS tokens,tr.titulo
+			->query("SELECT tr.id,u.nickname,u2.nickname AS usuario,o.valor AS tokens,tr.titulo, tr.numcomprobante
 			FROM trabajolog t
 			INNER JOIN trabajo tr ON tr.id=t.idtrabajo
 			INNER JOIN usuarios u ON u.id=tr.idasistente
@@ -459,7 +465,7 @@
 					if($cont1==0) $cont1 = 1;
 					else $mensaje .= ',';
 					$mensaje .= '{"id":"'.($row->id).'","usuario":"'.($row->usuario).'","nickname":"'.($row->nickname).'",'
-					.'"tokens":"'.($row->tokens).'","titulo":"'.($row->titulo).'"'
+					.'"tokens":"'.($row->tokens).'","titulo":"'.($row->titulo).'", "numcomprobante":"'.($row->numcomprobante).'"'
 					.'}';
 				}
 			}
@@ -519,6 +525,60 @@
 				}
 			}
 			return $tipo;
-		}
+    }
+
+    public function set_bt_token($idusuario, $token) {
+      $mensaje = "";
+      $this->db->query("UPDATE usuarios SET bt_token={$token} WHERE id={$idusuario}");
+      if($this->db->affected_rows()>0) $mensaje .= "Token de BT actualizado";
+      else $mensaje .= "No se actualizo el token BT";
+      return $mensaje;
+    }
+
+    public function guardarDetalles($nickname, $datos, $datosArchivo) {
+      $mensaje = '';
+      $idusuario = $this->usuarioObj($nickname);
+      $url = $this->subirSoporte($datosArchivo['archivo'], $datosArchivo['extension']);
+      $res = $this->db->query("SELECT id FROM datos_usuario WHERE id_usuario={$idusuario}");
+      if ($res->num_rows()>0) {
+        $this->db->query("UPDATE datos_usuario SET id_nivel={$datos['nivel']}, archivo_certificado='{$url}', "
+          ."descripcion='{$datos['descripcion']}' WHERE id_usuario={$idusuario}");
+        if($this->db->affected_rows()>0) $mensaje .= "Datos actualizados";
+        else $mensaje .= "No se actualizaron los datos";
+      }
+      else {
+        $this->db->query("INSERT INTO datos_usuario(id_usuario,id_nivel,descripcion,archivo_certificado) "
+          ."VALUES ({$idusuario},{$datos['nivel']},'{$datos['descripcion']}','{$url}')");
+        if($this->db->affected_rows()>0) $mensaje .= "Datos actualizados";
+        else $mensaje .= "No se actualizaron los datos";
+      }
+      return $mensaje;
+    }
+
+    public function subirSoporte($myFile,$extension) {
+      $fileRoute = "";
+      $buckName = "waoofiles";
+
+      $bucket = $this->s3->getBucket($buckName);
+      if($bucket !==false) ;
+      else $this->s3->putBucket($buckName,'public-read-write');
+
+      $filename = $this->random_str(64).$extension;
+      $putf = $this->s3->putObject($myFile,$buckName,$filename,'public-read');
+      if ($putf) {
+        $fileRoute = "https://".$buckName.".s3.amazonaws.com/$filename";
+      }
+      return $fileRoute;
+    }
+
+    public function random_str($length){
+      $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_,;';
+      $str = '';
+      $max = strlen($keyspace) - 1;
+      for ($i = 0; $i < $length; ++$i) {
+        $str .= $keyspace[rand(0, $max)];
+      }
+      return $str;
+    }
 
 	}

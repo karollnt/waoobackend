@@ -372,4 +372,86 @@
       echo json_encode($resp);
     }
 
+    public function procesarPagoBT() {
+      $payment_method = $this->input->post('payment_method_nonce');
+      $resultado = null;
+      if (!isset($payment_method)) {
+        $mensaje = "Informacion de pago no validada";
+        $resp = array("error"=>html_entity_decode($mensaje));
+      }
+      else {
+        $this->load->library("braintree_lib");
+        $usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
+        $customer_id = null;
+        $customer_data = array(
+          'firstName' => $usuario->nombre,
+          'lastName' => $usuario->apellido,
+          'email' => $usuario->email,
+          'paymentMethodNonce' => $payment_method
+        );
+        if ( isset($usuario->bt_token) && strcasecmp($usuario->bt_token,'')!=0 ) {
+          $customer_id = $usuario->bt_token;
+        }
+        else {
+          $result = $this->braintree_lib->create_customer($customer_data);
+          $customer_id = $result->success ? $result->customer->id : null;
+        }
+
+        if ($customer_id != null) {
+          if (strcasecmp($customer_id,$usuario->bt_token != 0)) {
+            $this->UsuariosModel->set_bt_token($usuario->id, $customer_id);
+          }
+          $resultado = $this->braintree_lib->create_payment(array(
+            'amount' => $this->input->post('amount'),
+            'paymentMethodNonce' => $payment_method,
+            'customerId' => $customer_id,
+            'options'=> array(
+              'submitForSettlement' => true,
+              'storeInVaultOnSuccess' => true
+            )
+          ));
+        }
+      }
+      if (isset($resultado)) {
+        if ($resultado->success === true) {
+          $type = "msg";
+          $idpreciotrabajo = $this->input->post('idpreciotrabajo');
+          $mensaje = "Pago recibido satisfactoriamente";
+          $mensaje .= ".\n".$this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"BTP-".($this->random_str(16)),0);
+          $resp = array("msg"=>html_entity_decode($mensaje),"nickasistente"=>$this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo),"id"=>$idpreciotrabajo);
+        }
+        else {
+          $type = "error";
+          $codes = array(
+            'authorization_expired' => 'Autorizacion expirada',
+            'authorized' => 'Pago recibido satisfactoriamente',
+            'authorizing' => 'Pendiente de verificar',
+            'settlement_pending' => 'Pendiente por crear',
+            'settlement_confirmed' => 'Creacion confirmada',
+            'settlement_declined' => 'Creacion declinada',
+            'failed' => 'Ha ocurrido un error al procesar el pago',
+            'gateway_rejected' => 'Pago rechazado por la pasarela: '.( isset($resultado->transaction->processorResponseText) ? $resultado->transaction->processorResponseText : 'Desconocido' ),
+            'processor_declined' => 'Pago declinado por pasarela',
+            'settled' => 'Transaccion creada',
+            'settling' => 'Creando transaccion',
+            'submitted_for_settlement' => 'Enviado para crear transaccion',
+            'voided' => 'Transaccion invalidada'
+          );
+          if (isset($resultado->transaction->status)) {
+            if (strcasecmp($resultado->transaction->status,"authorized") == 0 || strcasecmp($resultado->transaction->status,"authorizing") == 0
+              || strcasecmp($resultado->transaction->status,"settlement_confirmed") == 0 || strcasecmp($resultado->transaction->status,"settled") == 0) {
+              $type = "msg";
+            }
+            $mensaje = $codes[$resultado->transaction->status];
+          }
+        }
+      }
+      else {
+        $type = "error";
+        $mensaje = "No se pudo realizar la transaccion";
+      }
+      $resp = array($type=>html_entity_decode($mensaje));
+      echo json_encode($resp);
+    }
+
   }

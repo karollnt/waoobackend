@@ -34,46 +34,78 @@
 			return $valida;
 		}
 
-		public function crearUsuario(){
-			$mensaje = "";
-			$usuario = trim($this->input->post('nickname'));
-			if(strcasecmp($usuario,"")!=0){
-				if($this->existeUsuario()){
-					$mensaje = $this->errores['usuex'];
-				}
-				else{
-					$clave = trim($this->input->post('clave'));
-					if($this->validaClave($clave)){
-						$tipo = 1;
-						$banco = 1;
-						if($this->input->post('tipo')!=null) $tipo = $this->input->post('tipo');
-						if($this->input->post('idbanco')!=null) $banco = $this->input->post('idbanco');
-						$datos = array(
-							'nickname'=>$usuario, 'clave'=>md5($clave),'tipo'=>trim($tipo),
-							'nombres'=>trim($this->input->post('nombre')), 'apellidos'=>trim($this->input->post('apellido')),
-							'celular'=>trim($this->input->post('celular')), 'email'=>trim($this->input->post('email')),
-							'idbanco'=>trim($banco),'numerocuenta'=>trim($this->input->post('numerocuenta'))
-						);
-						if($tipo==1) $mensaje = $this->UsuariosModel->crearUsuario($datos);
-						if($tipo==2){
-							$datosmat = array();
-							$cantmatsreg = $this->input->post('cantmatsreg');
-							for($ind=0;$ind<$cantmatsreg;$ind++){
-								if($this->input->post('mat_'.$ind)!=null){
-									array_push($datosmat,$this->input->post('mat_'.$ind));
-								}
-							}
-							$mensaje = $this->UsuariosModel->crearAsistente($datos,$datosmat);
-						}
-					}
-				}
-			}
-			else{
-				$mensaje = $this->errores['usuv'];
-			}
-			$resp = array("msg"=>html_entity_decode($mensaje));
-			echo json_encode($resp);
-		}
+    public function crearUsuario() {
+      $mensaje = '';
+      $usuario = trim($this->input->post('nickname'));
+      if ( isset($usuario) && strcasecmp($usuario, '') != 0 ) {
+        if ( $this->UsuariosModel->existeUsuario('nickname',$usuario) ) {
+          $mensaje = $this->errores['usuex'];
+        }
+        else {
+          $tipo = $this->input->post('tipo') ? $this->input->post('tipo') : 1;
+          $banco = $this->input->post('idbanco') ? $this->input->post('idbanco') : 1;
+          $clave = trim($this->input->post('clave'));
+          $datos = array(
+            'nickname'=>$usuario, 'clave'=>md5($clave),'tipo'=>trim($tipo),
+            'nombres'=>trim($this->input->post('nombre')), 'apellidos'=>trim($this->input->post('apellido')),
+            'celular'=>trim($this->input->post('celular')), 'email'=>trim($this->input->post('email')),
+            'idbanco'=>trim($banco),'numerocuenta'=>trim($this->input->post('numerocuenta'))
+          );
+          if ($tipo == 1) {
+            $mensaje = $this->UsuariosModel->crearUsuario($datos);
+          }
+          else {
+            $datosmat = array();
+            $cantmatsreg = $this->input->post('cantmatsreg');
+            for($ind=0;$ind<$cantmatsreg;$ind++){
+              if($this->input->post('mat_'.$ind)!=null){
+                array_push($datosmat,$this->input->post('mat_'.$ind));
+              }
+            }
+            $mensaje = $this->UsuariosModel->crearAsistente($datos,$datosmat);
+          }
+          
+        }
+      }
+      else {
+        $mensaje = $this->errores['usuv'];
+      }
+      $resp = array('msg'=>html_entity_decode($mensaje));
+      echo json_encode($resp);
+    }
+
+    public function guardarDetalles() {
+      $nivelEducativo = $this->input->post('nivel');
+      $certificadoEducativo = $this->input->post('certificado');
+      $descripcion = trim( $this->input->post('descripcion') );
+      $usuario = trim( $this->input->post('nickname') );
+      $datosArchivo = '';
+      $path = './uploads/';
+      $this->load->library('upload');
+      $this->upload->initialize(array(
+        "upload_path"   =>  $path,
+        "allowed_types" =>  "gif|jpg|png|jpeg|bmp|pdf|doc|docx|xls|xlsx|txt",
+        "max_size"      =>  '20000000',
+        "max_width"     =>  '13684',
+        "max_height"    =>  '13684'
+      ));
+      if ( isset($certificadoEducativo) ) {
+        if($this->upload->do_upload('certificado')) {
+          $datosarchivo = $this->upload->data();
+          $rutaarchivo = $datosarchivo['full_path'];
+          $extension = $datosarchivo['file_ext'];
+          $archivo = file_get_contents($rutaarchivo);
+          $datosArchivo = array("archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
+          unlink($rutaarchivo);
+        }
+      }
+      $datos = array(
+        'nivel' => $nivelEducativo, 'certificado' => $urlCertificado, 'descripcion' => $descripcion
+      );
+      $msg = $this->UsuariosModel->guardarDetalles($nickname, $datos, $datosArchivo);
+      $resp = array("msg"=>html_entity_decode($mensaje));
+      echo json_encode($resp);
+    }
 
 		public function borrarUsuario(){
 			$mensaje = "";
@@ -159,7 +191,7 @@
 			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
 			$u = '['.$u.']';
 			$usr = json_decode($u);
-			$usuario = $usr[0];
+      $usuario = $usr[0];
 			echo '{"tipo":"'.$usuario->tipo.'"}';
 		}
 
@@ -404,5 +436,19 @@
 			else $mensaje = '{"usuarios":['.$msg.']}';
 			echo utf8_decode($mensaje);
 		}
+
+    public function initBrainTree() {
+      $this->load->library("braintree_lib");
+      $nickname = $this->input->post('nickname');
+      if (isset($nickname)) {
+        $usuario = $this->UsuariosModel->usuarioObj($nickname);
+        $token = $this->braintree_lib->create_client_token($usuario->bt_token);
+      }
+      else {
+        $token = $this->braintree_lib->create_client_token();
+      }
+      $resp = array("msg"=>html_entity_decode($token));
+      echo json_encode($resp);
+    }
 
 	}
