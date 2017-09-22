@@ -79,6 +79,7 @@
       $certificadoEducativo = $this->input->post('certificado');
       $descripcion = trim( $this->input->post('descripcion') );
       $usuario = trim( $this->input->post('nickname') );
+      $institucion_educativa = trim( $this->input->post('institucion_edu'));
       $datosArchivo = '';
       $path = './uploads/';
       $this->load->library('upload');
@@ -100,7 +101,7 @@
         }
       }
       $datos = array(
-        'nivel' => $nivelEducativo, 'certificado' => $urlCertificado, 'descripcion' => $descripcion
+        'nivel' => $nivelEducativo, 'certificado' => $urlCertificado, 'descripcion' => $descripcion, 'institucionedu' => $institucion_educativa
       );
       $msg = $this->UsuariosModel->guardarDetalles($nickname, $datos, $datosArchivo);
       $resp = array("msg"=>html_entity_decode($mensaje));
