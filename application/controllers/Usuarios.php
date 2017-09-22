@@ -450,5 +450,15 @@
       $resp = array("msg"=>html_entity_decode($token));
       echo json_encode($resp);
     }
+		
+		
+// Cargo los niveles educativos del modelo
+    public function listaNivelEducativo(){
+			$mensaje = "";
+			$msg = $this->UsuariosModel->listaNivelAcedemico();
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"No se encontraron resultados"}';
+			else $mensaje = '{"niveles":['.$msg.']}';
+			echo $mensaje;
+		}
 
 	}
