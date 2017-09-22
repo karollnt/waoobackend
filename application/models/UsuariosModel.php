@@ -548,7 +548,7 @@
       }
       else {
         $this->db->query("INSERT INTO datos_usuario(id_usuario,id_nivel,descripcion,archivo_certificado) "
-          ."VALUES ({$idusuario},{$datos['nivel']},'{$datos['descripcion']}','{$url}')");
+          ."VALUES ({$idusuario},{$datos['nivel']},'{$datos['descripcion']}','{$url}'),'{$datos['institucionedu']}'");
         if($this->db->affected_rows()>0) $mensaje .= "Datos actualizados";
         else $mensaje .= "No se actualizaron los datos";
       }
