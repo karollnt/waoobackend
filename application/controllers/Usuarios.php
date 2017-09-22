@@ -101,8 +101,8 @@
           unlink($rutaarchivo);
         }
       }
-      $datos = array(
-        'nivel' => $nivelEducativo, 'certificado' => $urlCertificado, 'descripcion' => $descripcion, 'institucionedu' => $institucion_educativa
+       $datos = array(
+        'nivel' => $nivelEducativo, 'archivo_certificado' => $certificadoEducativo, 'descripcion' => $descripcion, 'institucionedu' => $institucion_educativa
       );
       $msg = $this->UsuariosModel->guardarDetalles($nickname, $datos, $datosArchivo);
       $resp = array("msg"=>html_entity_decode($mensaje));
