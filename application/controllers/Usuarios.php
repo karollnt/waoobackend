@@ -63,6 +63,7 @@
               }
             }
             $mensaje = $this->UsuariosModel->crearAsistente($datos,$datosmat);
+            $guardo_detalle = $this->guardarDetalles();
           }
           
         }
