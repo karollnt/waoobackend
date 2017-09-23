@@ -76,6 +76,7 @@
     }
 
     public function guardarDetalles() {
+      $mensaje = "";
       $nivelEducativo = $this->input->post('nivel');
       $certificadoEducativo = $this->input->post('certificado');
       $descripcion = trim( $this->input->post('descripcion') );
@@ -104,9 +105,11 @@
        $datos = array(
         'nivel' => $nivelEducativo, 'archivo_certificado' => $certificadoEducativo, 'descripcion' => $descripcion, 'institucionedu' => $institucion_educativa
       );
-      $msg = $this->UsuariosModel->guardarDetalles($nickname, $datos, $datosArchivo);
+      if (isset($datosArchivo)) {
+        $mensaje = $this->UsuariosModel->guardarDetalles($usuario, $datos, $datosArchivo);
+      }
       $resp = array("msg"=>html_entity_decode($mensaje));
-      echo json_encode($resp);
+      return json_encode($resp);
     }
 
 		public function borrarUsuario(){
