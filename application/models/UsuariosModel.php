@@ -120,10 +120,10 @@
       $mensaje = "";
       $columna = "u.".$columna;
 			$this->db
-      ->select("u.*,du.url_certificado,du.descripcion,du.id_nivel,e.nombre AS nombre_nivel",false)
+      ->select("u.*,du.archivo_certificado,du.descripcion,COALESCE(du.id_nivel,0) AS id_nivel,ne.nombre AS nombre_nivel",false)
       ->from("usuarios u")
-      ->join("datos_usuario du","du.id_usuario = u.id", "left")
-      ->join("nivel_educativo ne","ne.id=du.id_nivel","left")
+      ->join("datos_usuario du","u.id = du.id_usuario", "left")
+      ->join("nivel_educativo ne","du.id_nivel = ne.id","left")
 			->where($columna,$valor);
 			$res = $this->db->get();
 			if($res->num_rows()>0){
@@ -143,7 +143,7 @@
 			}
 			else{
 				$mensaje = '{"'.$columna.'":"'.$valor.'"}';
-			}
+      }
 			return $mensaje;
 		}
 
@@ -227,9 +227,9 @@
 			return $mensaje;
 		}
 
-		public function calificarAsesor($idasesor,$puntaje){
+		public function calificarAsesor($idasesor,$puntaje,$comentario=""){
 			$mensaje = "";
-			$datos = array("idasistente"=>$idasesor,"puntaje"=>$puntaje);
+			$datos = array("idasistente"=>$idasesor,"puntaje"=>$puntaje,"comentario"=>$comentario);
 			$this->db->insert('rating',$datos);
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
@@ -548,7 +548,7 @@
       }
       else {
         $this->db->query("INSERT INTO datos_usuario(id_usuario,id_nivel,descripcion,archivo_certificado) "
-          ."VALUES ({$idusuario},{$datos['nivel']},'{$datos['descripcion']}','{$url}')");
+          ."VALUES ({$idusuario},{$datos['nivel']},'{$datos['descripcion']}','{$url}'),'{$datos['institucionedu']}'");
         if($this->db->affected_rows()>0) $mensaje .= "Datos actualizados";
         else $mensaje .= "No se actualizaron los datos";
       }
@@ -580,5 +580,24 @@
       }
       return $str;
     }
+		
+    // DATOS NIVEL ACADEMICO	
+    public function listaNivelAcedemico(){
+      $mensaje = '';
+      $this->db
+      ->select("*",false)
+      ->from("nivel_educativo")
+      ->where("estado",1);
+      $res = $this->db->get();
+      if($res->num_rows()>0){
+        $cont1 = 0;
+        foreach($res->result() as $row){
+          if($cont1==0) $cont1 = 1;
+          else $mensaje .= ',';
+          $mensaje .= '{"id":"'.($row->id).'","nombre":"'.($row->nombre).'"}';
+        }
+      }
+      return $mensaje;
+    }
 
-	}
+  }

@@ -63,6 +63,7 @@
               }
             }
             $mensaje = $this->UsuariosModel->crearAsistente($datos,$datosmat);
+            $guardo_detalle = $this->guardarDetalles();
           }
           
         }
@@ -79,6 +80,7 @@
       $certificadoEducativo = $this->input->post('certificado');
       $descripcion = trim( $this->input->post('descripcion') );
       $usuario = trim( $this->input->post('nickname') );
+      $institucion_educativa = trim( $this->input->post('institucion_edu'));
       $datosArchivo = '';
       $path = './uploads/';
       $this->load->library('upload');
@@ -99,8 +101,8 @@
           unlink($rutaarchivo);
         }
       }
-      $datos = array(
-        'nivel' => $nivelEducativo, 'certificado' => $urlCertificado, 'descripcion' => $descripcion
+       $datos = array(
+        'nivel' => $nivelEducativo, 'archivo_certificado' => $certificadoEducativo, 'descripcion' => $descripcion, 'institucionedu' => $institucion_educativa
       );
       $msg = $this->UsuariosModel->guardarDetalles($nickname, $datos, $datosArchivo);
       $resp = array("msg"=>html_entity_decode($mensaje));
@@ -191,7 +193,7 @@
 			$u = $this->UsuariosModel->buscarUsuarios("nickname",$nickname);
 			$u = '['.$u.']';
 			$usr = json_decode($u);
-			$usuario = $usr[0];
+      $usuario = $usr[0];
 			echo '{"tipo":"'.$usuario->tipo.'"}';
 		}
 
@@ -450,5 +452,15 @@
       $resp = array("msg"=>html_entity_decode($token));
       echo json_encode($resp);
     }
+		
+		
+// Cargo los niveles educativos del modelo
+    public function listaNivelEducativo(){
+			$mensaje = "";
+			$msg = $this->UsuariosModel->listaNivelAcedemico();
+			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"No se encontraron resultados"}';
+			else $mensaje = '{"niveles":['.$msg.']}';
+			echo $mensaje;
+		}
 
 	}
