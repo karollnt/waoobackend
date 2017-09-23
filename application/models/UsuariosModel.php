@@ -227,9 +227,9 @@
 			return $mensaje;
 		}
 
-		public function calificarAsesor($idasesor,$puntaje){
+		public function calificarAsesor($idasesor,$puntaje,$comentario=""){
 			$mensaje = "";
-			$datos = array("idasistente"=>$idasesor,"puntaje"=>$puntaje);
+			$datos = array("idasistente"=>$idasesor,"puntaje"=>$puntaje,"comentario"=>$comentario);
 			$this->db->insert('rating',$datos);
 			if($this->db->affected_rows()>0) $mensaje = "Informaci&oacute;n actualizada";
 			else $mensaje = "No se pudo actualizar la informaci&oacute;n";
@@ -581,23 +581,23 @@
       return $str;
     }
 		
-// DATOS NIVEL ACADEMICO	
-public function listaNivelAcedemico(){
-	$mensaje = '';
-	$this->db
-	->select("*",false)
-	->from("nivel_educativo")
-	->where("estado",1);
-	$res = $this->db->get();
-	if($res->num_rows()>0){
-		$cont1 = 0;
-		foreach($res->result() as $row){
-			if($cont1==0) $cont1 = 1;
-			else $mensaje .= ',';
-			$mensaje .= '{"id":"'.($row->id).'","nombre":"'.($row->nombre).'"}';
-		}
-	}
-	return $mensaje;
-		}
+    // DATOS NIVEL ACADEMICO	
+    public function listaNivelAcedemico(){
+      $mensaje = '';
+      $this->db
+      ->select("*",false)
+      ->from("nivel_educativo")
+      ->where("estado",1);
+      $res = $this->db->get();
+      if($res->num_rows()>0){
+        $cont1 = 0;
+        foreach($res->result() as $row){
+          if($cont1==0) $cont1 = 1;
+          else $mensaje .= ',';
+          $mensaje .= '{"id":"'.($row->id).'","nombre":"'.($row->nombre).'"}';
+        }
+      }
+      return $mensaje;
+    }
 
-	}
+  }

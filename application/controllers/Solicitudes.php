@@ -227,7 +227,8 @@
 		function aceptarSolucion(){
 			$mensaje = '';
 			$idtrabajo = $this->input->post('idtrabajo');
-			$calificacion = $this->input->post('calificacion');
+      $calificacion = $this->input->post('calificacion');
+      $comentario = $this->input->post('comentario');
 			$solicitud = $this->SolicitudesModel->detallesSolicitud($idtrabajo);
 			$solicitud = '['.$solicitud.']';
 			$solicitud = json_decode($solicitud);
@@ -237,7 +238,7 @@
 				$mensaje = $this->SolicitudesModel->aceptarSolucion($idtrabajo,$u1->id);
 				if($calificacion>0){
 					$u2 = $this->UsuariosModel->usuarioObj($sol->asistente);
-					$this->UsuariosModel->calificarAsesor($u2->id,$calificacion);
+					$this->UsuariosModel->calificarAsesor($u2->id,$calificacion,$comentario);
 				}
 			}
 			else $mensaje = "Hay problemas para procesar la solicitud";
