@@ -537,8 +537,11 @@
 
     public function guardarDetalles($nickname, $datos, $datosArchivo) {
       $mensaje = '';
-      $idusuario = $this->usuarioObj($nickname);
-      $url = $this->subirSoporte($datosArchivo['archivo'], $datosArchivo['extension']);
+      $idusuario = $this->usuarioObj($nickname)->id;
+      $url = "";
+      if (count($datosArchivo) && is_array($datosArchivo)) {
+        $url = $this->subirSoporte($datosArchivo['archivo'], $datosArchivo['extension']);
+      }
       $res = $this->db->query("SELECT id FROM datos_usuario WHERE id_usuario={$idusuario}");
       if ($res->num_rows()>0) {
         $this->db->query("UPDATE datos_usuario SET id_nivel={$datos['nivel']}, archivo_certificado='{$url}', "
@@ -547,8 +550,8 @@
         else $mensaje .= "No se actualizaron los datos";
       }
       else {
-        $this->db->query("INSERT INTO datos_usuario(id_usuario,id_nivel,descripcion,archivo_certificado) "
-          ."VALUES ({$idusuario},{$datos['nivel']},'{$datos['descripcion']}','{$url}'),'{$datos['institucionedu']}'");
+        $this->db->query("INSERT INTO datos_usuario(id_usuario,id_nivel,descripcion,archivo_certificado,institucionedu) "
+          ."VALUES ({$idusuario},'{$datos['nivel']}','{$datos['descripcion']}','{$url}','{$datos['institucionedu']}')");
         if($this->db->affected_rows()>0) $mensaje .= "Datos actualizados";
         else $mensaje .= "No se actualizaron los datos";
       }
