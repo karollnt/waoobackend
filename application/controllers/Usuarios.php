@@ -77,7 +77,7 @@
 
     public function guardarDetalles() {
       $mensaje = "";
-      $nivelEducativo = $this->input->post('nivel');
+      $nivelEducativo = $this->input->post('idnivel_edu');
       $certificadoEducativo = $this->input->post('certificado');
       $descripcion = trim( $this->input->post('descripcion') );
       $usuario = trim( $this->input->post('nickname') );
