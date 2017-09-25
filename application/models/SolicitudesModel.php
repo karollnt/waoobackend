@@ -420,10 +420,9 @@
       $mensaje = '';
       $this->load->model('UsuariosModel');
       $this->db
-      ->select("otr.id,otr.valor,u.nickname,otr.idasistente,du.descripcion",false)
+      ->select("otr.id,otr.valor,u.nickname,otr.idasistente",false)
       ->from("ofertatrabajo otr")
       ->join("usuarios u","u.id=otr.idasistente","inner")
-      ->join("datos_usuario du","du.id_usuario=u.id","inner")
       ->where("idtrabajo",$idtrabajo);
       $res = $this->db->get();
       if($res->num_rows()>0){
