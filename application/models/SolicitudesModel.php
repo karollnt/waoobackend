@@ -420,12 +420,11 @@
       $mensaje = '';
       $this->load->model('UsuariosModel');
       $this->db
-      ->select("otr.id,otr.valor,u.nickname,otr.idasistente,u.nombres,u.apellidos,du.descripcion,du.institucionedu,nd.nombre as nivel_edu,rt.comentario",false)
+      ->select("otr.id,otr.valor,u.nickname,otr.idasistente,u.nombres,u.apellidos,du.descripcion,du.institucionedu,nd.nombre as nivel_edu",false)
       ->from("ofertatrabajo otr")
       ->join("usuarios u","u.id=otr.idasistente","inner")
       ->join("datos_usuario du","du.id_usuario=otr.idasistente","left")
       ->join("nivel_educativo nd","nd.id=du.id_nivel","inner")
-      ->join("rating rt","rt.idasistente=otr.idasistente","inner")
       ->where("idtrabajo",$idtrabajo);
       $res = $this->db->get();
       if($res->num_rows()>0){
@@ -433,9 +432,10 @@
         foreach($res->result() as $row){
           $calif = $this->UsuariosModel->calificacionAsesor($row->nickname);
           $verif = $this->verificarPrimerTrabajo($row->idasistente);
+          $comentarios = $this->UsuariosModel->MostrarComentarios($row->idasistente);
           if($cont1==0) $cont1 = 1;
           else $mensaje .= ',';
-         $mensaje .= '{"id":"'.($row->id).'","valor":"'.($verif==true?0:$row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'","nombre":"'.($row->nombres)." ".($row->apellidos).'","descripcion":"'.($row->descripcion).'","institucion":"'.($row->institucionedu).'","nivel":"'.($row->nivel_edu).'","comentario":"'.($row->comentario).'"}';
+         $mensaje .= '{"id":"'.($row->id).'","valor":"'.($verif==true?0:$row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'","nombre":"'.($row->nombres)." ".($row->apellidos).'","descripcion":"'.($row->descripcion).'","institucion":"'.($row->institucionedu).'","nivel":"'.($row->nivel_edu).'","comentarios":"'.($comentarios).'"}';
         }
       }
       return $mensaje;
