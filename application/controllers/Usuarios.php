@@ -63,9 +63,41 @@
               }
             }
             $mensaje = $this->UsuariosModel->crearAsistente($datos,$datosmat);
-            $guardo_detalle = $this->guardarDetalles();
+            $nivelEducativo = $this->input->post('idnivel_edu');
+            $certificadoEducativo = $this->input->post('certificado');
+            $descripcion = trim( $this->input->post('descripcion') );
+            $institucion_educativa = trim( $this->input->post('institucion_edu'));
+            $datosArchivo = array();
+            $archivo = '';
+
+            $path = './uploads/';
+            $this->load->library('upload');
+            $this->upload->initialize(array(
+              "upload_path"   =>  $path,
+              "allowed_types" =>  "gif|jpg|png|jpeg|bmp|pdf|doc|docx|xls|xlsx|txt",
+              "max_size"      =>  '20000000',
+              "max_width"     =>  '13684',
+              "max_height"    =>  '13684'
+            ));
+            if($this->upload->do_upload('certificado')) {
+              $datosarchivo = $this->upload->data();
+              $rutaarchivo = $datosarchivo['full_path'];
+              $extension = $datosarchivo['file_ext'];
+              $fp = fopen($rutaarchivo, 'r');
+              $content = fread($fp, filesize($rutaarchivo));
+              $finfo = finfo_open(FILEINFO_MIME_TYPE);
+              $tipoarchivo=finfo_file($finfo, $rutaarchivo);
+              fclose($fp);
+              $archivo = file_get_contents($rutaarchivo);
+              $datosArchivo = array("archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
+              unlink($rutaarchivo);
+            }
+            $this->guardarDetalles(array(
+              'nivel'=>$nivelEducativo, 'descripcion'=>$descripcion,
+              'institucionedu'=>$institucion_educativa, 'datosArchivo'=>$datosArchivo,
+              'nickname'=>$usuario
+            ));
           }
-          
         }
       }
       else {
@@ -75,39 +107,9 @@
       echo json_encode($resp);
     }
 
-    public function guardarDetalles() {
+    public function guardarDetalles($datos) {
       $mensaje = "";
-      $nivelEducativo = $this->input->post('idnivel_edu');
-      $certificadoEducativo = $this->input->post('certificado');
-      $descripcion = trim( $this->input->post('descripcion') );
-      $usuario = trim( $this->input->post('nickname') );
-      $institucion_educativa = trim( $this->input->post('institucion_edu'));
-      $datosArchivo = '';
-      $path = './uploads/';
-      $this->load->library('upload');
-      $this->upload->initialize(array(
-        "upload_path"   =>  $path,
-        "allowed_types" =>  "gif|jpg|png|jpeg|bmp|pdf|doc|docx|xls|xlsx|txt",
-        "max_size"      =>  '20000000',
-        "max_width"     =>  '13684',
-        "max_height"    =>  '13684'
-      ));
-      if ( isset($certificadoEducativo) ) {
-        if($this->upload->do_upload('certificado')) {
-          $datosarchivo = $this->upload->data();
-          $rutaarchivo = $datosarchivo['full_path'];
-          $extension = $datosarchivo['file_ext'];
-          $archivo = file_get_contents($rutaarchivo);
-          $datosArchivo = array("archivo"=>$archivo,"tipoarchivo"=>$tipoarchivo,"extension"=>$extension);
-          unlink($rutaarchivo);
-        }
-      }
-       $datos = array(
-        'nivel' => $nivelEducativo, 'archivo_certificado' => $certificadoEducativo, 'descripcion' => $descripcion, 'institucionedu' => $institucion_educativa
-      );
-      if (isset($datosArchivo)) {
-        $mensaje = $this->UsuariosModel->guardarDetalles($usuario, $datos, $datosArchivo);
-      }
+      $mensaje = $this->UsuariosModel->guardarDetalles($datos);
       $resp = array("msg"=>html_entity_decode($mensaje));
       return json_encode($resp);
     }
