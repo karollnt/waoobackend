@@ -2,7 +2,8 @@
 	class UsuariosModel extends CI_Model{
 
 		public function __construct(){
-			$this->load->database();
+      $this->load->database();
+      $this->load->library('s3');
 		}
 
 		public function verificaLogin($u,$p,$t=1){
@@ -535,9 +536,10 @@
       return $mensaje;
     }
 
-    public function guardarDetalles($nickname, $datos, $datosArchivo) {
+    public function guardarDetalles($datos) {
+      $datosArchivo = $datos['datosArchivo'];
       $mensaje = '';
-      $idusuario = $this->usuarioObj($nickname)->id;
+      $idusuario = $this->usuarioObj($datos['nickname'])->id;
       $url = "";
       if (count($datosArchivo) && is_array($datosArchivo)) {
         $url = $this->subirSoporte($datosArchivo['archivo'], $datosArchivo['extension']);
