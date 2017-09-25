@@ -602,5 +602,15 @@
       }
       return $mensaje;
     }
+		
+// Nueva funcion que trae comentarios por id
+       public function MostrarComentarios($id){
+		$this->db
+		->select("r.cometario",false)
+		->from("rating r")
+		->where("r.idasistente",$id);
+		$res = $this->db->get();
+		return $res->result_array();
+	}
 
   }
