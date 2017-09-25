@@ -432,7 +432,7 @@
           $verif = $this->verificarPrimerTrabajo($row->idasistente);
           if($cont1==0) $cont1 = 1;
           else $mensaje .= ',';
-         $mensaje .= '{"id":"'.($row->id).'","valor":"'.($verif==true?0:$row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'","nombres":"'.($row->apellidos).'"}';
+         $mensaje .= '{"id":"'.($row->id).'","valor":"'.($verif==true?0:$row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'","nombre":"'.($row->nombres).($row->apellidos).'"}';
         }
       }
       return $mensaje;
