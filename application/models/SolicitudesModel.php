@@ -420,10 +420,9 @@
       $mensaje = '';
       $this->load->model('UsuariosModel');
       $this->db
-      ->select("otr.id,otr.valor,u.nickname,otr.idasistente,du.descripcion",false)
+      ->select("otr.id,otr.valor,u.nickname,otr.idasistente,u.nombres",false)
       ->from("ofertatrabajo otr")
       ->join("usuarios u","u.id=otr.idasistente","inner")
-      ->join("datos_usuario du","du.id_usuario=otr.idasistente","inner")
       ->where("idtrabajo",$idtrabajo);
       $res = $this->db->get();
       if($res->num_rows()>0){
@@ -433,7 +432,7 @@
           $verif = $this->verificarPrimerTrabajo($row->idasistente);
           if($cont1==0) $cont1 = 1;
           else $mensaje .= ',';
-          $mensaje .= '{"id":"'.($row->id).'","valor":"'.($verif==true?0:$row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'","descripcion":"'.($row->descripcion).'"}';
+          $mensaje .= '{"id":"'.($row->id).'","valor":"'.($verif==true?0:$row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'","descripcion":"'.($row->nombres).'"}';
         }
       }
       return $mensaje;
