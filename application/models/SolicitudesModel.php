@@ -420,7 +420,7 @@
       $mensaje = '';
       $this->load->model('UsuariosModel');
       $this->db
-      ->select("otr.id,otr.valor,u.nickname,otr.idasistente",false)
+      ->select("otr.id,otr.valor,u.nickname,otr.idasistente,u.nombres",false)
       ->from("ofertatrabajo otr")
       ->join("usuarios u","u.id=otr.idasistente","inner")
       ->where("idtrabajo",$idtrabajo);
