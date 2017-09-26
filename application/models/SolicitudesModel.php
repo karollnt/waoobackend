@@ -416,7 +416,7 @@
       return "Mensaje enviado";
     }
 
-    public function ofertasParaTrabajo($idtrabajo){
+       public function ofertasParaTrabajo($idtrabajo){
       $mensaje = '';
       $this->load->model('UsuariosModel');
       $this->db
@@ -432,7 +432,8 @@
         foreach($res->result() as $row){
           $calif = $this->UsuariosModel->calificacionAsesor($row->nickname);
           $verif = $this->verificarPrimerTrabajo($row->idasistente);
-         
+          
+     
           if($cont1==0) $cont1 = 1;
           else $mensaje .= ',';
          $mensaje .= '{"id":"'.($row->id).'","valor":"'.($verif==true?0:$row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'","nombre":"'.($row->nombres)." ".($row->apellidos).'","descripcion":"'.($row->descripcion).'","institucion":"'.($row->institucionedu).'","nivel":"'.($row->nivel_edu).'","idasistente":"'.($row->idasistente).'"}';
@@ -440,7 +441,6 @@
       }
       return $mensaje;
     }
-
     public function listaArchivosTrabajo($idtrabajo){
       $mensaje = '';
       $this->db
