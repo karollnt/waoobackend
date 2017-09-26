@@ -612,23 +612,5 @@
        $result = $this->db->get();
        return $result->result_array();
 		}
-// Nueva funcion que trae comentarios por id
-     public function MostrarComentarios($id){
-     $mensaje = '';
-      $this->db
-      ->select("*",false)
-      ->from("rating")
-      ->where("idasistente",$id)
-      ->limit(5,0);
-      $res = $this->db->get();
-      if($res->num_rows()>0){
-        $cont1 = 0;
-        foreach($res->result() as $row){
-          if($cont1==0) $cont1 = 1;
-          else $mensaje .= ',';
-          $mensaje .= '{"id":"'.($row->id).'","comentario":"'.($row->comentario).'"}';
-        }
-      }
-      return $mensaje;
-		}
+
   }
