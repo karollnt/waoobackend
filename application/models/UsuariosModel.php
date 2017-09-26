@@ -604,14 +604,7 @@
       }
       return $mensaje;
     }
-// Nueva funcion que trae comentarios por id
-        public function MostrarComentarios($id){
-       $this->db->select('*');
-       $this->db->from("raiting");
-       $this->db->where('idasistente', $id);
-       $result = $this->db->get();
-       return $result->result_array();
-		}
+
 // Nueva funcion que trae comentarios por id
      public function MostrarComentarios($id){
      $mensaje = '';
