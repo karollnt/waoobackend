@@ -468,14 +468,5 @@
 			echo $mensaje;
 		}
 
-// Mostrar Comentarios por tutor		
-    public function MostrarComentariosTutor(){
-    	    $id = $this->input->post('id');
-		    $mensaje = "";
-			$msg = $this->UsuariosModel->MostrarComentarios($id);
-			if(strcasecmp($msg,"")==0) $mensaje = '{"error":"No se encontraron Comentarios"}';
-			else $mensaje = '{"comen":['.$msg.']}';
-			echo $mensaje ;
 
-	}
 	}
