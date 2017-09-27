@@ -605,4 +605,26 @@
       return $mensaje;
     }
 
+// Nueva funcion que trae comentarios por id
+     public function MostrarComentarios($id){
+     $mensaje = '';
+      $this->db
+      ->select("r.id,r.comentario,m.nombre",false)
+      ->from("rating r")
+      ->join("trabajo t","t.id=r.idtrabajo","inner")
+      ->join("materia m","m.id=t.idmateria","inner")
+      ->where("r.idasistente",$id)
+      ->limit(5,0);
+      $res = $this->db->get();
+      if($res->num_rows()>0){
+        $cont1 = 0;
+        foreach($res->result() as $row){
+          if($cont1==0) $cont1 = 1;
+          else $mensaje .= ',';
+          $mensaje .= '{"id":"'.($row->id).'","comentario":"'.($row->comentario).'","materia":"'.($row->nombre).'"}';
+        }
+      }
+      return $mensaje;
+		}
+
   }
