@@ -236,7 +236,7 @@
       $tokens = $this->UsuariosModel->cantidadTokens($idusuario) * 1;
       $valor = $valor * 1;
       if($verif){
-        //$aupd["valor"] = 0;
+        $aupd["valor"] = 0;
         $numcomprobante = "PT-".$numcomprobante;
       }
       if($tokens >= $valor){
