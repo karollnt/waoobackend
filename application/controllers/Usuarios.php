@@ -20,9 +20,8 @@
 		
 		
 	         public function notificarUsuario(){
-			$usuario = $this->UsuariosModel->usuarioObj('kari');
 			$tokens = array();
-			array_push($tokens, $usuario->token);
+			array_push($tokens, 'f29e1351-61f2-4be5-8df4-60e350a883e0');
 			$this->onesignal->sendMessageToUsers("Hola Kari", $tokens);
 			return true;
 		}
