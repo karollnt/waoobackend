@@ -14,7 +14,16 @@
 
 		public function __construct(){
 			parent::__construct();
+			$this->load->library('OneSignal');
 			$this->load->model('UsuariosModel');
+		}
+		
+		public function notificarUsuario(){
+			$usuario = $this->UsuariosModel->usuarioObj('kari');
+			$tokens = array();
+			array_push($tokens, $usuario->token);
+			$this->onesignal->sendMessageToUsers("Hola Kari", $tokens);
+			return true;
 		}
 
 		public function existeUsuario(){
