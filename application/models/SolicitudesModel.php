@@ -232,24 +232,25 @@
       $idasistente = "(SELECT idasistente FROM ofertatrabajo WHERE id={$idpreciotrabajo})";
       $idusuario = "(SELECT idusuario FROM trabajo WHERE id={$idtrabajo})";
       $aupd = array("estado"=>1);
-      $verif = $this->verificarPrimerTrabajo($idasistente);
-      // $tokens = $this->UsuariosModel->cantidadTokens($idusuario) * 1;
+    //  $verif = $this->verificarPrimerTrabajo($idasistente);
+      $tokens = $this->UsuariosModel->cantidadTokens($idusuario) * 1;
       $valor = $valor * 1;
-      if($verif){
-        //$aupd["valor"] = 0;
+      /*if($verif){
+        $aupd["valor"] = 0;
         $numcomprobante = "PT-".$numcomprobante;
-      }
-      // if($tokens >= $valor){
+      }*/
+       if($tokens >= $valor){
         $this->db->where('id',$idpreciotrabajo);
         $this->db->update('ofertatrabajo',$aupd);
         $this->logTrabajo($idtrabajo,$idusuario,2,"Usuario escoge asistente para hacer el trabajo");
         $mensaje = $this->asignarAsistenteTrabajo($idasistente,$idtrabajo,$numcomprobante);
-        // if($valor>0) $this->UsuariosModel->descontarTokens($idusuario,$valor);
-        // $this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo,true);
-      /*}
+        if($valor>0) $this->UsuariosModel->descontarTokens($idusuario,$valor);
+        $this->notificarUsuario("Una de sus ofertas ha sido aceptada. Revise el menu mis solicitudes.",$idasistente,$idtrabajo,true);
+      }
       else {
-        $mensaje = "No tienes saldo suficiente";
-      }*/
+        
+        $mensaje = $tokens;
+      }
       return $mensaje;
     }
 
