@@ -415,6 +415,12 @@
       }
       if (isset($resultado)) {
         if ($resultado->success === true) {
+	 //Descuenta la cantidad de Tokens del usuario, cuando paga y tiene un total de tokens mayor a cero
+          $cant_tokens = $this->UsuariosModel->cantidadTokens($id_usuario);
+          if ($cant_tokens > 0) {
+          	$desc_tokens = $this->UsuariosModel->descontarTokens($id_usuario,$cant_tokens);
+          }
+          //fin
           $type = "msg";
           $idpreciotrabajo = $this->input->post('idpreciotrabajo');
           $mensaje = "Pago recibido satisfactoriamente";
