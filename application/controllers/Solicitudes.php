@@ -384,6 +384,8 @@
         $this->load->library("braintree_lib");
         $usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
         $customer_id = null;
+	//Nueva Variable para obtener el id del usuario
+	 $id_usuario = $usuario->id;
         $customer_data = array(
           'firstName' => $usuario->nombre,
           'lastName' => $usuario->apellido,
