@@ -121,7 +121,7 @@
       $mensaje = "";
       $columna = "u.".$columna;
 			$this->db
-      ->select("u.*,du.archivo_certificado,du.descripcion,COALESCE(du.id_nivel,0) AS id_nivel,ne.nombre AS nombre_nivel",false)
+      ->select("u.*,du.archivo_certificado,du.descripcion,COALESCE(du.id_nivel,0) AS id_nivel,ne.nombre AS nombre_nivel, du.institucionedu",false)
       ->from("usuarios u")
       ->join("datos_usuario du","u.id = du.id_usuario", "left")
       ->join("nivel_educativo ne","du.id_nivel = ne.id","left")
@@ -138,7 +138,7 @@
 					.'"celular":"'.($row->celular).'","email":"'.($row->email).'","calificacion":"'.($cal).'",'
           .'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'.',"bt_token":"'.($row->bt_token).'",'
           .'"url_certificado":"'.($row->archivo_certificado).'","descripcion":"'.($row->descripcion).'",'
-          .'"id_nivel":'.($row->id_nivel).',"nombre_nivel":"'.($row->nombre_nivel).'"'
+          .'"id_nivel":'.($row->id_nivel).',"nombre_nivel":"'.($row->nombre_nivel).'","institucion":"'.($row->institucionedu).'"'
 					.'}';
 				}
 			}
