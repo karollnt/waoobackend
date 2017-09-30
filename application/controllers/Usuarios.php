@@ -23,7 +23,8 @@
 			$tokens = array();
 			array_push($tokens, '07e391aadcd31660c34a42b6943cc042d60fd3ecc8e517716dc772e7971b1550');
 			$this->onesignal->sendMessageToUsers("Hola Kari", $tokens);
-			return true;
+			 echo "hecho";
+			//return true;
 		}
 		
 		
