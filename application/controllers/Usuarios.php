@@ -21,7 +21,7 @@
 		
 	         public function notificarUsuario(){
 			$tokens = array();
-			array_push($tokens, '07e391aadcd31660c34a42b6943cc042d60fd3ecc8e517716dc772e7971b1550');
+			array_push($tokens, '78917064-6f73-4dd3-8c56-9561b776d094');
 			$test = $this->onesignal->sendMessageToUsers("Hola Kari", $tokens);
 			var_dump($test);
 			//return true;
