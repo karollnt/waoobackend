@@ -21,7 +21,7 @@
 		
 	         public function notificarUsuario(){
 			$tokens = array();
-			array_push($tokens, 'cOp_rpG712o:APA91bEOmDiUGb-3AII6pghedcnQoKfT2zWdgjQ9xvNmHTlQk9JGc79oRGwNrdFsE6bxuSVf3dinC6AaCledK-fOy-m-uOGDwvrbgg6GXAa9zL4qtZSW2ixuwpLg46UkpqkJZWaAJwQP');
+			array_push($tokens, '07e391aadcd31660c34a42b6943cc042d60fd3ecc8e517716dc772e7971b1550');
 			$this->onesignal->sendMessageToUsers("Hola Kari", $tokens);
 			return true;
 		}
