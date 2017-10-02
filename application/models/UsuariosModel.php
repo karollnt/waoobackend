@@ -628,6 +628,7 @@
 		}
 		
 // Nueva funcion que trae trabajos sin realizar por usuario
+	
     public function mostrarTrabajosSinRealizar(){
      $mensaje = '';
       $this->db
@@ -641,12 +642,14 @@
       if($res->num_rows()>0){
         $cont1 = 0;
         foreach($res->result() as $row){
-          if($cont1==0) $cont1 = 1;
-          else $mensaje .= ',';
-          $mensaje .= '{"id":"'.($row->id).'","usuario":"'.($row->nombres).'","materia":"'.($row->nombre).'"}';
+    	    $tokens = array();
+			array_push($tokens, $row->token);
+			$test = $this->onesignal->sendMessageToUsers("Hola Tienes Tareas Pendientes", $tokens);
+			var_dump($test);
+         
         }
       }
-      return $mensaje;
+      return "Notificacion Enviadas";
 		}
 
   }
