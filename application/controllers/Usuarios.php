@@ -489,5 +489,12 @@
 			echo $mensaje ;
 
 	}
+		
+//Funcion Trabajos a realizar por usuarios
+ public function mostrarTrabajosSinRealizar(){
+			$mensaje = "";
+			$msg = $this->UsuariosModel->mostrarTrabajosSinRealizar();
+			echo $msg;
+		}
 
 	}
