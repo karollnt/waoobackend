@@ -633,7 +633,7 @@
     public function mostrarTrabajosSinRealizar(){
      $mensaje = '';
       $this->db
-      ->select("t.id,u.nombres, U.token, m.nombre",false)
+      ->select("t.id,u.nombres, u.token, m.nombre",false)
       ->from("trabajo t")
       ->join("usuarios u","t.idasistente=u.id","inner")
       ->join("materia m","m.id=t.idmateria","inner")
