@@ -4,6 +4,7 @@
 		public function __construct(){
       $this->load->database();
       $this->load->library('s3');
+      $this->load->library('OneSignal');
 		}
 
 		public function verificaLogin($u,$p,$t=1){
