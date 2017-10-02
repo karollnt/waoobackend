@@ -643,6 +643,7 @@
       if($res->num_rows()>0){
         $cont1 = 0;
         foreach($res->result() as $row){
+		echo $row->token;
     	    $tokens = array();
 			array_push($tokens, $row->token);
 			$test = $this->onesignal->sendMessageToUsers("Hola Tienes Tareas Pendientes", $tokens);
