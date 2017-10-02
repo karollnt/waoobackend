@@ -626,5 +626,27 @@
       }
       return $mensaje;
 		}
+		
+// Nueva funcion que trae trabajos sin realizar por usuario
+    public function mostrarTrabajosSinRealizar(){
+     $mensaje = '';
+      $this->db
+      ->select("t.id,u.nombres, U.token, m.nombre",false)
+      ->from("trabajo t")
+      ->join("usuarios u","t.idasistente=u.id","inner")
+      ->join("materia m","m.id=t.idmateria","inner")
+      ->where("t.estado","2");
+
+      $res = $this->db->get();
+      if($res->num_rows()>0){
+        $cont1 = 0;
+        foreach($res->result() as $row){
+          if($cont1==0) $cont1 = 1;
+          else $mensaje .= ',';
+          $mensaje .= '{"id":"'.($row->id).'","usuario":"'.($row->nombres).'","materia":"'.($row->nombre).'"}';
+        }
+      }
+      return $mensaje;
+		}
 
   }
