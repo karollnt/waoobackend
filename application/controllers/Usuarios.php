@@ -18,13 +18,16 @@
 			$this->load->model('UsuariosModel');
 		}
 		
-		public function notificarUsuario(){
-			$usuario = $this->UsuariosModel->usuarioObj('kari');
+		
+	         public function notificarUsuario(){
 			$tokens = array();
-			array_push($tokens, $usuario->token);
-			$this->onesignal->sendMessageToUsers("Hola Kari", $tokens);
-			return true;
+			array_push($tokens, '78917064-6f73-4dd3-8c56-9561b776d094');
+			$test = $this->onesignal->sendMessageToUsers("Hola Kari", $tokens);
+			var_dump($test);
+			//return true;
 		}
+		
+		
 
 		public function existeUsuario(){
 			$usuario = trim($this->input->post('nickname'));
@@ -486,5 +489,12 @@
 			echo $mensaje ;
 
 	}
+		
+//Funcion Trabajos a realizar por usuarios
+ public function mostrarTrabajosSinRealizar(){
+			$mensaje = "";
+			$msg = $this->UsuariosModel->mostrarTrabajosSinRealizar();
+			echo $msg;
+		}
 
 	}

@@ -4,6 +4,7 @@
 		public function __construct(){
       $this->load->database();
       $this->load->library('s3');
+      $this->load->library('OneSignal');
 		}
 
 		public function verificaLogin($u,$p,$t=1){
@@ -121,7 +122,7 @@
       $mensaje = "";
       $columna = "u.".$columna;
 			$this->db
-      ->select("u.*,du.archivo_certificado,du.descripcion,COALESCE(du.id_nivel,0) AS id_nivel,ne.nombre AS nombre_nivel",false)
+      ->select("u.*,du.archivo_certificado,du.descripcion,COALESCE(du.id_nivel,0) AS id_nivel,ne.nombre AS nombre_nivel, du.institucionedu",false)
       ->from("usuarios u")
       ->join("datos_usuario du","u.id = du.id_usuario", "left")
       ->join("nivel_educativo ne","du.id_nivel = ne.id","left")
@@ -138,7 +139,7 @@
 					.'"celular":"'.($row->celular).'","email":"'.($row->email).'","calificacion":"'.($cal).'",'
           .'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'.',"bt_token":"'.($row->bt_token).'",'
           .'"url_certificado":"'.($row->archivo_certificado).'","descripcion":"'.($row->descripcion).'",'
-          .'"id_nivel":'.($row->id_nivel).',"nombre_nivel":"'.($row->nombre_nivel).'"'
+          .'"id_nivel":'.($row->id_nivel).',"nombre_nivel":"'.($row->nombre_nivel).'","institucion":"'.($row->institucionedu).'"'
 					.'}';
 				}
 			}
@@ -625,6 +626,32 @@
         }
       }
       return $mensaje;
+		}
+		
+// Nueva funcion que trae trabajos sin realizar por usuario
+	
+    public function mostrarTrabajosSinRealizar(){
+     $mensaje = '';
+      $this->db
+      ->select("t.id,u.nombres, u.token, m.nombre",false)
+      ->from("trabajo t")
+      ->join("usuarios u","t.idasistente=u.id","inner")
+      ->join("materia m","m.id=t.idmateria","inner")
+      ->where("t.estado","2");
+
+      $res = $this->db->get();
+      if($res->num_rows()>0){
+        $cont1 = 0;
+        foreach($res->result() as $row){
+		echo $row->token;
+    	    $tokens = array();
+			array_push($tokens, $row->token);
+			$test = $this->onesignal->sendMessageToUsers("Hola Tienes Tareas Pendientes", $tokens);
+			var_dump($test);
+         
+        }
+      }
+      return "Notificacion Enviadas";
 		}
 
   }
