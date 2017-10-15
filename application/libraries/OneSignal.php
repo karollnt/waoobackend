@@ -6,7 +6,7 @@
  */
 class OneSignal {
 
-  private $APP_ID = "2456ad57-ed56-498f-b352-e8ebd9c51cee";
+  private $APP_ID = "2c693016-bb26-4a6f-ad67-ab6297790c5e";
   private $GOOGLE_KEY = "AIzaSyCsx4LCDDHkRPGwbEdpGMniPoYFA_lW9pw";
   private $IOS_KEY = "";
   private $API_URL = "https://onesignal.com/api/v1/";
@@ -29,7 +29,7 @@ class OneSignal {
       CURLOPT_CUSTOMREQUEST => "POST",
       CURLOPT_POSTFIELDS => $fields,
       CURLOPT_HTTPHEADER => array(
-        "authorization: Basic MWRjZTAzZDgtMGMzNC00YTVhLWJlMjgtMGE1NzljMGI3YjFl",
+        "authorization: Basic MjAzM2YwYmYtOWMwYy00YTk5LTk3MDEtOTFmMDY2NjRiNThk",
         "Content-Type: application/json"
       ),
     ));
