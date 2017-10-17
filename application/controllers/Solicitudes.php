@@ -376,6 +376,8 @@
     public function procesarPagoBT() {
       $payment_method = $this->input->post('payment_method_nonce');
       $resultado = null;
+      $usuario = null;
+      $resp = null;
       if (!isset($payment_method)) {
         $mensaje = "Informacion de pago no validada";
         $resp = array("error"=>html_entity_decode($mensaje));
@@ -384,8 +386,6 @@
         $this->load->library("braintree_lib");
         $usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
         $customer_id = null;
-	//Nueva Variable para obtener el id del usuario
-	 $id_usuario = $usuario->id;
         $customer_data = array(
           'firstName' => $usuario->nombre,
           'lastName' => $usuario->apellido,
@@ -417,10 +417,10 @@
       }
       if (isset($resultado)) {
         if ($resultado->success === true) {
-	 //Descuenta la cantidad de Tokens del usuario, cuando paga y tiene un total de tokens mayor a cero
-          $cant_tokens = $this->UsuariosModel->cantidadTokens($id_usuario);
+          //Descuenta la cantidad de Tokens del usuario, cuando paga y tiene un total de tokens mayor a cero
+          $cant_tokens = $this->UsuariosModel->cantidadTokens($usuario->id);
           if ($cant_tokens > 0) {
-          	$desc_tokens = $this->UsuariosModel->descontarTokens($id_usuario,$cant_tokens);
+          	$desc_tokens = $this->UsuariosModel->descontarTokens($usuario->id,$cant_tokens);
           }
           //fin
           $type = "msg";
@@ -459,7 +459,9 @@
         $type = "error";
         $mensaje = "No se pudo realizar la transaccion";
       }
-      $resp = array($type=>html_entity_decode($mensaje));
+      if (!isset($resp) && count($resp) <= 0) {
+        $resp = array($type=>html_entity_decode($mensaje));
+      }
       echo json_encode($resp);
     }
 
