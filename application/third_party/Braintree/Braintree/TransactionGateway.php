@@ -40,7 +40,7 @@ class TransactionGateway
      * @ignore
      * @access private
      * @param array $attribs
-     * @return object
+     * @return Result\Successful|Result\Error
      */
     private function create($attribs)
     {
@@ -119,6 +119,7 @@ class TransactionGateway
             'recurring',
             'serviceFeeAmount',
             'sharedPaymentMethodToken',
+            'sharedPaymentMethodNonce',
             'sharedCustomerId',
             'sharedShippingAddressId',
             'sharedBillingAddressId',
@@ -129,6 +130,9 @@ class TransactionGateway
             'transactionSource',
             'type',
             'venmoSdkPaymentMethodCode',
+            'shippingAmount',
+            'discountAmount',
+            'shipsFromPostalCode',
             ['riskData' =>
                 ['customerBrowser', 'customerIp', 'customer_browser', 'customer_ip']
             ],
@@ -201,8 +205,8 @@ class TransactionGateway
             ['customFields' => ['_anyKey_']],
             ['descriptor' => ['name', 'phone', 'url']],
             ['paypalAccount' => ['payeeEmail']],
-            ['apple_pay_card' => ['number', 'cardholder_name', 'cryptogram', 'expiration_month', 'expiration_year']], #backwards compatibility
-            ['applePayCard' => ['number', 'cardholderName', 'cryptogram', 'expirationMonth', 'expirationYear']],
+            ['apple_pay_card' => ['number', 'cardholder_name', 'cryptogram', 'expiration_month', 'expiration_year', 'eci_indicator']], #backwards compatibility
+            ['applePayCard' => ['number', 'cardholderName', 'cryptogram', 'expirationMonth', 'expirationYear', 'eciIndicator']],
             ['industry' =>
                 ['industryType',
                     ['data' =>
@@ -219,7 +223,8 @@ class TransactionGateway
                         ]
                     ]
                 ]
-            ]
+            ],
+            ['lineItems' => ['quantity', 'name', 'description', 'kind', 'unitAmount', 'unitTaxAmount', 'totalAmount', 'discountAmount', 'unitOfMeasure', 'productCode', 'commodityCode', 'url']],
         ];
     }
 
@@ -283,7 +288,7 @@ class TransactionGateway
     /**
      * new sale
      * @param array $attribs
-     * @return array
+     * @return Result\Successful|Result\Error
      */
     public function sale($attribs)
     {
@@ -470,7 +475,7 @@ class TransactionGateway
      * @ignore
      * @param var $subPath
      * @param array $params
-     * @return mixed
+     * @return Result\Successful|Result\Error
      */
     public function _doCreate($subPath, $params)
     {
