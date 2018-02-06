@@ -63,6 +63,10 @@ class Subscription extends Base
             $this->_set('descriptor', new Descriptor($attributes['descriptor']));
         }
 
+        if (isset($attributes['description'])) {
+            $this->_set('description', $attributes['description']);
+        }
+
         $statusHistory = [];
         if (isset($attributes['statusHistory'])) {
             foreach ($attributes['statusHistory'] AS $history) {
@@ -127,9 +131,9 @@ class Subscription extends Base
         return Configuration::gateway()->subscription()->update($subscriptionId, $attributes);
     }
 
-    public static function retryCharge($subscriptionId, $amount = null)
+    public static function retryCharge($subscriptionId, $amount = null, $submitForSettlement = false)
     {
-        return Configuration::gateway()->subscription()->retryCharge($subscriptionId, $amount);
+        return Configuration::gateway()->subscription()->retryCharge($subscriptionId, $amount, $submitForSettlement);
     }
 
     public static function cancel($subscriptionId)

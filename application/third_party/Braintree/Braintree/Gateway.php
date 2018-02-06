@@ -43,6 +43,15 @@ class Gateway
 
     /**
      *
+     * @return ApplePayGateway
+     */
+    public function applePay()
+    {
+        return new ApplePayGateway($this);
+    }
+
+    /**
+     *
      * @return ClientTokenGateway
      */
     public function clientToken()
@@ -84,6 +93,24 @@ class Gateway
     public function discount()
     {
         return new DiscountGateway($this);
+    }
+
+    /**
+     *
+     * @return DisputeGateway
+     */
+    public function dispute()
+    {
+        return new DisputeGateway($this);
+    }
+
+    /**
+     *
+     * @return DocumentUploadGateway
+     */
+    public function documentUpload()
+    {
+        return new DocumentUploadGateway($this);
     }
 
     /**
@@ -183,6 +210,15 @@ class Gateway
     public function transaction()
     {
         return new TransactionGateway($this);
+    }
+
+    /**
+     *
+     * @return TransactionLineItemGateway
+     */
+    public function transactionLineItem()
+    {
+        return new TransactionLineItemGateway($this);
     }
 
     /**

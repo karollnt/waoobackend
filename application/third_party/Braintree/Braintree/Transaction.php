@@ -135,7 +135,7 @@ namespace Braintree;
  *
  * <b>== More information ==</b>
  *
- * For more detailed information on Transactions, see {@link http://www.braintreepayments.com/gateway/transaction-api http://www.braintreepaymentsolutions.com/gateway/transaction-api}
+ * For more detailed information on Transactions, see {@link https://developers.braintreepayments.com/reference/response/transaction/php https://developers.braintreepayments.com/reference/response/transaction/php}
  *
  * @package    Braintree
  * @category   Resources
@@ -170,6 +170,7 @@ namespace Braintree;
  * @property-read \DateTime $updatedAt transaction updated DateTime
  * @property-read Braintree\Disbursement $disbursementDetails populated when transaction is disbursed
  * @property-read Braintree\Dispute $disputes populated when transaction is disputed
+ * @property-read Braintree\AuthorizationAdjustment $authorizationAdjustments populated when a transaction has authorization adjustments created when submitted for settlement
  *
  */
 
@@ -412,11 +413,23 @@ class Transaction extends Base
         }
         $this->_set('discounts', $discountArray);
 
+        $authorizationAdjustments = [];
+        if (isset($transactionAttribs['authorizationAdjustments'])) {
+            foreach ($transactionAttribs['authorizationAdjustments'] AS $authorizationAdjustment) {
+                $authorizationAdjustments[] = AuthorizationAdjustment::factory($authorizationAdjustment);
+            }
+        }
+
+        $this->_set('authorizationAdjustments', $authorizationAdjustments);
+
         if(isset($transactionAttribs['riskData'])) {
             $this->_set('riskData', RiskData::factory($transactionAttribs['riskData']));
         }
         if(isset($transactionAttribs['threeDSecureInfo'])) {
             $this->_set('threeDSecureInfo', ThreeDSecureInfo::factory($transactionAttribs['threeDSecureInfo']));
+        }
+        if(isset($transactionAttribs['facilitatedDetails'])) {
+            $this->_set('facilitatedDetails', FacilitatedDetails::factory($transactionAttribs['facilitatedDetails']));
         }
         if(isset($transactionAttribs['facilitatorDetails'])) {
             $this->_set('facilitatorDetails', FacilitatorDetails::factory($transactionAttribs['facilitatorDetails']));
@@ -474,6 +487,11 @@ class Transaction extends Base
     /** @return bool */
     public function isDisbursed() {
         return $this->disbursementDetails->isValid();
+    }
+
+    /** @return line items */
+    public function lineItems() {
+        return Configuration::gateway()->transactionLineItem()->findAll($this->id);
     }
 
     /**
