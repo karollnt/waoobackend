@@ -371,9 +371,68 @@
       $mensaje = $this->SolicitudesModel->soportesSinAprobar();
       $resp = array("msg"=>"[".html_entity_decode($mensaje)."]");
       echo json_encode($resp);
-    }
+		}
+		
+		public function procesarPagoBT() {
+			$amount = $this->input->post('amount') . '00';
+			$token = $this->input->post('token');
+			$message = 'Pago de tutoria';
+			// $api_key = 'sk_test_syBDwQhdwYsIfLsQd3S8Lp55';
+			$api_key = 'sk_live_Ck7mylsw8TQIpZotQAuRSspc';
+			$usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
+			$email = $usuario->email;
 
-    public function procesarPagoBT() {
+			// Crear cliente
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, "https://api.stripe.com/v1/customers");
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, "source={$token}&description=\"{$usuario->nombre} {$usuario->apellido}\"&email={$email}");
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_USERPWD, "sk_test_syBDwQhdwYsIfLsQd3S8Lp55" . ":" . "");
+			$headers = array();
+			$headers[] = "Content-Type: application/x-www-form-urlencoded";
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+			$result = curl_exec($ch);
+			if (curl_errno($ch)) {
+					echo 'Error:' . curl_error($ch);
+			}
+			curl_close ($ch);
+			$json = json_decode($result);
+			if ( isset( $json->error ) ) {
+				$response = $json->error->message;
+				$type = 'error';
+			} else {
+				// Recibir pago
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, "https://api.stripe.com/v1/charges");
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, "amount={$amount}&currency=cop&customer={$json->id}");
+				curl_setopt($ch, CURLOPT_POST, 1);
+				curl_setopt($ch, CURLOPT_USERPWD, $api_key . ":" . "");
+				$headers = array();
+				$headers[] = "Content-Type: application/x-www-form-urlencoded";
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+				$result = curl_exec($ch);
+				if (curl_errno($ch)) {
+					echo 'Error:' . curl_error($ch);
+				}
+				curl_close ($ch);
+				$json = json_decode($result);
+				if ( isset( $json->error ) ) {
+					$response = $json->error->message;
+					$type = 'error';
+				} else {
+					$response = 'Pago recibido satisfactoriamente';
+					$type = 'msg';
+				}
+			}
+
+      $resp = array($type=>html_entity_decode($response));
+      echo json_encode($resp);
+		}
+
+    public function procesarPagoBTO() {
       $payment_method = $this->input->post('payment_method_nonce');
       $resultado = null;
       $usuario = null;
