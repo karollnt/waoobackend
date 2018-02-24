@@ -1,4 +1,6 @@
+
 <?php
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['braintree_merchant_id'] = '9qycxmb5sfthw6kw';
