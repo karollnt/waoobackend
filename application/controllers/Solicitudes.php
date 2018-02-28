@@ -381,41 +381,25 @@
 			$api_key = 'sk_live_Ck7mylsw8TQIpZotQAuRSspc';
 			$usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
 			$email = $usuario->email;
-
-			// Crear cliente
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, "https://api.stripe.com/v1/customers");
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, "source={$token}&description=\"{$usuario->nombre} {$usuario->apellido}\"&email={$email}");
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_USERPWD, "sk_test_syBDwQhdwYsIfLsQd3S8Lp55" . ":" . "");
-			$headers = array();
-			$headers[] = "Content-Type: application/x-www-form-urlencoded";
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-			$result = curl_exec($ch);
-			if (curl_errno($ch)) {
-					echo 'Error:' . curl_error($ch);
-			}
-			curl_close ($ch);
-			$json = json_decode($result);
-			if ( isset( $json->error ) ) {
-				$response = $json->error->message;
-				$type = 'error';
+			if (strcasecmp($usuario->bt_token, '') != 0) {
+				$opts = $this->charge_user($amount, $usuario->bt_token, $api_key);
+				$type = $opts['type'];
+				$response = $opts['message'];
 			} else {
-				// Recibir pago
+				// Crear cliente
 				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_URL, "https://api.stripe.com/v1/charges");
+				curl_setopt($ch, CURLOPT_URL, "https://api.stripe.com/v1/customers");
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, "amount={$amount}&currency=cop&customer={$json->id}");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, "source={$token}&description=\"{$usuario->nombre} {$usuario->apellido}\"&email={$email}");
 				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_USERPWD, $api_key . ":" . "");
+				curl_setopt($ch, CURLOPT_USERPWD, "sk_test_syBDwQhdwYsIfLsQd3S8Lp55" . ":" . "");
 				$headers = array();
 				$headers[] = "Content-Type: application/x-www-form-urlencoded";
 				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
 				$result = curl_exec($ch);
 				if (curl_errno($ch)) {
-					echo 'Error:' . curl_error($ch);
+						echo 'Error:' . curl_error($ch);
 				}
 				curl_close ($ch);
 				$json = json_decode($result);
@@ -423,13 +407,40 @@
 					$response = $json->error->message;
 					$type = 'error';
 				} else {
-					$response = 'Pago recibido satisfactoriamente';
-					$type = 'msg';
+					$opts = $this->charge_user($amount, $json->id, $api_key);
+					$type = $opts['type'];
+					$response = $opts['message'];
+					$this->UsuariosModel->set_bt_token($usuario->id, $json->id);
 				}
 			}
 
       $resp = array($type=>html_entity_decode($response));
       echo json_encode($resp);
+		}
+
+		public function charge_user($amount, $customer_id, $api_key) {
+			// Recibir pago
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, "https://api.stripe.com/v1/charges");
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, "amount={$amount}&currency=cop&customer={$customer_id}");
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_USERPWD, $api_key . ":" . "");
+			$headers = array();
+			$headers[] = "Content-Type: application/x-www-form-urlencoded";
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			$result = curl_exec($ch);
+			if (curl_errno($ch)) {
+				echo 'Error:' . curl_error($ch);
+			}
+			curl_close ($ch);
+			$json = json_decode($result);
+			$opts = array('type' => 'msg', 'message' => 'Pago recibido satisfactoriamente');
+			if ( isset( $json->error ) ) {
+				$opts['message'] = $json->error->message;
+				$opts['type'] = 'error';
+			}
+			return $opts;
 		}
 
     public function procesarPagoBTO() {

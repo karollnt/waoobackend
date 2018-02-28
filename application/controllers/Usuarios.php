@@ -400,7 +400,13 @@
   		$mensaje = $this->UsuariosModel->actualizarToken($token,$plataforma,$usuario->id);
   		$resp = array("msg"=>html_entity_decode($mensaje));
   		echo json_encode($resp);
-  	}
+		}
+		
+		public function buscarUsuario() {
+			$nickname = $this->input->post('nickname');
+			$usuario = $this->UsuariosModel->usuarioObj($nickname);
+			echo json_encode($usuario);
+		}
 
     public function obtenerToken() {
       $token = '';
