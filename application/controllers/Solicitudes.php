@@ -392,7 +392,7 @@
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_POSTFIELDS, "source={$token}&description=\"{$usuario->nombre} {$usuario->apellido}\"&email={$email}");
 				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_USERPWD, "sk_test_syBDwQhdwYsIfLsQd3S8Lp55" . ":" . "");
+				curl_setopt($ch, CURLOPT_USERPWD, "sk_live_Ck7mylsw8TQIpZotQAuRSspc" . ":" . "");
 				$headers = array();
 				$headers[] = "Content-Type: application/x-www-form-urlencoded";
 				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
