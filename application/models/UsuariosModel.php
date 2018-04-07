@@ -139,7 +139,8 @@
 					.'"celular":"'.($row->celular).'","email":"'.($row->email).'","calificacion":"'.($cal).'",'
           .'"idbanco":"'.($row->idbanco).'","numerocuenta":"'.($row->numerocuenta).'"'.',"bt_token":"'.($row->bt_token).'",'
           .'"url_certificado":"'.($row->archivo_certificado).'","descripcion":"'.($row->descripcion).'",'
-          .'"id_nivel":'.($row->id_nivel).',"nombre_nivel":"'.($row->nombre_nivel).'","institucion":"'.($row->institucionedu).'"'
+          .'"id_nivel":'.($row->id_nivel).',"nombre_nivel":"'.($row->nombre_nivel).'","institucion":"'.($row->institucionedu).'",'
+					.'"token":"'.($row->token).'"'
 					.'}';
 				}
 			}
