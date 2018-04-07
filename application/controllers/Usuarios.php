@@ -380,7 +380,15 @@
 			$trans = "WO-".$this->random_str(10);
 			$mensaje = $this->UsuariosModel->recargarTokens($nickname,$trans,$cantidad,$operador);
 			if(strcasecmp($mensaje,"")==0) $resp = array("error" => "No se pudo terminar de procesar la recarga");
-			else $resp = array("msg"=>html_entity_decode($mensaje));
+			else {
+				$resp = array("msg"=>html_entity_decode($mensaje));
+				$usr = $this->UsuariosModel->usuarioObj($nickname);
+				if(isset($usr->token) && strcasecmp($usr->token, "") != 0) {
+					$tokens = array();
+					array_push($tokens, $usr->token);
+					$test = $this->onesignal->sendMessageToUsers($mensaje, $tokens);
+				}
+			}
 			echo json_encode($resp);
 		}
 
