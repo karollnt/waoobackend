@@ -373,8 +373,8 @@
 			if($this->db->affected_rows()>0) $mensaje = "Recarga ingresada";
 			else $mensaje = "No se ingreso recarga";
 			$this->db->query("UPDATE usuarios SET tokens=tokens + {$cantidad} WHERE id=".($u1->id)."");
-			if($this->db->affected_rows()>0) $mensaje .= ", tokens agregados a la cuenta";
-			else $mensaje .= ", no se agregaron tokens a la cuenta";
+			if($this->db->affected_rows()>0) $mensaje .= ", " .$cantidad . " pesos agregados a la cuenta";
+			else $mensaje .= ", no se pudo agregar dinero a la cuenta";
 			return $mensaje;
 		}
 
