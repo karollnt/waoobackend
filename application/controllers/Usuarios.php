@@ -383,7 +383,7 @@
 			else {
 				$resp = array("msg"=>html_entity_decode($mensaje));
 				$usr = $this->UsuariosModel->usuarioObj($nickname);
-				if(isset($usr->token) && strcasecmp($usr->token, "") != 0) {
+				if(isset($usr->token) && strcasecmp($usr->token, "") != 0 && strpos($mensaje, "Recarga ingresada")) {
 					$tokens = array();
 					array_push($tokens, $usr->token);
 					$test = $this->onesignal->sendMessageToUsers($mensaje, $tokens);
