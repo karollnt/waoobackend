@@ -113,6 +113,7 @@
 			$nickname = $this->input->post('nickname');
 			$idtrabajo = $this->input->post('idtrabajo');
 			$valor = $this->input->post('valor');
+			$valor = str_replace('.','',$valor);
 			$usuario = $this->UsuariosModel->usuarioObj($nickname);
 			$mensaje = $this->SolicitudesModel->enviarPrecioTrabajo($idtrabajo,$usuario->id,$valor);
 			$resp = array("msg"=>html_entity_decode($mensaje));
