@@ -382,7 +382,7 @@
 			$api_key = 'sk_live_Ck7mylsw8TQIpZotQAuRSspc';
 			$usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
 			$email = $usuario->email;
-			if (strcasecmp($usuario->bt_token, '') != 0) {
+			if (strcasecmp($usuario->bt_token, '') != 0 && strcasecmp($usuario->bt_token, $token) == 0) {
 				$opts = $this->charge_user($amount, $usuario->bt_token, $api_key);
 				$type = $opts['type'];
 				$response = $opts['message'];
