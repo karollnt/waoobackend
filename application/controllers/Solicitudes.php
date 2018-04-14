@@ -6,6 +6,7 @@
 			$this->load->model('SolicitudesModel');
 			$this->load->model('UsuariosModel');
 			$this->load->model('MateriasModel');
+			$this->load->library('OneSignal');
 		}
 
 		public function crearSolicitud(){
@@ -377,6 +378,7 @@
 		public function procesarPagoBT() {
 			$amount = $this->input->post('amount') . '00';
 			$token = $this->input->post('token');
+			$idpreciotrabajo = $this->input->post('idpreciotrabajo');
 			$message = 'Pago de tutoria';
 			// $api_key = 'sk_test_syBDwQhdwYsIfLsQd3S8Lp55';
 			$api_key = 'sk_live_Ck7mylsw8TQIpZotQAuRSspc';
@@ -386,6 +388,14 @@
 				$opts = $this->charge_user($amount, $usuario->bt_token, $api_key);
 				$type = $opts['type'];
 				$response = $opts['message'];
+				if(strcasecmp($type, 'error') !== 0) {
+					$asistente = $this->UsuariosModel->usuarioObj($this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
+					$this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"BTP-".($this->random_str(16)),0);
+					$response = array("msg"=>html_entity_decode($response),"nickasistente"=>$asistente->nickname,"id"=>$idpreciotrabajo);
+					$this->SolicitudesModel->notificarUsuario('Una de tus ofertas fue aceptada', $asistente->id, 0);
+				} else {
+					$response = array("msg"=>html_entity_decode($response));
+				}
 			} else {
 				// Crear cliente
 				$ch = curl_init();
@@ -400,18 +410,26 @@
 
 				$result = curl_exec($ch);
 				if (curl_errno($ch)) {
-						echo 'Error:' . curl_error($ch);
+					echo 'Error:' . curl_error($ch);
 				}
 				curl_close ($ch);
 				$json = json_decode($result);
 				if ( isset( $json->error ) ) {
-					$response = $json->error->message;
+					$response = array("msg"=>html_entity_decode($json->error->message));
 					$type = 'error';
 				} else {
 					$opts = $this->charge_user($amount, $json->id, $api_key);
 					$type = $opts['type'];
 					$response = $opts['message'];
-					$this->UsuariosModel->set_bt_token($usuario->id, $json->id);
+					if(strcasecmp($type, 'error') !== 0) {
+						$asistente = $this->UsuariosModel->usuarioObj($this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
+						$this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"BTP-".($this->random_str(16)),0);
+						$response = array("msg"=>html_entity_decode($response),"nickasistente"=>$asistente->nickname,"id"=>$idpreciotrabajo);
+						$this->SolicitudesModel->notificarUsuario('Una de tus ofertas fue aceptada', $asistente->id, 0);
+						$this->UsuariosModel->set_bt_token($usuario->id, $json->id);
+					} else {
+						$response = array("msg"=>html_entity_decode($response));
+					}
 				}
 			}
 
