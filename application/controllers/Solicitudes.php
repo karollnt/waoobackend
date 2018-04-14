@@ -432,9 +432,7 @@
 					}
 				}
 			}
-
-      $resp = array($type=>html_entity_decode($response));
-      echo json_encode($resp);
+		        echo json_encode($response);
 		}
 
 		public function charge_user($amount, $customer_id, $api_key) {
