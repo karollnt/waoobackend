@@ -392,7 +392,6 @@
 					$asistente = $this->UsuariosModel->usuarioObj($this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
 					$this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"BTP-".($this->random_str(16)),0);
 					$response = array("msg"=>html_entity_decode($response),"nickasistente"=>$asistente->nickname,"id"=>$idpreciotrabajo);
-					$this->SolicitudesModel->notificarUsuario('Una de tus ofertas fue aceptada', $asistente->id, 0);
 				} else {
 					$response = array("msg"=>html_entity_decode($response));
 				}
@@ -425,7 +424,6 @@
 						$asistente = $this->UsuariosModel->usuarioObj($this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
 						$this->SolicitudesModel->aceptarPrecio($idpreciotrabajo,"BTP-".($this->random_str(16)),0);
 						$response = array("msg"=>html_entity_decode($response),"nickasistente"=>$asistente->nickname,"id"=>$idpreciotrabajo);
-						$this->SolicitudesModel->notificarUsuario('Una de tus ofertas fue aceptada', $asistente->id, 0);
 						$this->UsuariosModel->set_bt_token($usuario->id, $json->id);
 					} else {
 						$response = array("msg"=>html_entity_decode($response));
