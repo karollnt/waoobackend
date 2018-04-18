@@ -677,9 +677,42 @@
     }
 
     public function send_reset_email($email, $hash) {
+      $subject = 'Restablecer clave';
+      $from = 'noreply@waootechnology.com';
       $link = 'https://waoo.herokuapp.com/usuarios/generarNuevo/?token='.$hash;
-      $headers = 'From:noreply@waootechnology.com' . "\r\n";
-      $message = "Puedes restablecer tu clave en el siguiente enlace: {$link}";
-      return mail($email, 'Olvido de clave | waoo', $message, $headers);
+      $message = "Hola!<br>Puedes restablecer tu clave en el siguiente enlace:<br>{$link}";
+      $api_key = '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';
+      $curl = curl_init();
+
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://api.sendgrid.com/v3/mail/send",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => "{\"personalizations\":[{\"to\":[{\"email\":\"{$email}\"}],\"subject\":\"{$subject}\"}],\"from\":{\"email\":\"{$from}\",\"name\":\"Waoo Technology\"},\"content\":[{\"type\":\"text/html\",\"value\":\"{$message}\"}]}",
+        CURLOPT_HTTPHEADER => array(
+          "authorization: Bearer {$api_key}",
+          "content-type: application/json"
+        ),
+      ));
+
+      $response = curl_exec($curl);
+      $err = curl_error($curl);
+
+      curl_close($curl);
+
+      if ($err) {
+        // echo "cURL Error #:" . $err;
+        return false;
+      }
+      // echo $response;
+      $json = json_decode($response);
+      if (isset($json->errors)) {
+        return false;
+      }
+      return true;
     }
   }
