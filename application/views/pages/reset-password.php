@@ -20,7 +20,7 @@
     if (isset($token)) {
     ?>
     <h3>Restablecer clave</h3>
-    <form action="http://localhost/waoobackend/usuarios/updatePassword" method="post">
+    <form action="/usuarios/updatePassword" method="post">
       <div>
         <label>
           <span>Nueva clave</span><br>
