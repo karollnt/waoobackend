@@ -680,6 +680,6 @@
       $link = 'https://waoo.herokuapp.com/usuarios/generarNuevo/?token='.$hash;
       $headers = 'From:noreply@waootechnology.com' . "\r\n";
       $message = "Puedes restablecer tu clave en el siguiente enlace: {$link}";
-      return mail('rhonaldomaster@gmail.com', 'Olvido de clave | waoo', $message, $headers);
+      return mail($email, 'Olvido de clave | waoo', $message, $headers);
     }
   }
