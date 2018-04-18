@@ -511,4 +511,44 @@
 			echo $msg;
 		}
 
+    public function forgotPassword() {
+      $email = $this->input->post('email');
+      if (empty($email)) {
+        echo '{"error":"'.$this->errores['nousf'].'"}';
+        return;
+      }
+      $res = $this->UsuariosModel->buscarUsuarios('email', $email);
+      if(strcasecmp($res,"")==0) {
+        echo '{"error":"'.$this->errores['nousf'].'"}';
+        return;
+      }
+      $u = '['.$res.']';
+      $usr = json_decode($u);
+      $usuario = $usr[0];
+      echo '{"message": "'.$this->UsuariosModel->send_recovery_password_link($usuario->id, $email).'"}';
+    }
+
+    public function generarNuevo() {
+      $token = $this->input->get('token');
+      if (!isset($token) || ! file_exists(APPPATH.'views/pages/reset-password.php')) {
+        show_404();
+      }
+      $data['token'] = $token;
+      $this->load->view('pages/reset-password', $data);
+    }
+
+    public function updatePassword() {
+      $token = $this->input->post('token');
+      $password = $this->input->post('password');
+      $res = $this->UsuariosModel->buscarUsuarios('reset_token', $token);
+      $data['response'] = "Test data only";
+      if(strcasecmp($res,"") !== 0 && strcasecmp($token,"") !== 0 ) {
+        $u = '['.$res.']';
+        $usr = json_decode($u);
+        $usuario = $usr[0];
+        $resp = $this->UsuariosModel->updatePassword($usuario->id, md5($password));
+        $data['response'] = $resp;
+      }
+      $this->load->view('pages/reset-password', $data);
+    }
 	}
