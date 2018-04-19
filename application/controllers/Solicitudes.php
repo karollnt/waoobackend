@@ -5,7 +5,8 @@
 			parent::__construct();
 			$this->load->model('SolicitudesModel');
 			$this->load->model('UsuariosModel');
-			$this->load->model('MateriasModel');
+      $this->load->model('MateriasModel');
+      $this->load->model('KeysModel');
 			$this->load->library('OneSignal');
 		}
 
@@ -381,7 +382,7 @@
 			$idpreciotrabajo = $this->input->post('idpreciotrabajo');
 			$message = 'Pago de tutoria';
 			// $api_key = 'sk_test_syBDwQhdwYsIfLsQd3S8Lp55';
-			$api_key = 'sk_live_Ck7mylsw8TQIpZotQAuRSspc';
+			$api_key = $this->KeysModel->get_key('stripe_api_key');
 			$usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
 			$email = $usuario->email;
 			if (strcasecmp($usuario->bt_token, '') != 0 && strcasecmp($usuario->bt_token, $token) == 0) {
@@ -402,7 +403,7 @@
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_POSTFIELDS, "source={$token}&description=\"{$usuario->nombre} {$usuario->apellido}\"&email={$email}");
 				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_USERPWD, "sk_live_Ck7mylsw8TQIpZotQAuRSspc" . ":" . "");
+				curl_setopt($ch, CURLOPT_USERPWD, $api_key . ":" . "");
 				$headers = array();
 				$headers[] = "Content-Type: application/x-www-form-urlencoded";
 				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
