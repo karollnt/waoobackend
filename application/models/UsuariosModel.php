@@ -5,6 +5,7 @@
       $this->load->database();
       $this->load->library('s3');
       $this->load->library('OneSignal');
+      $this->load->model('KeysModel');
 		}
 
 		public function verificaLogin($u,$p,$t=1){
@@ -681,7 +682,7 @@
       $from = 'noreply@waootechnology.com';
       $link = 'https://waoo.herokuapp.com/usuarios/generarNuevo/?token='.$hash;
       $message = "Hola!<br>Puedes restablecer tu clave en el siguiente enlace:<br>{$link}";
-      $api_key = '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';
+      $api_key = $this->KeysModel->get_key('sendgrid_api_key');
       $curl = curl_init();
 
       curl_setopt_array($curl, array(
