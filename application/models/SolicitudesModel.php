@@ -6,10 +6,18 @@
       $this->load->library('s3');
       $this->load->library('OneSignal');
       //$this->db->get_compiled_select();
+      $this->load->model('KeysModel');
     }
 
     public function crearSolicitud($datos,$datos2){
       $mensaje = '';
+      if (!isset($datos2) || count($datos2) < 1) {
+        return 'No se encontraron archivos adjuntos';
+      }
+      $msg = $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
+      if (strpos($msg, 'No se pudo') !== false ) {
+        return $msg;
+      }
       $ins = $this->db->query("INSERT INTO trabajo(idusuario,idmateria,titulo,descripcion,fechaEntrega) "
       ." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).",'".$datos['fechaEntrega']."')");
       if($this->db->affected_rows()>0) $mensaje = "ok";
@@ -17,8 +25,7 @@
       $idtrabajo = $this->db->insert_id();
       $this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
       $this->enviarNotificacionPushAsistentes($idtrabajo);
-      if($datos2!=null) $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
-      return $mensaje;
+      return $msg . "\n" . $mensaje;
     }
 
     public function ingresarArchivos($idtrabajo,$idusuario,$datos){
@@ -677,6 +684,112 @@
       }
       else $mensaje = "No se pudo actualizar la informaci&oacute;n";
       return $mensaje;
+    }
+
+    public function crearTutoria($datos) {
+      $mensaje = "No se pudo ingresar la informaci&oacute;n";
+      $ins = $this->db->query("INSERT INTO tutorias(idusuario,idmateria,titulo,descripcion,fecha,valor,link) "
+      ." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).",'".$datos['fecha']."',".$datos['valor'].",'".$datos['link']."')");
+      if ( $this->db->affected_rows() > 0 ) {
+        $mensaje = "ok";
+      }
+      return $mensaje;
+    }
+
+    public function listarTutoriasMateria($idmateria) {
+      $mensaje = '';
+      $res = $this->db->query("SELECT * FROM tutorias WHERE estado=1");
+      if ($res->num_rows()>0) {
+        $cont1 = 0;
+        foreach($res->result() as $row){
+          if ($cont1==0) {
+            $cont1 = 1;
+          } else {
+             $mensaje .= ',';
+             $cont1 ++;
+          }
+          $mensaje .= '{"id":"'.($row->id).'","tema":"'.($row->tema).'","fecha":"'.($row->fecha).'","descripcion":"'.trim($row->descripcion).'","valor":"'.($row->valor).'"}';
+        }
+        if ($cont1 > 0) {
+          $mensaje = '[' . $mensaje . ']';
+        }
+      }
+      return $mensaje;
+    }
+
+    public function verDetallesTutoria($idtutoria) {
+      $mensaje = '';
+      $this->load->model('UsuariosModel');
+      $this->db
+      ->select("otr.id,otr.valor,u.nickname,otr.idusuario,u.nombres,u.apellidos,du.descripcion,du.institucionedu,nd.nombre as nivel_edu",false)
+      ->from("tutorias otr")
+      ->join("usuarios u","u.id=otr.idusuario","inner")
+      ->join("datos_usuario du","du.id_usuario=otr.idusuario","left")
+      ->join("nivel_educativo nd","nd.id=du.id_nivel","inner")
+      ->where("otr.id",$idtutoria);
+      $res = $this->db->get();
+      if($res->num_rows()>0){
+        $cont1 = 0;
+        foreach($res->result() as $row) {
+          $calif = $this->UsuariosModel->calificacionAsesor($row->nickname);
+          if($cont1==0) $cont1 = 1;
+          else $mensaje .= ',';
+          $mensaje .= '{"id":"'.($row->id).'","valor":"'.($row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'","nombre":"'.($row->nombres)." ".($row->apellidos).'","descripcion":"'.($row->descripcion).'","institucion":"'.($row->institucionedu).'","nivel":"'.($row->nivel_edu).'","idasistente":"'.($row->idusuario).'"}';
+        }
+      }
+    }
+
+    public function enviarLinkTutoria($idtutoria, $email, $idusuario) {
+      $res = $this->db->query("SELECT * FROM tutorias WHERE id={$idtutoria}");
+      $link = '';
+      $fecha = '';
+      if ($res->num_rows() < 1) {
+        return;
+      }
+      foreach($res->result() as $row) {
+        $link = $row->link;
+        $fecha = $row->fecha;
+      }
+      if (strcasecmp($link, '') == 0) {
+        return;
+      }
+      $res = $this->db->query("INSERT INTO tutorias_pagas VALUES ({$idtutoria}, '{$idusuario}')");
+      $subject = 'Acceso a tutoria';
+      $from = 'noreply@waootechnology.com';
+      $message = "Hola!<br>Puedes acceder a la tutoria el dia asignado({$fecha}) desde el siguiente enlace: {$link}";
+      $api_key = $this->KeysModel->get_key('sendgrid_api_key');
+      $curl = curl_init();
+
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://api.sendgrid.com/v3/mail/send",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => "{\"personalizations\":[{\"to\":[{\"email\":\"{$email}\"}],\"subject\":\"{$subject}\"}],\"from\":{\"email\":\"{$from}\",\"name\":\"Waoo Technology\"},\"content\":[{\"type\":\"text/html\",\"value\":\"{$message}\"}]}",
+        CURLOPT_HTTPHEADER => array(
+          "authorization: Bearer {$api_key}",
+          "content-type: application/json"
+        ),
+      ));
+
+      $response = curl_exec($curl);
+      $err = curl_error($curl);
+
+      curl_close($curl);
+
+      if ($err) {
+        // echo "cURL Error #:" . $err;
+        return false;
+      }
+      // echo $response;
+      $json = json_decode($response);
+      if (isset($json->errors)) {
+        return false;
+      }
+      return true;
     }
 
   }
