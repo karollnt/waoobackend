@@ -431,7 +431,7 @@
 					}
 				}
 			}
-		        echo json_encode($response);
+		  echo json_encode($response);
 		}
 
 		public function charge_user($amount, $customer_id, $api_key) {
@@ -550,5 +550,96 @@
       }
       echo json_encode($resp);
     }
+
+    public function crearTutoria() {
+      $nickname = $this->input->post('nickname');
+      $titulo = utf8_decode($this->input->post('titulo'));
+      $descripcion = utf8_decode($this->input->post('descripcion'));
+      $idmateria = $this->input->post('idmateria');
+      $valor = $this->input->post('valor');
+      $link = $this->input->post('link');
+      $fecha = $this->input->post('anio')."-".$this->input->post('mes')."-".$this->input->post('dia')." "
+        .$this->input->post('hora').":".$this->input->post('minutos').":00";
+      if(strcasecmp($fecha,":00")==0 || $fecha == null) $fecha = "0000-00-00 00:00:00";
+      $usuario = $this->UsuariosModel->usuarioObj($nickname);
+      $datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>$titulo,"descripcion"=>$descripcion,"fecha"=>$fecha, "valor"=>$valor, "link"=>$link);
+      echo json_encode( array( "msg" => $this->SolicitudesModel->crearTutoria($datos) ) );
+    }
+
+    public function listarTutoriasMateria() {
+      $idmateria = $this->input->get('idmateria');
+      $resp = array( 'tutorias' => '' );
+      if (isset($idmateria)) {
+        $tutorias = $this->SolicitudesModel->listarTutoriasMateria($idmateria);
+        $resp['tutorias'] = html_entity_decode($tutorias);
+      }
+      echo json_encode($resp);
+    }
+
+    public function verDetallesTutoria() {
+      $mensaje = '';
+      $idtutoria = $this->input->get('id');
+      $mensaje = $this->SolicitudesModel->verDetallesTutoria($idtutoria);
+      $resp = array("msg"=>html_entity_decode(utf8_encode($mensaje)));
+      echo json_encode($resp);
+    }
+
+    public function procesarPagoTutoria() {
+			$amount = $this->input->post('amount') . '00';
+			$token = $this->input->post('token');
+			$idtutoria = $this->input->post('id');
+			$message = 'Pago de tutoria';
+			// $api_key = 'sk_test_syBDwQhdwYsIfLsQd3S8Lp55';
+			$api_key = $this->KeysModel->get_key('stripe_api_key');
+			$usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
+			$email = $usuario->email;
+			if (strcasecmp($usuario->bt_token, '') != 0 && strcasecmp($usuario->bt_token, $token) == 0) {
+				$opts = $this->charge_user($amount, $usuario->bt_token, $api_key);
+				$type = $opts['type'];
+				$response = $opts['message'];
+				if(strcasecmp($type, 'error') !== 0) {
+					$asistente = $this->UsuariosModel->usuarioObj($this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
+					$this->SolicitudesModel->enviarLinkTutoria($idtutoria, $email, $usuario->id);
+					$response = array("msg"=>html_entity_decode($response),"nickasistente"=>$asistente->nickname,"id"=>$idpreciotrabajo);
+				} else {
+					$response = array("msg"=>html_entity_decode($response));
+				}
+			} else {
+				// Crear cliente
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, "https://api.stripe.com/v1/customers");
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, "source={$token}&description=\"{$usuario->nombre} {$usuario->apellido}\"&email={$email}");
+				curl_setopt($ch, CURLOPT_POST, 1);
+				curl_setopt($ch, CURLOPT_USERPWD, $api_key . ":" . "");
+				$headers = array();
+				$headers[] = "Content-Type: application/x-www-form-urlencoded";
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+				$result = curl_exec($ch);
+				if (curl_errno($ch)) {
+					echo 'Error:' . curl_error($ch);
+				}
+				curl_close ($ch);
+				$json = json_decode($result);
+				if ( isset( $json->error ) ) {
+					$response = array("msg"=>html_entity_decode($json->error->message));
+					$type = 'error';
+				} else {
+					$opts = $this->charge_user($amount, $json->id, $api_key);
+					$type = $opts['type'];
+					$response = $opts['message'];
+					if(strcasecmp($type, 'error') !== 0) {
+						$asistente = $this->UsuariosModel->usuarioObj($this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
+						$this->SolicitudesModel->enviarLinkTutoria($idtutoria, $email, $usuario->id);
+						$response = array("msg"=>html_entity_decode($response),"nickasistente"=>$asistente->nickname,"id"=>$idpreciotrabajo);
+						$this->UsuariosModel->set_bt_token($usuario->id, $json->id);
+					} else {
+						$response = array("msg"=>html_entity_decode($response));
+					}
+				}
+			}
+		  echo json_encode($response);
+		}
 
   }
