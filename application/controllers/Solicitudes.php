@@ -562,7 +562,7 @@
         .$this->input->post('hora').":".$this->input->post('minutos').":00";
       if(strcasecmp($fecha,":00")==0 || $fecha == null) $fecha = "0000-00-00 00:00:00";
       $usuario = $this->UsuariosModel->usuarioObj($nickname);
-      $datos = array("idusuario"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>$titulo,"descripcion"=>$descripcion,"fecha"=>$fecha, "valor"=>$valor, "link"=>$link);
+      $datos = array("idtutor"=>($usuario->id),"idmateria"=>$idmateria,"titulo"=>$titulo,"descripcion"=>$descripcion,"fecha"=>$fecha, "valor"=>$valor, "link"=>$link);
       echo json_encode( array( "msg" => $this->SolicitudesModel->crearTutoria($datos) ) );
     }
 
