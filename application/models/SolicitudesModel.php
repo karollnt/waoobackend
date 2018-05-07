@@ -688,7 +688,7 @@
 
     public function crearTutoria($datos) {
       $mensaje = "No se pudo ingresar la informaci&oacute;n";
-      $ins = $this->db->query("INSERT INTO tutorias(idusuario,idmateria,titulo,descripcion,fecha,valor,link) "
+      $ins = $this->db->query("INSERT INTO streaming(idusuario,idmateria,titulo,descripcion,fecha,valor,link) "
       ." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).",'".$datos['fecha']."',".$datos['valor'].",'".$datos['link']."')");
       if ( $this->db->affected_rows() > 0 ) {
         $mensaje = "ok";
