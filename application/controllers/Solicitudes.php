@@ -556,13 +556,13 @@
       $tema = utf8_decode($this->input->post('tema'));
       $descripcion = utf8_decode($this->input->post('descripcion'));
       $idmateria = $this->input->post('idmateria');
-      $valor_por_estudiante = $this->input->post('valor_por_estudiante');
+      $valor = $this->input->post('valor');
       $link = $this->input->post('link');
       $fecha = $this->input->post('anio')."-".$this->input->post('mes')."-".$this->input->post('dia')." "
         .$this->input->post('hora').":".$this->input->post('minutos').":00";
       if(strcasecmp($fecha,":00")==0 || $fecha == null) $fecha = "0000-00-00 00:00:00";
       $usuario = $this->UsuariosModel->usuarioObj($nickname);
-      $datos = array("idtutor"=>($usuario->id),"idmateria"=>$idmateria,"tema"=>$tema,"descripcion"=>$descripcion,"fecha"=>$fecha, "valor_por_estudiante"=>$valor_por_estudiante, "link"=>$link);
+      $datos = array("idtutor"=>($usuario->id),"idmateria"=>$idmateria,"tema"=>$tema,"descripcion"=>$descripcion,"fecha"=>$fecha, "valor"=>$valor, "link"=>$link);
       echo json_encode( array( "msg" => $this->SolicitudesModel->crearTutoria($datos) ) );
     }
 
