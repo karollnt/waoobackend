@@ -568,10 +568,10 @@
 
     public function listarTutoriasMateria() {
       $idmateria = $this->input->get('idmateria');
-      $resp = array( 'tutorias' => '' );
+      $resp = array( 'streaming' => '' );
       if (isset($idmateria)) {
-        $tutorias = $this->SolicitudesModel->listarTutoriasMateria($idmateria);
-        $resp['tutorias'] = html_entity_decode($tutorias);
+        $streaming = $this->SolicitudesModel->listarTutoriasMateria($idmateria);
+        $resp['streaming'] = html_entity_decode($tutorias);
       }
       echo json_encode($resp);
     }
