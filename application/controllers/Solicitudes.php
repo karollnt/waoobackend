@@ -571,7 +571,7 @@
       $resp = array( 'streaming' => '' );
       if (isset($idmateria)) {
         $streaming = $this->SolicitudesModel->listarTutoriasMateria($idmateria);
-        $resp['streaming'] = html_entity_decode($tutorias);
+        $resp['streaming'] = html_entity_decode($streaming);
       }
       echo json_encode($resp);
     }
