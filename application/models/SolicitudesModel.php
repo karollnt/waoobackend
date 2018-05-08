@@ -698,7 +698,7 @@
 
     public function listarTutoriasMateria($idmateria) {
       $mensaje = '';
-      $res = $this->db->query("SELECT * FROM tutorias WHERE estado=1");
+      $res = $this->db->query("SELECT * FROM streaming WHERE estado=1");
       if ($res->num_rows()>0) {
         $cont1 = 0;
         foreach($res->result() as $row){
