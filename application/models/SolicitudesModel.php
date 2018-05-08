@@ -708,7 +708,7 @@
              $mensaje .= ',';
              $cont1 ++;
           }
-          $mensaje .= '{"id":"'.($row->id).'","titulo":"'.($row->titulo).'","fecha":"'.($row->fecha).'","descripcion":"'.trim($row->descripcion).'","valor":"'.($row->valor).'"}';
+          $mensaje .= '{"idtutor":"'.($row->idtutor).'","titulo":"'.($row->titulo).'","fecha":"'.($row->fecha).'","descripcion":"'.trim($row->descripcion).'","valor":"'.($row->valor).'"}';
         }
         if ($cont1 > 0) {
           $mensaje = '[' . $mensaje . ']';
