@@ -14,15 +14,15 @@
       if (!isset($datos2) || count($datos2) < 1) {
         return 'No se encontraron archivos adjuntos';
       }
-      $msg = $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
-      if (strpos($msg, 'No se pudo') !== false ) {
-        return $msg;
-      }
       $ins = $this->db->query("INSERT INTO trabajo(idusuario,idmateria,titulo,descripcion,fechaEntrega) "
       ." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).",'".$datos['fechaEntrega']."')");
       if($this->db->affected_rows()>0) $mensaje = "ok";
       else $mensaje = "No se pudo ingresar la informaci&oacute;n";
       $idtrabajo = $this->db->insert_id();
+      $msg = $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
+      /*if (strpos($msg, 'No se pudo') !== false ) {
+        return $msg;
+      }*/
       $this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
       $this->enviarNotificacionPushAsistentes($idtrabajo);
       return $msg . "\n" . $mensaje;
