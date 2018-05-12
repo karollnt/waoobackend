@@ -16,16 +16,17 @@
       }
       $ins = $this->db->query("INSERT INTO trabajo(idusuario,idmateria,titulo,descripcion,fechaEntrega) "
       ." VALUES({$datos['idusuario']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).",'".$datos['fechaEntrega']."')");
-      if($this->db->affected_rows()>0) $mensaje = "ok";
-      else $mensaje = "No se pudo ingresar la informaci&oacute;n";
-      $idtrabajo = $this->db->insert_id();
-      $msg = $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
-      /*if (strpos($msg, 'No se pudo') !== false ) {
-        return $msg;
-      }*/
-      $this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
-      $this->enviarNotificacionPushAsistentes($idtrabajo);
-      return $msg . "\n" . $mensaje;
+      if( $this->db->affected_rows() > 0 ) {
+        $idtrabajo = $this->db->insert_id();
+        $msg = $this->ingresarArchivos($idtrabajo,$datos['idusuario'],$datos2);
+        if (strpos($msg, 'No se pudo') !== false ) {
+          return $msg;
+        }
+        $this->notificarAsistentesTrabajoCreado($idtrabajo,"Se ha creado una solicitud");
+        $this->enviarNotificacionPushAsistentes($idtrabajo);
+        return "ok";
+      }
+      return "No se pudo ingresar la informaci&oacute;n";
     }
 
     public function ingresarArchivos($idtrabajo,$idusuario,$datos){
@@ -721,10 +722,10 @@
       $mensaje = '';
       $this->load->model('UsuariosModel');
       $this->db
-      ->select("otr.id,otr.valor,u.nickname,otr.idusuario,u.nombres,u.apellidos,du.descripcion,du.institucionedu,nd.nombre as nivel_edu",false)
-      ->from("tutorias otr")
-      ->join("usuarios u","u.id=otr.idusuario","inner")
-      ->join("datos_usuario du","du.id_usuario=otr.idusuario","left")
+      ->select("otr.id,otr.valor,u.nickname,otr.titulo,,otr.descripcion AS descripcionTutoria,otr.idtutor,u.nombres,u.apellidos,du.descripcion,du.institucionedu,nd.nombre as nivel_edu",false)
+      ->from("streaming otr")
+      ->join("usuarios u","u.id=otr.idtutor","inner")
+      ->join("datos_usuario du","du.id_usuario=otr.idtutor","left")
       ->join("nivel_educativo nd","nd.id=du.id_nivel","inner")
       ->where("otr.id",$idtutoria);
       $res = $this->db->get();
@@ -734,9 +735,12 @@
           $calif = $this->UsuariosModel->calificacionAsesor($row->nickname);
           if($cont1==0) $cont1 = 1;
           else $mensaje .= ',';
-          $mensaje .= '{"id":"'.($row->id).'","valor":"'.($row->valor).'","asistente":"'.($row->nickname).'","calificacion":"'.($calif).'","nombre":"'.($row->nombres)." ".($row->apellidos).'","descripcion":"'.($row->descripcion).'","institucion":"'.($row->institucionedu).'","nivel":"'.($row->nivel_edu).'","idasistente":"'.($row->idusuario).'"}';
+          $mensaje .= '{"id":"'.($row->id).'","valor":"'.($row->valor).'","asistente":"'.($row->nickname).'","titulo":"'.($row->titulo).'",'
+            .'"calificacion":"'.($calif).'","nombre":"'.($row->nombres)." ".($row->apellidos).'","descripcionTutoria":"'.($row->descripcionTutoria).'",'
+            .'"descripcion":"'.($row->descripcion).'","institucion":"'.($row->institucionedu).'","nivel":"'.($row->nivel_edu).'","idasistente":"'.($row->idtutor).'"}';
         }
       }
+      return $mensaje;
     }
 
     public function enviarLinkTutoria($idtutoria, $email, $idusuario) {
