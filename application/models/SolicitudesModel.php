@@ -744,7 +744,7 @@
     }
 
     public function enviarLinkTutoria($idtutoria, $email, $idusuario) {
-      $res = $this->db->query("SELECT * FROM tutorias WHERE id={$idtutoria}");
+      $res = $this->db->query("SELECT * FROM streaming WHERE id={$idtutoria}");
       $link = '';
       $fecha = '';
       if ($res->num_rows() < 1) {
@@ -757,7 +757,7 @@
       if (strcasecmp($link, '') == 0) {
         return;
       }
-      $res = $this->db->query("INSERT INTO tutorias_pagas VALUES ({$idtutoria}, '{$idusuario}')");
+      $res = $this->db->query("INSERT INTO streaming_pagado(id_streaming, id_usuario, fecha) VALUES ({$idtutoria}, {$idusuario}, now())");
       $subject = 'Acceso a tutoria';
       $from = 'noreply@waootechnology.com';
       $message = "Hola!<br>Puedes acceder a la tutoria el dia asignado({$fecha}) desde el siguiente enlace: {$link}";
