@@ -592,18 +592,17 @@
 			// $api_key = 'sk_test_syBDwQhdwYsIfLsQd3S8Lp55';
 			$api_key = $this->KeysModel->get_key('stripe_api_key');
 			$usuario = $this->UsuariosModel->usuarioObj($this->input->post('nickname'));
-			$email = $usuario->email;
+      $email = $usuario->email;
+      $response = array("msg" => "");
 			if (strcasecmp($usuario->bt_token, '') != 0 && strcasecmp($usuario->bt_token, $token) == 0) {
 				$opts = $this->charge_user($amount, $usuario->bt_token, $api_key);
 				$type = $opts['type'];
-				$response = $opts['message'];
+        $response["msg"] = html_entity_decode($opts['message']);
 				if(strcasecmp($type, 'error') !== 0) {
-					$asistente = $this->UsuariosModel->usuarioObj($this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
 					$this->SolicitudesModel->enviarLinkTutoria($idtutoria, $email, $usuario->id);
-					$response = array("msg"=>html_entity_decode($response),"nickasistente"=>$asistente->nickname,"id"=>$idpreciotrabajo);
 				} else {
-					$response = array("msg"=>html_entity_decode($response));
-				}
+          $response['error'] = "error";
+        }
 			} else {
 				// Crear cliente
 				$ch = curl_init();
@@ -618,25 +617,23 @@
 
 				$result = curl_exec($ch);
 				if (curl_errno($ch)) {
-					echo 'Error:' . curl_error($ch);
+          $response['msg'] = 'Error:' . curl_error($ch);
+          $response['error'] = "error";
 				}
 				curl_close ($ch);
 				$json = json_decode($result);
 				if ( isset( $json->error ) ) {
-					$response = array("msg"=>html_entity_decode($json->error->message));
-					$type = 'error';
+					$response["msg"] = html_entity_decode($json->error->message);
+          $response['error'] = "error";
 				} else {
 					$opts = $this->charge_user($amount, $json->id, $api_key);
-					$type = $opts['type'];
-					$response = $opts['message'];
+          $type = $opts['type'];
+          $response["msg"] = html_entity_decode($opts['message']);
 					if(strcasecmp($type, 'error') !== 0) {
-						$asistente = $this->UsuariosModel->usuarioObj($this->SolicitudesModel->nickAsistenteOferta($idpreciotrabajo));
-						$this->SolicitudesModel->enviarLinkTutoria($idtutoria, $email, $usuario->id);
-						$response = array("msg"=>html_entity_decode($response),"nickasistente"=>$asistente->nickname,"id"=>$idpreciotrabajo);
-						$this->UsuariosModel->set_bt_token($usuario->id, $json->id);
-					} else {
-						$response = array("msg"=>html_entity_decode($response));
-					}
+            $this->SolicitudesModel->enviarLinkTutoria($idtutoria, $email, $usuario->id);
+          } else {
+            $response['error'] = "error";
+          }
 				}
 			}
 		  echo json_encode($response);
