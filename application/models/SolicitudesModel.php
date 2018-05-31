@@ -840,7 +840,7 @@
           array_push($tokens, $row->token);
         }
         if (count($tokens) > 0) {
-          $this->onesignal->sendMessageToUsers($msg, $tokens, $extraData);
+          $this->onesignal->sendMessageToUsers($msg, $tokens);
         }
       }
     }
