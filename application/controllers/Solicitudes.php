@@ -637,6 +637,26 @@
 				}
 			}
 		  echo json_encode($response);
-		}
+    }
+    
+    public function cargarMateriasSuscripcionStreaming() {
+      $usuario = $this->UsuariosModel->usuarioObj( $this->input->get('nickname') );
+      $response = array( 'results' => $this->SolicitudesModel->cargarMateriasSuscripcionStreaming( $usuario->id ) );
+      echo json_encode( $response );
+    }
+
+    public function guardarNotificacionesStreaming() {
+      $datosmat = array();
+      $response = array('msg' => '');
+      $cantmatsreg = $this->input->post('items');
+      $usuario = $this->UsuariosModel->usuarioObj( $this->input->get('nickname') );
+      for( $ind=0; $ind < $cantmatsreg; $ind++) {
+        if( $this->input->post( 'mat_'.$ind ) !=null ) {
+          array_push( $datosmat, $this->input->post( 'mat_'.$ind ) );
+        }
+      }
+      $response['msg'] = $this->SolicitudesModel->guardarNotificacionesStreaming( $usuario->id, $datosmat );
+      echo json_encode( $response );
+    }
 
   }
