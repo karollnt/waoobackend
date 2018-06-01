@@ -693,6 +693,7 @@
       ." VALUES({$datos['idtutor']},{$datos['idmateria']},".($this->db->escape($datos['titulo'])).",".($this->db->escape($datos['descripcion'])).",'".$datos['fecha']."',".$datos['valor'].",'".$datos['link']."')");
       if ( $this->db->affected_rows() > 0 ) {
         $mensaje = "ok";
+        $this->notificarSubscriptoresMateriaStreaming( $datos['idmateria'] );
       }
       return $mensaje;
     }
@@ -794,6 +795,54 @@
         return false;
       }
       return true;
+    }
+
+    public function cargarMateriasSuscripcionStreaming( $idusuario ) {
+      $resp = '';
+      $res = $this->db->query("SELECT m.id, m.nombre, COALESCE(b.estado, 0) AS escogido
+        FROM materias m
+        LEFT JOIN (
+          SELECT idmateria, estado
+          FROM subscripcion_streaming
+          WHERE idusuario = {$idusuario}
+        ) b on b.idmateria = m.id"
+      );
+      $res = $this->db->get();
+      $obj = array();
+      if( $res->num_rows() > 0 ) {
+        foreach( $res->result() as $row ) {
+          array_push( $obj, array(
+            'id' => $row->id, 'nombre' => $row->nombre, 'escogido' => ( $row->escogido !== 0 )
+          ) );
+        }
+      }
+      $resp = json_encode( $obj );
+      return $resp;
+    }
+
+    public function guardarNotificacionesStreaming( $idusuario, $materias ) {
+      $res = $this->db->query("DELETE FROM subscripcion_streaming WHERE idusuario = {$idusuario}");
+      $count = 0;
+      for ( $i=0; $i < $materias; $i++ ) { 
+        $res = $this->db->query("INSERT INTO subscripcion_streaming(idusuario, idmateria, estado) VALUES({$idusuario}, {$materias[$i]}, 1)");
+        if ( $this->db->affected_rows() > 0 ) {
+          $count++;
+        }
+      }
+      return "Se configuraron {$count} materias para recibir notificaciones";
+    }
+
+    protected function notificarSubscriptoresMateriaStreaming( $idmateria ) {
+      $res = $this->db->query("SELECT token, plataforma FROM usuarios WHERE id IN (SELECT idusuario FROM subscripcion_streaming WHERE idmateria={$idmateria} AND estado=1)", false);
+      if($res->num_rows() > 0){
+        $tokens = array();
+        foreach($res->result() as $row){
+          array_push($tokens, $row->token);
+        }
+        if (count($tokens) > 0) {
+          $this->onesignal->sendMessageToUsers($msg, $tokens);
+        }
+      }
     }
 
   }
