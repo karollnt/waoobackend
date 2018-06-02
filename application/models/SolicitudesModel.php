@@ -811,7 +811,7 @@
       if( $res->num_rows() > 0 ) {
         foreach( $res->result() as $row ) {
           array_push( $obj, array(
-            'id' => $row->id, 'nombre' => $row->nombre, 'escogido' => ( $row->escogido !== 0 )
+            'id' => $row->id, 'nombre' => $row->nombre, 'escogido' => ( ( $row->escogido * 1 ) != 0 )
           ) );
         }
       }
