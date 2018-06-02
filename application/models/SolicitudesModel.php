@@ -800,7 +800,7 @@
     public function cargarMateriasSuscripcionStreaming( $idusuario ) {
       $resp = '';
       $res = $this->db->query("SELECT m.id, m.nombre, COALESCE(b.estado, 0) AS escogido
-        FROM materias m
+        FROM materia m
         LEFT JOIN (
           SELECT idmateria, estado
           FROM subscripcion_streaming
