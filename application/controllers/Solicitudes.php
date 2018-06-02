@@ -649,7 +649,7 @@
       $datosmat = array();
       $response = array('msg' => '');
       $cantmatsreg = $this->input->post('items');
-      $usuario = $this->UsuariosModel->usuarioObj( $this->input->get('nickname') );
+      $usuario = $this->UsuariosModel->usuarioObj( $this->input->post('nickname') );
       for( $ind=0; $ind < $cantmatsreg; $ind++) {
         if( $this->input->post( 'mat_'.$ind ) !=null ) {
           array_push( $datosmat, $this->input->post( 'mat_'.$ind ) );
