@@ -807,7 +807,6 @@
           WHERE idusuario = {$idusuario}
         ) b on b.idmateria = m.id"
       );
-      $res = $this->db->get();
       $obj = array();
       if( $res->num_rows() > 0 ) {
         foreach( $res->result() as $row ) {
