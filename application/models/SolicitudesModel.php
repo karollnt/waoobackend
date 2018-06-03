@@ -822,8 +822,8 @@
     public function guardarNotificacionesStreaming( $idusuario, $materias ) {
       $res = $this->db->query("DELETE FROM subscripcion_streaming WHERE idusuario = {$idusuario}");
       $count = 0;
-      for ( $i=0; $i < $materias; $i++ ) { 
-        $res = $this->db->query("INSERT INTO subscripcion_streaming(idusuario, idmateria, estado) VALUES({$idusuario}, {$materias[$i]}, 1)");
+      for ( $i=0; $i < count( $materias ); $i++ ) { 
+        $res = $this->db->query("INSERT INTO subscripcion_streaming(idusuario, idmateria, estado) VALUES({$idusuario}, '" . $materias[$i] . "', 1)");
         if ( $this->db->affected_rows() > 0 ) {
           $count++;
         }
