@@ -650,8 +650,8 @@
       $response = array('msg' => '');
       $cantmatsreg = $this->input->post('items');
       $usuario = $this->UsuariosModel->usuarioObj( $this->input->post('nickname') );
-      for( $ind=0; $ind < $cantmatsreg; $ind++) {
-        if( $this->input->post( 'mat_'.$ind ) !=null ) {
+      for( $ind=0; $ind <= $cantmatsreg; $ind++) {
+        if( ! empty( $this->input->post( 'mat_'.$ind ) ) ) {
           array_push( $datosmat, $this->input->post( 'mat_'.$ind ) );
         }
       }
